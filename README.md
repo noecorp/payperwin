@@ -4,6 +4,20 @@
 
 ## Game result monetisation for eSports streamers.
 
+- Initially launching for League of Legends streamers, using Riot's Public Game API.
+- eSports Streamers get paid for in-game results such as wins, kills, assists, and KDA (Kill-Death-Assist ratio). This supplements their salary, streaming, donations, and other income by allowing their fans to reward entertaining in-game action. Sort of loosely conditional donations.
+- Streamers register on the platform and link to their PayPerWin profile page on their Twitch profile page.
+- Fans/viewers register on the platform, top up their account (min $5), and pledge values to their favourite streamer's in-game results.
+- Pledges can be customised with limits on number of games (next 5 wins) and number of kills/assists/KDA (reward max 8 kills per game).
+- Streamers get paid monthly based on the previous month's accrued pledges, minus the platform's commission.
+
+## Restrictions
+
+- Game types limited to Ranked (Normal games are off-limits to API atm) WINS. Restricting to WINS prevents streamers from ruining teammate's games by focusing on monetised kills over winning.
+- There should be logical built-in limits on weekly/monthly total pledge amounts per user and maximum rewardable kills/assists/KDA per game.
+
+## Contribute
+
 This is a product being built by the Assembly community. You can help push this idea forward by visiting [https://assembly.com/payperwin](https://assembly.com/payperwin).
 
 ### How Assembly Works
