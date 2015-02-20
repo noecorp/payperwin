@@ -9,6 +9,7 @@
 - Streamers register on the platform and link to their PayPerWin profile page on their Twitch profile page.
 - Fans/viewers register on the platform, top up their account (min $5), and pledge values to their favourite streamer's in-game results.
 - Pledges can be customised with limits on number of games (next 5 wins) and number of kills/assists/KDA (reward max 8 kills per game).
+- Every registered streamer's winning ranked game is tracked via Riot's API and pledges are automatically distributed by the system.
 - Streamers get paid monthly based on the previous month's accrued pledges, minus the platform's commission.
 
 ## Restrictions
