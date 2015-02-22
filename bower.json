@@ -1,0 +1,26 @@
+{
+  "name": "PayPerWin",
+  "version": "0.0.1",
+  "authors": [
+    "Nikita Logachev <nikita.logachev@me.com>"
+  ],
+  "description": "Game result monetisation for eSports streamers.",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3",
+    "bootstrap-sass-official": "~3.3.3",
+    "requirejs": "~2.1.16",
+    "requirejs-domready": "~2.0.1",
+    "requirejs-i18n": "~2.0.4",
+    "requirejs-router": "~0.8.0",
+    "requirejs-text": "~2.0.14"
+  }
+}
