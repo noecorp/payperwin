@@ -37,12 +37,7 @@
 
 			"php artisan key:generate",
 			"php artisan clear-compiled",
-			"php artisan optimize",
-
-			"npm install --global gulp",
-			"npm install -g bower",
-			"npm install",
-			"bower install"
+			"php artisan optimize"
 		],
 
 		"post-update-cmd": [
