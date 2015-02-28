@@ -34,4 +34,16 @@ return [
 		'secret' => '',
 	],
 
+	'twitch' => [
+		'client_id' => env('TWITCH_KEY'),
+		'client_secret' => env('TWITCH_SECRET'),
+		'redirect' => env('TWITCH_REDIRECT_URI'),
+	],
+
+	'facebook' => [
+		'client_id' => env('FACEBOOK_KEY'),
+		'client_secret' => env('FACEBOOK_SECRET'),
+		'redirect' => env('FACEBOOK_REDIRECT_URI'),
+	],
+
 ];
