@@ -139,7 +139,7 @@ return [
 		/*
 		 * External Service Providers...
 		 */
-		//		
+		'SocialiteProviders\Manager\ServiceProvider',		
 
 		/*
 		 * Application Service Providers...
