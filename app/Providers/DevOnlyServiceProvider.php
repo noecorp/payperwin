@@ -11,7 +11,7 @@ class DevOnlyServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		if ( $this->app->environment('local') || $this->app->environment('staging'))
+		if ( !$this->app->environment('production') )
 		{
 			$this->app->register('Barryvdh\Debugbar\ServiceProvider');
 
