@@ -56,6 +56,9 @@
 								</button>
 							</div>
 						</div>
+
+						<a href="/auth/with/twitch"><img src="http://ttv-api.s3.amazonaws.com/assets/connect_light.png" class="twitch-connect" /></a>
+
 					</form>
 				</div>
 			</div>
