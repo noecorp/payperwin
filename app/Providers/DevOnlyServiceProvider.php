@@ -14,6 +14,8 @@ class DevOnlyServiceProvider extends ServiceProvider {
 		if ( $this->app->environment('local') || $this->app->environment('staging'))
 		{
 			$this->app->register('Barryvdh\Debugbar\ServiceProvider');
+
+			$this->app->register('App\Providers\TestingServiceProvider');
 		}
 	}
 
