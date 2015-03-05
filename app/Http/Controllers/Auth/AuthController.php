@@ -141,11 +141,13 @@ class AuthController extends Controller {
 	/**
 	 * Redirects to appropriate social authentication site.
 	 *
+	 * @param  Request  $request
+	 *
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
 	 */
-	public function getWith($provider)
+	public function getWith(Request $request, $provider)
 	{
-		return $this->socialite->with($provider)->redirect();
+		return $this->socialite->with($provider)->redirect($request->has('rerequest'));
 	}
 
 	/**
@@ -167,6 +169,11 @@ class AuthController extends Controller {
 		else
 		{
 			$user = $this->socialite->with($provider)->user();
+
+			if (!$user->email)
+			{
+				return $this->redirectWithSocialError('email');
+			}
 
 			$existing = ($provider == 'twitch') ? $this->users->withTwitchId($user->getId()) : $this->users->withFacebookId($user->getId());
 
@@ -198,9 +205,17 @@ class AuthController extends Controller {
 
 	protected function redirectWithSocialError($error)
 	{
+		$to = 'auth/register';
+
 		if ($error == 'access_denied') $error = 'We need the requested access to your profile to continue.';
 
-		return $this->redirect->to('auth/register')->withErrors(['social'=>$error]);
+		if ($error == 'email')
+		{
+			$error = 'We do need your email though...';
+			$to .= '?rerequest=1';
+		}
+
+		return $this->redirect->to($uri)->withErrors(['social'=>$error]);
 	}
 
 	protected function loginExisting(\App\Models\User $user, $uri = null)
