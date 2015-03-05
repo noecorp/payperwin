@@ -202,12 +202,12 @@ class AuthController extends Controller {
 		return $this->redirect->to('auth/register')->withErrors(['social'=>$error]);
 	}
 
-	protected function loginExisting(\App\Models\User $user, $to = null)
+	protected function loginExisting(\App\Models\User $user, $uri = null)
 	{
 		$this->auth->login($user);
 
-		if ($to)
-			return redirect($to);
+		if ($uri)
+			return $this->redirect->to($uri);
 
 		return $this->redirect->to('/dashboard');
 	}
