@@ -184,7 +184,8 @@ class AuthController extends Controller {
 					
 					if ($existing)
 					{
-						 $user->nickname = null;
+						// We'll set it to null for now and require that it be set later
+						$user->nickname = null;
 					}
 				}
 
