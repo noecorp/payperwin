@@ -1,0 +1,17 @@
+<?php namespace {{namespace}};
+
+use Mockery as m;
+
+class {{class}} extends \{{rootNamespace}}TestCase {
+
+	public function testFoo()
+	{
+		//
+	}
+
+	public function getBarMock()
+	{
+		return m::mock('Foo\Bar\Baz');
+	}
+
+}

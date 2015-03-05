@@ -139,7 +139,7 @@ return [
 		/*
 		 * External Service Providers...
 		 */
-		//		
+		'SocialiteProviders\Manager\ServiceProvider',		
 
 		/*
 		 * Application Service Providers...
@@ -150,6 +150,7 @@ return [
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
 		'App\Providers\DevOnlyServiceProvider',
+		'App\Providers\RepositoriesServiceProvider',
 
 	],
 
