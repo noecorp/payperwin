@@ -8,7 +8,7 @@ use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
 use Illuminate\Routing\Redirector as Redirect;
 
-class AuthController extends Controller {
+class Auth extends Controller {
 
 	/**
 	 * The Guard implementation.
