@@ -6,7 +6,7 @@ do
 key="$1"
 
 case $key in
-    -u|--update)
+    -s|--skip)
     NEWINSTALL=0 # We don't need to install gulp and bower
     ;;
     *)
