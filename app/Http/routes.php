@@ -19,3 +19,9 @@ Route::controllers([
 	'auth' => 'Auth\Auth',
 	'password' => 'Auth\Password',
 ]);
+
+Route::resource('users','Users',['except'=>'index','create','store','destroy']);
+Route::resource('streamers','Streamers',['only'=>'index','show']);
+Route::resource('pledges','Pledges');
+Route::resource('users.pledges','UsersPledges', ['only'=>'index']);
+Route::resource('streamers.pledges','StreamersPledges', ['only'=>'index']);
