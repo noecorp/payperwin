@@ -151,6 +151,7 @@ return [
 		'App\Providers\RouteServiceProvider',
 		'App\Providers\DevOnlyServiceProvider',
 		'App\Providers\RepositoriesServiceProvider',
+		'App\Providers\ServicesServiceProvider',
 
 	],
 
