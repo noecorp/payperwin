@@ -2,6 +2,8 @@
 
 @section('content')
 
-pledges.index
+pledges.edit
+
+Pledge: {{ $pledge->id }}
 
 @endsection

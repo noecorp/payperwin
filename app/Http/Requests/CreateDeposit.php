@@ -2,7 +2,7 @@
 
 use App\Http\Requests\Request;
 
-class UpdatePledge extends Request {
+class CreateDeposit extends Request {
 
 	/**
 	 * Get the validation rules that apply to the request.
@@ -12,7 +12,7 @@ class UpdatePledge extends Request {
 	public function rules()
 	{
 		return [
-			'amount' => 'numeric|min:0.01|max:10',
+			//
 		];
 	}
 

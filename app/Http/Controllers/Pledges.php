@@ -3,16 +3,51 @@
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Contracts\Repository\Pledges as PledgesRepository;
+use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
+use App\Http\Requests\CreatePledge;
+use Illuminate\Routing\Redirector as Redirect;
 
 class Pledges extends Controller {
 
+	/**
+	 * The Pledges Repository implementation.
+	 *
+	 * @var UsersRepository
+	 */
 	protected $pledges;
 
-	public function __construct(PledgesRepository $pledges, View $view)
+	/**
+	 * The View Factory implementation.
+	 *
+	 * @var View
+	 */
+	protected $view;
+
+	/**
+	 * The Redirector implementation.
+	 *
+	 * @var Redirect
+	 */
+	protected $redirect;
+
+	/**
+	 * Create a new pledges controller instance.
+	 *
+	 * @param  PledgesRepository  $users
+	 * @param  View  $view
+	 * @param Redirect $redirect
+	 *
+	 * @return void
+	 */
+	public function __construct(PledgesRepository $pledges, View $view, Redirect $redirect)
 	{
 		$this->pledges = $pledges;
 		$this->view = $view;
+		$this->redirect = $redirect;
+
+		$this->middleware('auth',['except'=>['index','show']]);
+		$this->middleware('own.pledge',['except'=>['index','show']]);
 	}
 
 	/**
@@ -30,23 +65,32 @@ class Pledges extends Controller {
 	/**
 	 * Show the form for creating a new resource.
 	 *
+	 * @param Users $users
+	 * @param Request $request
+	 *
 	 * @return Response
 	 */
-	public function create()
+	public function create(Users $users, Request $request)
 	{
-		return $this->view->make('pledges.new');
+		$streamerId = $request->get('streamerId');
+
+		$streamer = ($streamerId) ? $users->havingStreamerId($streamerId) : null;
+
+		return $this->view->make('pledges.create')->with(compact('streamer'));
 	}
 
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param \App\Requests\CreatePledge $request
+	 * @param CreatePledge $request
 	 *
 	 * @return Response
 	 */
-	public function store(\App\Requests\CreatePledge $request)
+	public function store(CreatePledge $request)
 	{
 		$pledge = $this->pledges->create($request->all());
+
+		return $this->redirect->to('pledges/'.$pledge->id);
 	}
 
 	/**
@@ -58,7 +102,9 @@ class Pledges extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		$pledge = $this->pledges->havingIdWithUserAndStreamer($id);
+
+		return $this->view->make('pledges.show')->with(compact('pledge'));
 	}
 
 	/**
@@ -71,6 +117,8 @@ class Pledges extends Controller {
 	public function edit($id)
 	{
 		$pledge = $this->pledges->havingIdWithStreamer($id);
+
+		return $this->view->make('pledges.edit')->with(compact('pledge'));
 	}
 
 	/**
@@ -83,7 +131,9 @@ class Pledges extends Controller {
 	 */
 	public function update(\App\Requests\UpdatePledge $request, $id)
 	{
-		$this->pledges->update($id,$request->all());
+		$pledge = $this->pledges->update($id,$request->all());
+
+		return $this->redirect->back()->withSuccess('Done!');
 	}
 
 }

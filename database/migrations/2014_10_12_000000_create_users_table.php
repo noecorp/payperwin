@@ -36,6 +36,9 @@ class CreateUsersTable extends Migration {
 
 			$table->boolean('streamer')->default(0);
 
+			$table->decimal('funds',12,2)->default(0);
+			$table->decimal('earnings',12,2)->default(0);
+
 			$table->rememberToken();
 			
 			$table->timestamps();
