@@ -54,4 +54,9 @@ class Users extends AbstractRepository implements UsersRepository {
 		return $this->newQuery()->whereUsername($username)->first();
 	}
 
+	public function havingStreamerId($streamerId)
+	{
+		return $this->newQuery()->whereStreamer(1)->find($streamerId);
+	}
+
 }

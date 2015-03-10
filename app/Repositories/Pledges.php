@@ -47,4 +47,9 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 		return $this->newQuery()->with('streamer')->find($id);
 	}
 
+	public function havingIdWithUserAndStreamer($id)
+	{
+		return $this->newQuery()->with('owner','streamer')->find($id);
+	}
+
 }
