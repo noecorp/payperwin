@@ -1,6 +1,6 @@
 <?php namespace App\Contracts\Service;
 
-interface PledgeKeeper {
+interface PledgeGuru {
 
 	/**
 	 * Returns list of Pledge types.

@@ -22,8 +22,8 @@ class ServicesServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		$this->app->singleton(
-			'App\Contracts\Service\PledgeKeeper',
-			'App\Services\PledgeKeeper'
+			'App\Contracts\Service\PledgeGuru',
+			'App\Services\PledgeGuru'
 		);
 	}
 

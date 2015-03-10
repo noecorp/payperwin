@@ -1,8 +1,8 @@
 <?php namespace App\Services;
 
-use App\Contracts\Service\PledgeKeeper as PledgeKeeperInterface;
+use App\Contracts\Service\PledgeGuru as PledgeGuruInterface;
 
-class PledgeKeeper implements PledgeKeeperInterface {
+class PledgeGuru implements PledgeGuruInterface {
 
 	/**
 	 * List of all valid Pledge types.
