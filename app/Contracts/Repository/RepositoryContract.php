@@ -3,9 +3,11 @@
 interface RepositoryContract {
 
 	/**
-	 * Create and store an instance of the repository's implied model.
+	 * Create and store an instance of the repository's model.
 	 *
 	 * @param array $data
+	 *
+	 * @return \Illuminate\Database\Eloquent\Model
 	 */
 	public function create(array $data);
 
@@ -13,7 +15,11 @@ interface RepositoryContract {
 	 * Fetch the model that has the specified id.
 	 *
 	 * @param int $id
+	 *
+	 * @return \Illuminate\Database\Eloquent\Model
 	 */
-	public function withId($id);
+	public function havingId($id);
+
+	public function update($id, array $data);
 	
 }
