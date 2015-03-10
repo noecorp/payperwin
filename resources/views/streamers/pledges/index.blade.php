@@ -2,6 +2,6 @@
 
 @section('content')
 
-pledges.index
+streamers.pledges.index
 
 @endsection

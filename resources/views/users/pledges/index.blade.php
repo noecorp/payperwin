@@ -2,6 +2,6 @@
 
 @section('content')
 
-pledges.index
+users.pledges.index
 
 @endsection

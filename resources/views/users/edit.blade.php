@@ -2,6 +2,8 @@
 
 @section('content')
 
-pledges.index
+users.edit
+
+{{ $user->id }}
 
 @endsection
