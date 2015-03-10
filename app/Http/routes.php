@@ -25,3 +25,4 @@ Route::resource('streamers','Streamers',['only'=>'index','show']);
 Route::resource('pledges','Pledges',['except'=>'destroy']);
 Route::resource('users.pledges','UsersPledges', ['only'=>'index']);
 Route::resource('streamers.pledges','StreamersPledges', ['only'=>'index']);
+Route::resource('deposits','Deposits',['only'=>'create','store']);
