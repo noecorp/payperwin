@@ -25,6 +25,11 @@ class ServicesServiceProvider extends ServiceProvider {
 			'App\Contracts\Service\PledgeGuru',
 			'App\Services\PledgeGuru'
 		);
+
+		$this->app->singleton(
+			'App\Contracts\Service\Acidifier',
+			'App\Services\Acidifier'
+		);
 	}
 
 }
