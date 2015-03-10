@@ -8,7 +8,7 @@ use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
 use Illuminate\Routing\Redirector as Redirect;
 
-class AuthController extends Controller {
+class Auth extends Controller {
 
 	/**
 	 * The Guard implementation.
@@ -175,7 +175,7 @@ class AuthController extends Controller {
 				return $this->redirectWithSocialError('email');
 			}
 
-			$existing = ($provider == 'twitch') ? $this->users->withTwitchId($user->getId()) : $this->users->withFacebookId($user->getId());
+			$existing = ($provider == 'twitch') ? $this->users->havingTwitchId($user->getId()) : $this->users->havingFacebookId($user->getId());
 
 			if ($existing)
 			{
@@ -187,7 +187,7 @@ class AuthController extends Controller {
 
 				if ($provider == 'twitch')
 				{
-					$existing = $this->users->withUsername($user->getNickname());
+					$existing = $this->users->havingUsername($user->getNickname());
 					
 					if ($existing)
 					{

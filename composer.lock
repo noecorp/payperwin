@@ -717,16 +717,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.0.13",
+            "version": "v5.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "c263240daa383e6b9bd979600dc61dcb2c436d53"
+                "reference": "f61e0098151c73db9068a6be6d86bfc60b01de25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/c263240daa383e6b9bd979600dc61dcb2c436d53",
-                "reference": "c263240daa383e6b9bd979600dc61dcb2c436d53",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/f61e0098151c73db9068a6be6d86bfc60b01de25",
+                "reference": "f61e0098151c73db9068a6be6d86bfc60b01de25",
                 "shasum": ""
             },
             "require": {
@@ -838,7 +838,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2015-02-27 00:32:38"
+            "time": "2015-03-07 03:18:10"
         },
         {
             "name": "laravel/socialite",
@@ -1564,12 +1564,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Twitch.git",
-                "reference": "33907ecb9f7b170fbd15bdffd3861a74dd8622d7"
+                "reference": "f569edd3340060f2af967e992bce99a9b1303c29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Twitch/zipball/33907ecb9f7b170fbd15bdffd3861a74dd8622d7",
-                "reference": "33907ecb9f7b170fbd15bdffd3861a74dd8622d7",
+                "url": "https://api.github.com/repos/SocialiteProviders/Twitch/zipball/f569edd3340060f2af967e992bce99a9b1303c29",
+                "reference": "f569edd3340060f2af967e992bce99a9b1303c29",
                 "shasum": ""
             },
             "require": {
@@ -1593,7 +1593,7 @@
                 }
             ],
             "description": "Twitch OAuth2 Provider for Laravel Socialite",
-            "time": "2015-03-04 09:10:42"
+            "time": "2015-03-07 11:01:40"
         },
         {
             "name": "stripe/stripe-php",
@@ -2453,12 +2453,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "b1767bd960d10b50a68b9f2f768a0cbfda50e281"
+                "reference": "77be5170f3777e2e899ec98105ce5686cd4aa63b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/b1767bd960d10b50a68b9f2f768a0cbfda50e281",
-                "reference": "b1767bd960d10b50a68b9f2f768a0cbfda50e281",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/77be5170f3777e2e899ec98105ce5686cd4aa63b",
+                "reference": "77be5170f3777e2e899ec98105ce5686cd4aa63b",
                 "shasum": ""
             },
             "require": {
@@ -2499,7 +2499,7 @@
                 "profiler",
                 "webprofiler"
             ],
-            "time": "2015-03-03 09:26:26"
+            "time": "2015-03-07 15:15:23"
         },
         {
             "name": "doctrine/instantiator",

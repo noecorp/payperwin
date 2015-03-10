@@ -6,10 +6,10 @@ interface Users extends RepositoryContract {
 
 	public function createWithTwitch(array $data);
 
-	public function withFacebookId($id);
+	public function havingFacebookId($id);
 
-	public function withTwitchId($id);
+	public function havingTwitchId($id);
 
-	public function withUsername($username);
+	public function havingUsername($username);
 
 }

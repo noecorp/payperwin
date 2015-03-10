@@ -1,7 +1,7 @@
 <?php namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Commands\MakeTestCommand;
+use App\Commands\MakeTest;
 
 class TestingServiceProvider extends ServiceProvider {
 
@@ -31,7 +31,7 @@ class TestingServiceProvider extends ServiceProvider {
 	{
 		$this->app->singleton('command.test.make', function($app)
 		{
-		    return new MakeTestCommand($app['files']);
+		    return new MakeTest($app['files']);
 		});
 
 		$this->commands('command.test.make');

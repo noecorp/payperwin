@@ -11,11 +11,17 @@
 |
 */
 
-Route::get('/', 'WelcomeController@index');
+Route::get('/', 'Welcome@index');
 
-Route::get('home', 'HomeController@index');
+Route::get('home', 'Home@index');
 
 Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
+	'auth' => 'Auth\Auth',
+	'password' => 'Auth\Password',
 ]);
+
+Route::resource('users','Users',['except'=>'index','create','store','destroy']);
+Route::resource('streamers','Streamers',['only'=>'index','show']);
+Route::resource('pledges','Pledges',['except'=>'destroy']);
+Route::resource('users.pledges','UsersPledges', ['only'=>'index']);
+Route::resource('streamers.pledges','StreamersPledges', ['only'=>'index']);
