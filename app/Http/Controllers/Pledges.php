@@ -2,8 +2,18 @@
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Contracts\Repository\Pledges as PledgesRepository;
+use Illuminate\Contracts\View\Factory as View;
 
 class Pledges extends Controller {
+
+	protected $pledges;
+
+	public function __construct(PledgesRepository $pledges, View $view)
+	{
+		$this->pledges = $pledges;
+		$this->view = $view;
+	}
 
 	/**
 	 * Display a listing of the resource.
@@ -12,7 +22,9 @@ class Pledges extends Controller {
 	 */
 	public function index()
 	{
-		//
+		$pledges = $this->pledges->latestWithUsersAndStreamers(10);
+
+		return $this->view->make('pledges.index')->with(compact('pledges'));
 	}
 
 	/**
@@ -22,7 +34,7 @@ class Pledges extends Controller {
 	 */
 	public function create()
 	{
-		//
+		return $this->view->make('pledges.new');
 	}
 
 	/**
@@ -34,7 +46,7 @@ class Pledges extends Controller {
 	 */
 	public function store(\App\Requests\CreatePledge $request)
 	{
-		//
+		$pledge = $this->pledges->create($request->all());
 	}
 
 	/**
@@ -58,7 +70,7 @@ class Pledges extends Controller {
 	 */
 	public function edit($id)
 	{
-		//
+		$pledge = $this->pledges->havingIdWithStreamer($id);
 	}
 
 	/**
@@ -71,18 +83,7 @@ class Pledges extends Controller {
 	 */
 	public function update(\App\Requests\UpdatePledge $request, $id)
 	{
-		//
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
+		$this->pledges->update($id,$request->all());
 	}
 
 }
