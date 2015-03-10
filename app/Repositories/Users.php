@@ -3,16 +3,16 @@
 use App\Contracts\Repository\Users as UsersRepository;
 use App\Models\User;
 
-class Users implements UsersRepository {
+class Users extends AbstractRepository implements UsersRepository {
 	
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @return User
+	 * @param \App\Models\User $user
 	 */
-	public function create(array $data)
+	public function __construct(User $user)
 	{
-		return User::create($data);
+		parent::__construct($user);
 	}
 
 	public function createWithFacebook(array $data)
@@ -23,7 +23,7 @@ class Users implements UsersRepository {
 			'facebook_id' => $data['facebook_id'],
 		];
 
-		return User::create($fields);
+		return $this->create($fields);
 	}
 
 	public function createWithTwitch(array $data)
@@ -36,27 +36,22 @@ class Users implements UsersRepository {
 			'twitch_username' => $data['username'],
 		];
 
-		return User::create($fields);
+		return $this->create($fields);
 	}
 
-	public function withId($id)
+	public function havingFacebookId($id)
 	{
-		return User::find($id);
+		return $this->newQuery()->whereFacebookId($id)->first();
 	}
 
-	public function withFacebookId($id)
+	public function havingTwitchId($id)
 	{
-		return User::whereFacebookId($id)->first();
+		return $this->newQuery()->whereTwitchId($id)->first();
 	}
 
-	public function withTwitchId($id)
+	public function havingUsername($username)
 	{
-		return User::whereTwitchId($id)->first();
-	}
-
-	public function withUsername($username)
-	{
-		return User::whereUsername($username)->first();
+		return $this->newQuery()->whereUsername($username)->first();
 	}
 
 }
