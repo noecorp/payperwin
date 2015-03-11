@@ -35,7 +35,9 @@ define([], () ->
                     router.registerRoutes({
 
                         # matches an exact path
-                        register: { path: '/register', moduleId: 'app/Routes/Register' }
+                        register: { path: '/register', moduleId: 'app/Routes/Register' },
+
+                        deposits: { path: '/deposits/create', moduleId: 'app/Routes/Deposits' },
 
                         # matches using a wildcard
                         # customer: { path: '/customer/*', moduleId: 'customer/customerView' },
