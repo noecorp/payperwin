@@ -30,6 +30,16 @@ class ServicesServiceProvider extends ServiceProvider {
 			'App\Contracts\Service\Acidifier',
 			'App\Services\Acidifier'
 		);
+
+		$this->app->singleton(
+			'App\Contracts\Service\Payments',
+			'App\Services\Payments'
+		);
+
+		$this->app->singleton(
+			'App\Contracts\Service\Api\League',
+			'App\Services\Api\League'
+		);
 	}
 
 }
