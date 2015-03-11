@@ -9,7 +9,7 @@ define([], () ->
     # files with their versioned equivalents from Elixir's rev-manifest file.
     $.ajax({
         dataType: 'json',
-        url: 'build/rev-manifest.json',
+        url: '/build/rev-manifest.json',
         success: (data) ->
             paths = {}
 
