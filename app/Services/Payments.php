@@ -11,8 +11,10 @@
 
 use App\Contracts\Service\Payments as PaymentsInterface;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Contracts\Foundation\Application;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ParseException;
+use GuzzleHttp\Exception\TooManyRedirectsException;
 
 class Payments implements PaymentsInterface {
 
@@ -24,11 +26,11 @@ class Payments implements PaymentsInterface {
 
 	protected $productUUID;
 
-	public function __construct(Client $client, Application $app)
+	public function __construct(Client $client)
 	{
 		$this->client = $client;
 
-		$this->baseUrl = ($app->environment('production')) ? 'https://payments.assembly.com/' : 'https://payments-sandbox.assembly.com/';
+		$this->baseUrl = env('PAYMENTS_URL');
 
 		$this->authToken = env('PAYMENTS_AUTH_TOKEN');
 
@@ -42,18 +44,34 @@ class Payments implements PaymentsInterface {
 	{
 		try
 		{
-			$response = $this->client->post([$this->baseUrl . 'products/'. $this->productUUID . '/customers'], [
+			$response = $this->client->post($this->baseUrl . 'products/'. $this->productUUID . '/customers', [
 				'headers' => $this->headers(),
 				'body' => $data,
 				'timeout' => $this->timeout()
 			]);
 
-			return (json_decode((string)$response->getBody()))->id;
+			$object = $response->json();
+			return $object['id'];
 		}
-		catch (RequestException $e)
+		catch (ClientException $e)
 		{
-			var_dump($e);
+			echo $e->getRequest();
+			if ($e->hasResponse()) {
+		        echo $e->getResponse();
+		    }
 			// handle
+		}
+		catch (ServerException $e)
+		{
+			//
+		}
+		catch (TooManyRedirectsException $e)
+		{
+			//
+		}
+		catch (ParseException $e)
+		{
+			//
 		}
 	}
 
@@ -64,18 +82,33 @@ class Payments implements PaymentsInterface {
 	{
 		try
 		{
-			$response = $this->client->put([$this->baseUrl . 'products/'. $this->productUUID . '/customers/' . $customerId], [
+			$response = $this->client->put($this->baseUrl . 'products/'. $this->productUUID . '/customers/' . $customerId, [
 				'headers' => $this->headers(),
 				'body' => $data,
 				'timeout' => $this->timeout()
 			]);
 
-			return true; //(json_decode((string)$response->getBody()))->id;
+			return true;
 		}
-		catch (RequestException $e)
+		catch (ClientException $e)
 		{
-			var_dump($e);
+			echo $e->getRequest();
+			if ($e->hasResponse()) {
+		        echo $e->getResponse();
+		    }
 			// handle
+		}
+		catch (ServerException $e)
+		{
+			//
+		}
+		catch (TooManyRedirectsException $e)
+		{
+			//
+		}
+		catch (ParseException $e)
+		{
+			//
 		}
 	}
 
@@ -86,7 +119,7 @@ class Payments implements PaymentsInterface {
 	{
 		try
 		{
-			$response = $this->client->post([$this->baseUrl . 'products/'. $this->productUUID . '/charges'], [
+			$response = $this->client->post($this->baseUrl . 'products/'. $this->productUUID . '/charges', [
 				'headers' => $this->headers(),
 				'body' => [
 					'customer' => $customerId,
@@ -95,12 +128,28 @@ class Payments implements PaymentsInterface {
 				'timeout' => $this->timeout()
 			]);
 
-			return (json_decode((string)$response->getBody()))->id;
+			$object = $response->json();
+			return $object['id'];
 		}
-		catch (RequestException $e)
+		catch (ClientException $e)
 		{
-			var_dump($e);
+			echo $e->getRequest();
+			if ($e->hasResponse()) {
+		        echo $e->getResponse();
+		    }
 			// handle
+		}
+		catch (ServerException $e)
+		{
+			//
+		}
+		catch (TooManyRedirectsException $e)
+		{
+			//
+		}
+		catch (ParseException $e)
+		{
+			//
 		}
 	}
 
