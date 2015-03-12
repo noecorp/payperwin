@@ -20,7 +20,7 @@ So you've decided to do some coding for PayPerWin. Great!!! Before you can get s
 
 ### The basics
 
-Regardless if you chose Homestead or the custom local configuration, in the *project root folder* run these commands.
+Regardless if you chose Homestead or the custom local configuration, in the *project root folder* of the machine **that will serve the app** run these commands.
 - `composer install`
 - `php artisan migrate`
 - `php artisan db:seed`
@@ -111,9 +111,11 @@ Interface/Parent:
 
 ```
 /**
- * Create an instance of the repository's implied model.
+ * Create and store an instance of the repository's model.
  *
  * @param array $data
+ *
+ * @return \Illuminate\Database\Eloquent\Model
  */
 public function create(array $data);
 ```
@@ -128,7 +130,7 @@ Implementation/Subclass:
  */
 public function create(array $data)
 {
-	return User::create($data);
+	//
 }
 ```
 
