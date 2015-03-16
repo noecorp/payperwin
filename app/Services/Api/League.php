@@ -43,7 +43,7 @@ class League implements LeagueInterface {
 		}
 		catch (\Exception $e)
 		{
-			return $this->handle($e)
+			return $this->handle($e);
 		}
 	}
 
@@ -108,7 +108,7 @@ class League implements LeagueInterface {
 		{
 			//
 		}
-		else if ($e instanceof ParseException
+		else if ($e instanceof ParseException)
 		{
 			//
 		}
