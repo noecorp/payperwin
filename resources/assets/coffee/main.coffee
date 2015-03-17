@@ -44,7 +44,8 @@ define([], () ->
                     })
                     .on('routeload', (module, routeArguments) ->
 
-                        body = document.querySelector('body');
+                        # Run the route logic
+                        module.go(routeArguments)
 
                     )
                     .init() # Set up event handlers and trigger the initial page load
