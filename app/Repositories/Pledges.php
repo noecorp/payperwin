@@ -8,48 +8,39 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @param \App\Models\Pledge $pledge
+	 * @return Pledge
 	 */
-	public function __construct(Pledge $pledge)
+	protected function model()
 	{
-		parent::__construct($pledge);
+		return new Pledge;
 	}
 
-	public function latestWithUsersAndStreamers($take, $page = null)
+	public function withStreamer()
 	{
-		$query = $this->newQuery()->with('owner','streamer');
+		$this->query()->with('streamer');
 
-		$this->addLimits($query,$take,$page);
-
-		return $query->get();
+		return $this;
 	}
 
-	public function latestForStreamerWithUsers($streamerId, $take, $page = null)
+	public function withUser()
 	{
-		$query = $this->newQuery()->with('owner')->whereStreamerId($streamerId);
+		$this->query()->with('owner');
 
-		$this->addLimits($query,$take,$page);
-
-		return $query->get();
+		return $this;
 	}
 
-	public function latestForUserWithStreamers($userId, $take, $page = null)
+	public function forStreamer($streamerId)
 	{
-		$query = $this->newQuery()->with('streamer')->whereUserId($userId);
+		$this->query()->whereStreamerId($streamerId);
 
-		$this->addLimits($query,$take,$page);
-
-		return $query->get();
+		return $this;
 	}
 
-	public function havingIdWithStreamer($id)
+	public function fromUser($userId)
 	{
-		return $this->newQuery()->with('streamer')->find($id);
-	}
-
-	public function havingIdWithUserAndStreamer($id)
-	{
-		return $this->newQuery()->with('owner','streamer')->find($id);
+		$this->query()->whereUserId($userId);
+		
+		return $this;
 	}
 
 }

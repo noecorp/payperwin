@@ -5,4 +5,14 @@ use App\Models\Deposit;
 
 class Deposits extends AbstractRepository implements DepositsRepository {
 
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return Pledge
+	 */
+	protected function model()
+	{
+		return new Deposit;
+	}
+
 }
