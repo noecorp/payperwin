@@ -1,7 +1,6 @@
 <?php namespace App\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
 
 class MakeTest extends GeneratorCommand {
 
@@ -62,16 +61,6 @@ class MakeTest extends GeneratorCommand {
 	protected function getDefaultNamespace($rootNamespace)
 	{
 		return $rootNamespace;
-	}
-
-	/**
-	 * Get the console command options.
-	 *
-	 * @return array
-	 */
-	protected function getOptions()
-	{
-		return [];
 	}
 
 }
