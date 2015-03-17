@@ -34,22 +34,12 @@ define([], () ->
                 domReady ->
                     router.registerRoutes({
 
-                        # matches an exact path
-                        register: { path: '/register', moduleId: 'app/Routes/Register' },
+                        authAction: { path: '/auth/:action', moduleId: 'app/Routes/Auth' },
 
-                        deposits: { path: '/deposits/create', moduleId: 'app/Routes/Deposits' },
+                        depositsAction: { path: '/deposits/:action', moduleId: 'app/Routes/Deposits' },
 
-                        # matches using a wildcard
-                        # customer: { path: '/customer/*', moduleId: 'customer/customerView' },
-
-                        # matches using a path variable
-                        # order: { path: '/orders/:id', moduleId: 'order/orderView' },
-
-                        # matches a pattern like '/word/number'
-                        # regex: { path: /^\/\w+\/\d+$/i, moduleId: 'regex/regexView' },
-
-                        # matches everything else
-                        notFound: { path: '*', moduleId: 'app/Routes/Register' }
+                        usersId: { path: '/users/:id', moduleId: 'app/Routes/Users' },
+                        usersIdAction: { path: '/users/:id/:action', moduleId: 'app/Routes/Users' },
 
                     })
                     .on('routeload', (module, routeArguments) ->
