@@ -5,7 +5,7 @@ define([], () ->
 
     'use strict'
 
-    # A temporary solution: we need a way to pull and match the individual js
+    # A temporary (?) solution: we need a way to pull and match the individual js
     # files with their versioned equivalents from Elixir's rev-manifest file.
     $.ajax({
         dataType: 'json',
@@ -18,7 +18,7 @@ define([], () ->
 
             paths['stripe'] = 'https://js.stripe.com/v2/?1'; # The ?1 prevents RequireJS attaching .js
             
-            # Configure require.js paths and shims
+            # Configure paths and shims
             require.config({
                 baseUrl: '/js/vendor',
                 paths: paths,
