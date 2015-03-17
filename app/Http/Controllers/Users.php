@@ -5,6 +5,8 @@ use App\Contracts\Repository\Users as UsersRepository;
 use App\Contracts\Repository\Pledges;
 use App\Http\Requests\UpdateUser;
 use Illuminate\Contracts\View\Factory as View;
+use Illuminate\Routing\Redirector as Redirect;
+use Illuminate\Contracts\Routing\ResponseFactory as Response;
 
 class Users extends Controller {
 
@@ -48,9 +50,9 @@ class Users extends Controller {
 	 */
 	public function show(Pledges $pledges, $id)
 	{
-		$user = $this->users->havingId($id);
+		$user = $this->users->find($id);
 
-		$pledges = $pledges->latestForUserWithStreamers($user->id, 10);
+		$pledges = $pledges->withStreamer()->latest()->limit(10)->fromUser($user->id)->all();
 
 		return $this->view->make('users.show')->with(compact('user','pledges'));
 	}
@@ -63,7 +65,7 @@ class Users extends Controller {
 	 */
 	public function edit($id)
 	{
-		$user = $this->users->havingId($id);
+		$user = $this->users->find($id);
 
 		return $this->view->make('users.edit')->with(compact('user'));
 	}
@@ -72,16 +74,24 @@ class Users extends Controller {
 	 * Update the specified resource in storage.
 	 *
 	 * @param UpdateUser $request
+	 * @param Response $response
  	 * @param  Redirect  $redirect
 	 * @param  int  $id
 	 *
 	 * @return Response
 	 */
-	public function update(UpdateUser $request, Redirect $redirect, $id)
+	public function update(UpdateUser $request, Response $response, Redirect $redirect, $id)
 	{
 		$user = $this->users->update($id, $request->all());
 
-		return $redirect->back()->withSuccess('Done!');
+		if ($request->ajax())
+		{
+			return $response->json(['']);
+		}
+		else
+		{
+			return $redirect->back()->withSuccess('Done!');
+		}
 	}
 
 }

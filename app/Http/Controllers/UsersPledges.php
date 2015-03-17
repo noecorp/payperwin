@@ -19,9 +19,9 @@ class UsersPledges extends Controller {
 	 */
 	public function index(Users $users, Pledges $pledges, View $view, $userId)
 	{
-		$user = $users->havingId($userId);
+		$user = $users->find($userId);
 
-		$pledges = $pledges->latestForUserWithStreamers($userId, 10);
+		$pledges = $pledges->withStreamer()->latest()->limit(10)->fromUser($userId);
 
 		return $view->make('users.pledges.index')->with(compact('user','pledges'));
 	}

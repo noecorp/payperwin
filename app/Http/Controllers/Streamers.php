@@ -52,7 +52,7 @@ class Streamers extends Controller {
 	 */
 	public function show($id)
 	{
-		$streamer = $this->users->havingStreamerId($id);
+		$streamer = $this->users->isStreamer()->find($id);
 		
 		return $this->view->make('streamers.show')->with(compact('streamer'));
 	}

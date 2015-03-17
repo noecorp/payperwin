@@ -8,11 +8,11 @@ class Users extends AbstractRepository implements UsersRepository {
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @param \App\Models\User $user
+	 * @return User
 	 */
-	public function __construct(User $user)
+	protected function model()
 	{
-		parent::__construct($user);
+		return new User;
 	}
 
 	public function createWithFacebook(array $data)
@@ -41,22 +41,44 @@ class Users extends AbstractRepository implements UsersRepository {
 
 	public function havingFacebookId($id)
 	{
-		return $this->newQuery()->whereFacebookId($id)->first();
+		$this->query()->whereFacebookId($id);
+		
+		return $this;
 	}
 
 	public function havingTwitchId($id)
 	{
-		return $this->newQuery()->whereTwitchId($id)->first();
+		$this->query()->whereTwitchId($id);
+
+		return $this;
 	}
 
 	public function havingUsername($username)
 	{
-		return $this->newQuery()->whereUsername($username)->first();
+		$this->query()->whereUsername($username);
+
+		return $this;
 	}
 
-	public function havingStreamerId($streamerId)
+	public function havingStreamingUsername($streamingUsername)
 	{
-		return $this->newQuery()->whereStreamer(1)->find($streamerId);
+		$this->query()->whereStreamingUsername($streamingUsername);
+
+		return $this;
+	}
+
+	public function isStreamer()
+	{
+		$this->query()->whereStreamer(1);
+
+		return $this;
+	}
+
+	public function withPledges()
+	{
+		$this->query()->with('pledges');
+		
+		return $this;
 	}
 
 }

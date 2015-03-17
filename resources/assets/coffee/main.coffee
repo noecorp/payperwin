@@ -5,7 +5,7 @@ define([], () ->
 
     'use strict'
 
-    # A temporary solution: we need a way to pull and match the individual js
+    # A temporary (?) solution: we need a way to pull and match the individual js
     # files with their versioned equivalents from Elixir's rev-manifest file.
     $.ajax({
         dataType: 'json',
@@ -18,7 +18,7 @@ define([], () ->
 
             paths['stripe'] = 'https://js.stripe.com/v2/?1'; # The ?1 prevents RequireJS attaching .js
             
-            # Configure require.js paths and shims
+            # Configure paths and shims
             require.config({
                 baseUrl: '/js/vendor',
                 paths: paths,
@@ -34,27 +34,18 @@ define([], () ->
                 domReady ->
                     router.registerRoutes({
 
-                        # matches an exact path
-                        register: { path: '/register', moduleId: 'app/Routes/Register' },
+                        authAction: { path: '/auth/:action', moduleId: 'app/Routes/Auth' },
 
-                        deposits: { path: '/deposits/create', moduleId: 'app/Routes/Deposits' },
+                        depositsAction: { path: '/deposits/:action', moduleId: 'app/Routes/Deposits' },
 
-                        # matches using a wildcard
-                        # customer: { path: '/customer/*', moduleId: 'customer/customerView' },
-
-                        # matches using a path variable
-                        # order: { path: '/orders/:id', moduleId: 'order/orderView' },
-
-                        # matches a pattern like '/word/number'
-                        # regex: { path: /^\/\w+\/\d+$/i, moduleId: 'regex/regexView' },
-
-                        # matches everything else
-                        notFound: { path: '*', moduleId: 'app/Routes/Register' }
+                        usersId: { path: '/users/:id', moduleId: 'app/Routes/Users' },
+                        usersIdAction: { path: '/users/:id/:action', moduleId: 'app/Routes/Users' },
 
                     })
                     .on('routeload', (module, routeArguments) ->
 
-                        body = document.querySelector('body');
+                        # Run the route logic
+                        module.go(routeArguments)
 
                     )
                     .init() # Set up event handlers and trigger the initial page load

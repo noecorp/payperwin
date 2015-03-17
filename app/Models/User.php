@@ -37,7 +37,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	public function pledges()
 	{
-		return $this->hasMany('App\Models\Pledge','owner_id');
+		return $this->hasMany('App\Models\Pledge');
 	}
 
 }

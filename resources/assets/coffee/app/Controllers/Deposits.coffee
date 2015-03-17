@@ -1,7 +1,7 @@
-define(['./Base','stripe'], (Base,Stripe) ->
-	Controller = new Base('DepositsController')
+define(['./Base','stripe'], (BaseController,Stripe) ->
+	DepositsController = new BaseController()
 
-	Controller.render = () ->
+	DepositsController.create = () ->
 		Stripe.setPublishableKey('pk_test_6pRNASCoBOKtIshFeQd4XMUh')
 
 		$form = $('#payment-form')
@@ -40,5 +40,5 @@ define(['./Base','stripe'], (Base,Stripe) ->
 			return false
 		)
 
-	return Controller
+	return DepositsController
 )

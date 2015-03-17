@@ -1,37 +1,26 @@
 <?php namespace App\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
 
 class MakeTest extends GeneratorCommand {
 
 	/**
-	 * The console command name.
-	 *
-	 * @var string
+	 * {@inheritdoc}
 	 */
 	protected $name = 'make:test';
 
 	/**
-	 * The console command description.
-	 *
-	 * @var string
+	 * {@inheritdoc}
 	 */
 	protected $description = 'Create a new phpunit test class';
 
 	/**
-	 * The type of class being generated.
-	 *
-	 * @var string
+	 * {@inheritdoc}
 	 */
 	protected $type = 'Test';
 
 	/**
-	 * Get the application namespace from the Composer file.
-	 *
-	 * @return string
-	 *
-	 * @throws \RuntimeException
+	 * {@inheritdoc}
 	 */
 	protected function getAppNamespace()
 	{
@@ -49,9 +38,7 @@ class MakeTest extends GeneratorCommand {
 	}
 
 	/**
-	 * Get the stub file for the generator.
-	 *
-	 * @return string
+	 * {@inheritdoc}
 	 */
 	protected function getStub()
 	{
@@ -59,10 +46,7 @@ class MakeTest extends GeneratorCommand {
 	}
 
 	/**
-	 * Get the destination class path.
-	 *
-	 * @param  string  $name
-	 * @return string
+	 * {@inheritdoc}
 	 */
 	protected function getPath($name)
 	{
@@ -72,24 +56,11 @@ class MakeTest extends GeneratorCommand {
 	}
 
 	/**
-	 * Get the default namespace for the class.
-	 *
-	 * @param  string  $rootNamespace
-	 * @return string
+	 * {@inheritdoc}
 	 */
 	protected function getDefaultNamespace($rootNamespace)
 	{
 		return $rootNamespace;
-	}
-
-	/**
-	 * Get the console command options.
-	 *
-	 * @return array
-	 */
-	protected function getOptions()
-	{
-		return [];
 	}
 
 }

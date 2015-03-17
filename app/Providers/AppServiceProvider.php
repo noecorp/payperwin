@@ -1,6 +1,7 @@
 <?php namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Routing\ResponseFactory as Response;
 
 class AppServiceProvider extends ServiceProvider {
 
@@ -9,9 +10,11 @@ class AppServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function boot()
+	public function boot(Response $response)
 	{
-		//
+		$response->macro('jsonNotFound', function() use ($response) {
+			return $response->make(['error'=>'not found'], 404);
+		});
 	}
 
 	/**

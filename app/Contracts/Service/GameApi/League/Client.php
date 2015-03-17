@@ -1,6 +1,6 @@
-<?php namespace App\Contracts\Service\Api;
+<?php namespace App\Contracts\Service\GameApi\League;
 
-interface League {
+interface Client {
 
 	/**
 	 * Fetch the summoner data associated with the given
