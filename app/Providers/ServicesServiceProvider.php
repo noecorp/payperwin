@@ -40,6 +40,10 @@ class ServicesServiceProvider extends ServiceProvider {
 			'App\Contracts\Service\GameApi\League\Client',
 			'App\Services\GameApi\League\Client'
 		);
+
+		$this->app->bind(
+			'App\Contracts\Service\GameApi\Player',
+			'App\Services\GameApi\Player'
 		);
 	}
 
