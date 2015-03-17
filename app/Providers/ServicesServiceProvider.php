@@ -37,8 +37,9 @@ class ServicesServiceProvider extends ServiceProvider {
 		);
 
 		$this->app->singleton(
-			'App\Contracts\Service\Api\League',
-			'App\Services\Api\League'
+			'App\Contracts\Service\GameApi\League\Client',
+			'App\Services\GameApi\League\Client'
+		);
 		);
 	}
 

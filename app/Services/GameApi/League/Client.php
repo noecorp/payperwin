@@ -1,27 +1,35 @@
-<?php namespace App\Services\Api;
+<?php namespace App\Services\GameApi\League;
 
-use App\Contracts\Service\Api\League as LeagueInterface;
-use GuzzleHttp\Client;
+use App\Contracts\Service\GameApi\League\Client as ClientInterface;
+
+use App\Contracts\Service\GameApi\Player;
+
+use GuzzleHttp\Client as Guzzle;
+
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ParseException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
 
-class League implements LeagueInterface {
+class Client implements ClientInterface {
 
-	protected $client;
+	protected $guzzle;
 
 	protected $baseUrl;
 
 	protected $apiKey;
 
-	public function __construct(Client $client)
+	protected $player;
+
+	public function __construct(Guzzle $guzzle, Player $player)
 	{
-		$this->client = $client;
+		$this->guzzle = $guzzle;
 
 		$this->baseUrl = 'api.pvp.net/api/lol/';
 
 		$this->apiKey = env('RIOT_KEY');
+
+		$this->player = $player;
 	}
 
 	/**
@@ -31,15 +39,17 @@ class League implements LeagueInterface {
 	{
 		try
 		{
-			$response = $this->client->get($this->url('v1.4/summoner/by-name/'.$name, $region), [
+			$response = $this->guzzle->get($this->url('v1.4/summoner/by-name/'.$name, $region), [
 				'timeout' => $this->timeout(),
 				'exceptions' => true
 			]);
 
+			$object = $response->json();
+
+			return $this->player->create($object[$name]['id'],$object[$name]['name']);
+
 			// echo $response->getStatusCode();
 			// echo $response->getBody();
-			$object = $response->json();
-			return $object[$name];
 		}
 		catch (\Exception $e)
 		{
@@ -54,7 +64,7 @@ class League implements LeagueInterface {
 	{
 		try
 		{
-			$response = $this->client->get($this->url('v2.2/matchhistory/'.$summonerId, $region), [
+			$response = $this->guzzle->get($this->url('v2.2/matchhistory/'.$summonerId, $region), [
 				'timeout' => $this->timeout(),
 				'exceptions' => true
 			]);
