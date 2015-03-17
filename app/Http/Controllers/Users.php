@@ -48,9 +48,9 @@ class Users extends Controller {
 	 */
 	public function show(Pledges $pledges, $id)
 	{
-		$user = $this->users->havingId($id);
+		$user = $this->users->find($id);
 
-		$pledges = $pledges->latestForUserWithStreamers($user->id, 10);
+		$pledges = $pledges->withStreamer()->latest()->limit(10)->fromUser($user->id)->all();
 
 		return $this->view->make('users.show')->with(compact('user','pledges'));
 	}
@@ -63,7 +63,7 @@ class Users extends Controller {
 	 */
 	public function edit($id)
 	{
-		$user = $this->users->havingId($id);
+		$user = $this->users->find($id);
 
 		return $this->view->make('users.edit')->with(compact('user'));
 	}

@@ -57,7 +57,7 @@ class Pledges extends Controller {
 	 */
 	public function index()
 	{
-		$pledges = $this->pledges->latestWithUsersAndStreamers(10);
+		$pledges = $this->pledges->withUser()->withStreamer()->latest()->limit(10)->all();
 
 		return $this->view->make('pledges.index')->with(compact('pledges'));
 	}
@@ -74,7 +74,7 @@ class Pledges extends Controller {
 	{
 		$streamerId = $request->get('streamerId');
 
-		$streamer = ($streamerId) ? $users->havingStreamerId($streamerId) : null;
+		$streamer = ($streamerId) ? $users->isStreamer()->find($id) : null;
 
 		return $this->view->make('pledges.create')->with(compact('streamer'));
 	}
@@ -102,7 +102,7 @@ class Pledges extends Controller {
 	 */
 	public function show($id)
 	{
-		$pledge = $this->pledges->havingIdWithUserAndStreamer($id);
+		$pledge = $this->pledges->withUser()->withStreamer()->find($id);
 
 		return $this->view->make('pledges.show')->with(compact('pledge'));
 	}
@@ -116,7 +116,7 @@ class Pledges extends Controller {
 	 */
 	public function edit($id)
 	{
-		$pledge = $this->pledges->havingIdWithStreamer($id);
+		$pledge = $this->pledges->withStreamer()->find($id);
 
 		return $this->view->make('pledges.edit')->with(compact('pledge'));
 	}
