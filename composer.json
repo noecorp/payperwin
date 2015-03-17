@@ -45,6 +45,8 @@
 		"post-install-cmd": [
 			"php -r \"copy('.env.example', '.env');\"",
 
+			"php artisan vendor:publish",
+
 			"php artisan key:generate",
 			"php artisan clear-compiled",
 			"php artisan optimize"
