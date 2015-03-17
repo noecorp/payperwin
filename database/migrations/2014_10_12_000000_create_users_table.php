@@ -35,6 +35,7 @@ class CreateUsersTable extends Migration {
 			$table->string('password', 60)->nullable();
 
 			$table->boolean('streamer')->default(0);
+			$table->string('streaming_username',25)->nullable()->unique();
 
 			$table->decimal('funds',12,2)->default(0);
 			$table->decimal('earnings',12,2)->default(0);
