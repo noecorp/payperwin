@@ -18,6 +18,7 @@ class CreatePledgesTable extends Migration {
 
 			$table->decimal('amount',10,2);
 			$table->tinyInteger('type');
+			$table->string('message',256)->nullable();
 
 			$table->tinyInteger('game_limit');
 			$table->decimal('sum_limit',12,2);

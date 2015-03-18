@@ -1,6 +1,8 @@
 <?php namespace App\Repositories;
 
 use App\Contracts\Repository\RepositoryContract;
+use Illuminate\Contracts\Cache\Repository as Cache;
+use Carbon\Carbon;
 
 abstract class AbstractRepository implements RepositoryContract {
 
@@ -9,28 +11,53 @@ abstract class AbstractRepository implements RepositoryContract {
 	 *
 	 * Used to build queries.
 	 *
-	 * @var \Illuminate\Database\Eloquent\Model $model
+	 * @var \Illuminate\Database\Eloquent\Model
 	 */
 	protected $model;
 
 	/**
+	 * Current query instance.
+	 *
+	 * @var \Illuminate\Database\Eloquent\Builder
+	 */
+	protected $query;
+
+	/**
 	 * Create a new instance of the repository.
 	 *
-	 * @param \Illuminate\Database\Eloquent\Model $model
+	 * @param Cache $cache
 	 */
-	public function __construct(\Illuminate\Database\Eloquent\Model $model)
+	public function __construct(Cache $cache)
 	{
-		$this->model = $model;
+		$this->model = $this->model();
+		$this->cache = $cache;
 	}
 
 	/**
-	 * Get a new query instance.
+	 * Get a clean model instance specific to this repository.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Model
+	 */
+	abstract protected function model();
+
+	/**
+	 * Get the current query or create a new one.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	protected function newQuery()
+	protected function query()
 	{
-		return $this->model->newQuery();
+		if (!$this->query) $this->query = $this->model->newQuery();
+
+		return $this->query;
+	}
+
+	/**
+	 * Reset the current query to allow for clean, future queries on this repository.
+	 */
+	protected function reset()
+	{
+		$this->query = null;
 	}
 
 	/**
@@ -41,6 +68,8 @@ abstract class AbstractRepository implements RepositoryContract {
 		$model = $this->model->newInstance($data);
 
 		$model->save();
+
+		$this->cache->tags($this->model->getTable())->flush();
 
 		return $model;
 	}
@@ -53,8 +82,13 @@ abstract class AbstractRepository implements RepositoryContract {
 		$model = $this->model->newQuery()->findOrFail($id);
 
 		$model->fill($data);
+		
+		if ($model->isDirty())
+		{
+			$model->save(); 
 
-		$model->save();
+			$this->cache->tags($this->model->getTable())->flush();
+		}
 
 		return $model;
 	}
@@ -62,29 +96,150 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function havingId($id)
+	public function find($id = null)
 	{
-		return $this->model->newQuery()->find($id);
+		if ($id)
+		{
+			$this->query()->whereId($id);
+		}
+		else
+		{
+			$this->query()->limit(1);
+		}
+
+		$hash = $this->getQueryHash();
+
+		$tags = $this->getCacheTags();
+
+		$model = $this->cache->tags($tags)->rememberForever($hash, function()
+		{
+		    return $this->query()->first();
+		});
+		
+		$this->reset();
+
+		return $model;
 	}
 
 	/**
-	 * Add limit and offset to the specified query.
-	 *
-	 * @param \Illuminate\Database\Query\Builder $query
-	 * @param int $take Row limit
-	 * @param int $page Results page to start from (default 1)
+	 * {@inheritdoc}
 	 */
-	protected function addLimits(\Illuminate\Database\Eloquent\Builder $query,$take,$page)
+	public function all()
+	{
+		$hash = $this->getQueryHash();
+
+		$tags = $this->getCacheTags();
+
+		$results = $this->cache->tags($tags)->rememberForever($hash, function()
+		{
+		    return $this->query()->get();
+		});
+
+		$this->reset();
+
+		return $results;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function latest()
+	{
+		$this->query()->orderBy('created_at','desc');
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function earliest()
+	{
+		$this->query()->orderBy('created_at','asc');
+		
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function after($date)
+	{
+		$this->query()->where('created_at','>',new Carbon($date));
+		
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function before($date)
+	{
+		$this->query()->where('created_at','<',new Carbon($date));
+		
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function limit($take, $page = null)
 	{
 		if ($take > 0)
 		{
-			$query->limit($take);
+			$this->query()->limit($take);
 		}
 		
 		if ($page > 1)
 		{
-			$query->skip($take * ($page-1));
+			$this->query()->skip($take * ($page-1));
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Get a list of the required cache tags for the current query.
+	 *
+	 * @return array
+	 */
+	protected function getCacheTags()
+	{
+		$relations = array_keys($this->query()->getEagerLoads());
+
+		$tags = [$this->model->getTable()];
+
+		foreach ($relations as $relation)
+		{
+			$tags[] = $this->query()->getRelation($relation)->getRelated()->getTable();
+		}
+
+		sort($tags);
+		
+		return array_unique($tags);
+	}
+
+	/**
+	 * Get a unique hash representation for the current query.
+	 *
+	 * @return string
+	 */
+	protected function getQueryHash()
+	{
+		$hash = $this->query()->getQuery()->toSql() . implode(',', $this->query()->getBindings());
+
+		$relations = array_keys($this->query()->getEagerLoads());
+
+		// Order doesn't actually matter, but it WOULD change the hash.
+		sort($relations);
+		
+		foreach ($relations as $key)
+		{
+			$relation = $this->query()->getRelation($key);
+			$hash .= $relation->toSql() . implode(',', $relation->getBindings());
+		}
+
+		return md5($hash);
 	}
 
 }

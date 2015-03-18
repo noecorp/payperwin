@@ -13,15 +13,15 @@ class StreamersPledges extends Controller {
 	 * @param Users $users
 	 * @param Pledges $pledges
 	 * @param View $view
-	 * @param int $streamerId
+	 * @param int $id
 	 *
 	 * @return Response
 	 */
-	public function index(Users $users, Pledges $pledges, View $view, $streamerId)
+	public function index(Users $users, Pledges $pledges, View $view, $id)
 	{
-		$streamer = $users->havingStreamerId($streamerId);
+		$streamer = $users->isStreamer()->find($id);
 
-		$pledges = $pledges->latestForStreamerWithUsers($streamerId, 10);
+		$pledges = $pledges->withUser()->latest()->limit(10)->forStreamer($id)->all();
 
 		return $view->make('streamers.pledges.index')->with(compact('streamer','pledges'));
 	}

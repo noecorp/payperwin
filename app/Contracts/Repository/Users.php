@@ -12,6 +12,10 @@ interface Users extends RepositoryContract {
 
 	public function havingUsername($username);
 
-	public function havingStreamerId($streamerId);
+	public function havingStreamingUsername($streamingUsername);
+
+	public function isStreamer();
+
+	public function withPledges();
 
 }

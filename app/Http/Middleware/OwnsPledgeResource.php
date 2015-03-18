@@ -46,7 +46,7 @@ class OwnsPledgeResource {
 		{
 			$pledgeId = (int) $request->route()->parameter('pledges');
 
-			$pledge = $this->pledges->havingId($pledgeId);
+			$pledge = $this->pledges->find($pledgeId);
 
 			if ($pledge && $this->auth->user()->id != $pledge->user_id)
 			{

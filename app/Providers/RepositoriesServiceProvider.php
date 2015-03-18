@@ -21,20 +21,34 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+		$this->bindUsers();
+
+		$this->bindPledges();
+
+		$this->bindDeposits();
+	}
+
+	protected function bindUsers()
+	{
 		$this->app->singleton(
 			'App\Contracts\Repository\Users',
 			'App\Repositories\Users'
 		);
+	}
 
+	protected function bindPledges()
+	{
 		$this->app->singleton(
 			'App\Contracts\Repository\Pledges',
 			'App\Repositories\Pledges'
 		);
+	}
 
+	protected function bindDeposits()
+	{
 		$this->app->singleton(
 			'App\Contracts\Repository\Deposits',
 			'App\Repositories\Deposits'
 		);
 	}
-
 }
