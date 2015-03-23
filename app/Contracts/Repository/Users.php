@@ -18,4 +18,10 @@ interface Users extends RepositoryContract {
 
 	public function withPledges();
 
+	public function hasTwitchId();
+
+	public function hasSummonerId();
+
+	public function withLatestMatch();
+
 }

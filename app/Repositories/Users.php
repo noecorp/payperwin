@@ -81,4 +81,28 @@ class Users extends AbstractRepository implements UsersRepository {
 		return $this;
 	}
 
+	public function hasTwitchId()
+	{
+		$this->query()->whereNotNull('twitch_id');
+
+		return $this;
+	}
+
+	public function hasSummonerId()
+	{
+		$this->query()->whereNotNull('summoner_id');
+
+		return $this;
+	}
+
+	public function withLatestMatch()
+	{
+		$this->query()->with(['matches' => function($query)
+		{
+			$query->orderBy('match_date','desc')->limit(1);
+		}]);
+
+		return $this;
+	}
+
 }
