@@ -215,7 +215,7 @@ class Auth extends Controller {
 			$to .= '?rerequest=1';
 		}
 
-		return $this->redirect->to($uri)->withErrors(['social'=>$error]);
+		return $this->redirect->to($to)->withErrors(['social'=>$error]);
 	}
 
 	protected function loginExisting(\App\Models\User $user, $uri = null)

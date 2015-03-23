@@ -1,28 +1,28 @@
 <?php namespace App\Services;
 
 use App\Contracts\Service\Acidifier as AcidifierInterface;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Contracts\Container\Container;
 use Closure;
 
 class Acidifier implements AcidifierInterface {
 
 	/**
-	 * Database connection implementation.
+	 * Application container implementation.
 	 *
-	 * @var ConnectionInterface
+	 * @var Container
 	 */
-	protected $connection;
+	protected $container;
 
 	/**
-	 * Perform a database transaction.
+	 * Create a new Acidifier instance.
 	 *
-	 * @param ConnectionInterface $connection
+	 * @param Container $container
 	 *
 	 * @return void
 	 */
-	public function __construct(ConnectionInterface $connection)
+	public function __construct(Container $container)
 	{
-		$this->connection = $connection;
+		$this->container = $container;
 	}
 
 	/**
@@ -30,7 +30,7 @@ class Acidifier implements AcidifierInterface {
 	 */
 	public function transaction(Closure $closure)
 	{
-		return $this->connection->transaction($closure);
+		return $this->container->make('db')->transaction($closure);
 	}
 
 }

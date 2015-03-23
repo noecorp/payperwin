@@ -21,7 +21,7 @@ class StreamersPledges extends Controller {
 	{
 		$streamer = $users->isStreamer()->find($id);
 
-		$pledges = $pledges->withUser()->latest()->limit(10)->forStreamer($id)->all();
+		$pledges = $pledges->withOwner()->latest()->limit(10)->forStreamer($id)->all();
 
 		return $view->make('streamers.pledges.index')->with(compact('streamer','pledges'));
 	}

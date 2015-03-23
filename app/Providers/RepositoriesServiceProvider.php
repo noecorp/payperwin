@@ -26,6 +26,10 @@ class RepositoriesServiceProvider extends ServiceProvider {
 		$this->bindPledges();
 
 		$this->bindDeposits();
+
+		$this->bindMatches();
+
+		$this->bindTransactions();
 	}
 
 	protected function bindUsers()
@@ -51,4 +55,20 @@ class RepositoriesServiceProvider extends ServiceProvider {
 			'App\Repositories\Deposits'
 		);
 	}
+
+	protected function bindMatches()
+	{
+		$this->app->singleton(
+			'App\Contracts\Repository\Matches',
+			'App\Repositories\Matches'
+		);
+	}
+
+	protected function bindTransactions()
+	{
+		$this->app->singleton(
+			'App\Contracts\Repository\Transactions',
+			'App\Repositories\Transactions'
+		);
+	}	
 }

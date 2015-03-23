@@ -21,11 +21,47 @@ class ServicesServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+
+		$this->bindGurus();
+
+		$this->bindApis();
+
+		$this->bindServices();
+	}
+
+	protected function bindGurus()
+	{
 		$this->app->singleton(
-			'App\Contracts\Service\PledgeGuru',
-			'App\Services\PledgeGuru'
+			'App\Contracts\Service\Gurus\Pledge',
+			'App\Services\Gurus\Pledge'
 		);
 
+		$this->app->singleton(
+			'App\Contracts\Service\Gurus\Transaction',
+			'App\Services\Gurus\Transaction'
+		);
+	}
+
+	protected function bindApis()
+	{
+		$this->app->singleton(
+			'App\Contracts\Service\GameApi\League\Client',
+			'App\Services\GameApi\League\Client'
+		);
+
+		$this->app->bind(
+			'App\Contracts\Service\GameApi\Player',
+			'App\Services\GameApi\Player'
+		);
+
+		$this->app->bind(
+			'App\Contracts\Service\GameApi\League\Match',
+			'App\Services\GameApi\League\Match'
+		);
+	}
+
+	protected function bindServices()
+	{
 		$this->app->singleton(
 			'App\Contracts\Service\Acidifier',
 			'App\Services\Acidifier'
@@ -37,14 +73,8 @@ class ServicesServiceProvider extends ServiceProvider {
 		);
 
 		$this->app->singleton(
-			'App\Contracts\Service\GameApi\League\Client',
-			'App\Services\GameApi\League\Client'
-		);
-
-		$this->app->bind(
-			'App\Contracts\Service\GameApi\Player',
-			'App\Services\GameApi\Player'
+			'App\Contracts\Service\Distribution',
+			'App\Services\Distribution'
 		);
 	}
-
 }

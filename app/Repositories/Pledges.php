@@ -22,7 +22,7 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 		return $this;
 	}
 
-	public function withUser()
+	public function withOwner()
 	{
 		$this->query()->with('owner');
 
@@ -40,6 +40,13 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 	{
 		$this->query()->whereUserId($userId);
 		
+		return $this;
+	}
+
+	public function isRunning()
+	{
+		$this->query()->whereRunning(1);
+
 		return $this;
 	}
 

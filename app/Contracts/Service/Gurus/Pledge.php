@@ -1,6 +1,6 @@
-<?php namespace App\Contracts\Service;
+<?php namespace App\Contracts\Service\Gurus;
 
-interface PledgeGuru {
+interface Pledge {
 
 	/**
 	 * Returns list of Pledge types.

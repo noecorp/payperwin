@@ -23,6 +23,13 @@ abstract class AbstractRepository implements RepositoryContract {
 	protected $query;
 
 	/**
+	 * Cache repository instance
+	 *
+	 * @var \Illuminate\Contracts\Cache\Repository
+	 */
+	protected $cache;
+
+	/**
 	 * Create a new instance of the repository.
 	 *
 	 * @param Cache $cache
@@ -77,20 +84,93 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function update($id, array $data)
+	public function createAll(array $data)
 	{
-		$model = $this->model->newQuery()->findOrFail($id);
+		if (empty($data)) return;
 
-		$model->fill($data);
-		
-		if ($model->isDirty())
+		$data = array_map(function($item)
 		{
-			$model->save(); 
+			$item['created_at'] = Carbon::now();
+			$item['updated_at'] = Carbon::now();
+		}, $data);
+		
+		$perChunk = 100;
 
-			$this->cache->tags($this->model->getTable())->flush();
+		$chunks = array_chunk($data, $perChunk);
+
+		foreach ($chunks as $chunk)
+		{
+			$this->query()->insert($chunk);
 		}
 
-		return $model;
+		$this->cache->tags($this->model->getTable())->flush();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function update($id, array $data, $return = true)
+	{
+		$model = null;
+
+		if ( is_a($id, get_class($this->model)) )
+		{
+			$model = $id;
+			$id = $model->id;
+		}
+
+		if (!$return)
+		{
+			$data['updated_at'] = Carbon::now();
+			
+			$this->query()->where('id',$id)->update($data);
+
+			$this->cache->tags($this->model->getTable())->flush();
+
+			return;
+		}
+		else
+		{
+			if (!$model) $model = $this->query()->findOrFail($id);
+
+			$model->fill($data);
+			
+			if ($model->isDirty())
+			{
+				$model->save(); 
+
+				$this->cache->tags($this->model->getTable())->flush();
+			}
+
+			return $model;
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function updateAll(array $ids, array $data)
+	{
+		if (empty($ids)) return;
+
+		$data['updated_at'] = Carbon::now();
+
+		$this->query()->whereIn('id',$ids)->update($data);
+
+		$this->cache->tags($this->model->getTable())->flush();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function incrementAll(array $ids, $column)
+	{
+		if (empty($ids)) return;
+
+		$this->query()->whereIn('id',$ids)->increment($column);
+		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now()]);
+
+		$this->cache->tags($this->model->getTable())->flush();
 	}
 
 	/**
@@ -115,7 +195,7 @@ abstract class AbstractRepository implements RepositoryContract {
 		{
 		    return $this->query()->first();
 		});
-		
+	
 		$this->reset();
 
 		return $model;
@@ -226,7 +306,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	protected function getQueryHash()
 	{
-		$hash = $this->query()->getQuery()->toSql() . implode(',', $this->query()->getBindings());
+		$hash = $this->query()->getQuery()->toSql() . ' ' . implode(',', $this->query()->getBindings());
 
 		$relations = array_keys($this->query()->getEagerLoads());
 
@@ -236,7 +316,7 @@ abstract class AbstractRepository implements RepositoryContract {
 		foreach ($relations as $key)
 		{
 			$relation = $this->query()->getRelation($key);
-			$hash .= $relation->toSql() . implode(',', $relation->getBindings());
+			$hash .= $relation->toSql() . ' ' . implode(',', $relation->getBindings());
 		}
 
 		return md5($hash);

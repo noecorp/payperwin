@@ -1,20 +1,18 @@
 <?php namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\View\Factory as View;
 
-class DevOnlyServiceProvider extends ServiceProvider {
+class ViewComposerServiceProvider extends ServiceProvider {
 
 	/**
 	 * Bootstrap the application services.
 	 *
 	 * @return void
 	 */
-	public function boot()
+	public function boot(View $view)
 	{
-		if ( !$this->app->environment('production') )
-		{
-			$this->app->register('Barryvdh\Debugbar\ServiceProvider');
-		}
+		$view->composer('*', 'App\Http\ViewComposers\Wildcard');
 	}
 
 	/**

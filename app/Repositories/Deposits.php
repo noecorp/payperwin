@@ -8,7 +8,7 @@ class Deposits extends AbstractRepository implements DepositsRepository {
 	/**
 	 * {@inheritdoc}
 	 *
-	 * @return Pledge
+	 * @return Deposit
 	 */
 	protected function model()
 	{
