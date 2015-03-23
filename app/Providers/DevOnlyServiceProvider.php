@@ -14,8 +14,6 @@ class DevOnlyServiceProvider extends ServiceProvider {
 		if ( !$this->app->environment('production') )
 		{
 			$this->app->register('Barryvdh\Debugbar\ServiceProvider');
-
-			$this->app->register('App\Providers\TestingServiceProvider');
 		}
 	}
 
