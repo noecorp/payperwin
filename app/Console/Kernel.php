@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected $commands = [
 		'App\Console\Commands\Inspire',
+		'App\Console\Commands\Impress',
 		'App\Console\Commands\MakeTest',
 	];
 
@@ -25,6 +26,8 @@ class Kernel extends ConsoleKernel {
 	{
 		$schedule->command('inspire')
 				 ->hourly();
+		$schedule->command('impress')
+				->everyFiveMinutes();
 	}
 
 }
