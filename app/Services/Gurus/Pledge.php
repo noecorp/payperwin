@@ -1,8 +1,8 @@
-<?php namespace App\Services;
+<?php namespace App\Services\Gurus;
 
-use App\Contracts\Service\PledgeGuru as PledgeGuruInterface;
+use App\Contracts\Service\Gurus\Pledge as PledgeGuruInterface;
 
-class PledgeGuru implements PledgeGuruInterface {
+class Pledge implements PledgeGuruInterface {
 
 	/**
 	 * List of all valid Pledge types.
