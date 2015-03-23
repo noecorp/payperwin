@@ -3,9 +3,9 @@
 interface Player {
 
 	/**
-	 * Set the player's id.
+	 * Create a Player instance.
 	 *
-	 * @param string|int $id
+	 * @param int $id
 	 * @param string $name
 	 *
 	 * @return static
@@ -15,7 +15,7 @@ interface Player {
 	/**
 	 * Get the player's id.
 	 *
-	 * @return string|int
+	 * @return int
 	 */
 	public function id();
 
