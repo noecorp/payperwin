@@ -25,7 +25,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * Cache repository instance
 	 *
-	 * @var \Illuminate\Contracts\Cache\Repository
+	 * @var Cache
 	 */
 	protected $cache;
 
