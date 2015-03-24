@@ -22,7 +22,7 @@ class CreatePledge extends Request {
 			'streamer_id' => 'required|integer|min:1|exists:users,id,streamer,1',
 			'message' => 'max:256',
 			'sum_limit' => 'numeric|min:0.01|max:9999.99',
-			'game_limit' => 'integer|min:1|max:255',
+			'win_limit' => 'integer|min:1|max:255',
 			'end_date' => 'date',
 			'user_id' => 'in:'.$auth->user()->id
 		];
