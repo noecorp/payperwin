@@ -92,6 +92,8 @@ abstract class AbstractRepository implements RepositoryContract {
 		{
 			$item['created_at'] = Carbon::now();
 			$item['updated_at'] = Carbon::now();
+
+			return $item;
 		}, $data);
 		
 		$perChunk = 100;
