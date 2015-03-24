@@ -83,12 +83,21 @@ class Distribution implements DistributionInterface {
 
 		// First, stop all expired pledges
 		$expired = $pledges->filter(function($pledge) {
-			return ($pledge->end_date !== null && Carbon::now()->gte($pledge->end_date));
+			// This includes reaching their set end date, ...
+			$dated = ($pledge->end_date !== null && Carbon::now()->gte($pledge->end_date));
+			
+			// ...reaching their max win limit, ...
+			$won = ($pledge->win_limit !== null && $pledge->times_donated >= $pledge->win_limit);
+
+			// ...and reaching their total pledged limit.
+			$spent = ($pledge->sum_limit !== null && ($pledge->times_donated * $pledge->amount) >= $pledge->sum_limit);
+
+			return ($dated || $won || $spent);
 		});
 		
 		$this->stopExpired($expired);
 
-		// Process the remaining ones
+		// Then, process the remaining ones
 		$running = $pledges->diff($expired);
 
 		$this->processRunning($running, $streamerId);
@@ -109,7 +118,6 @@ class Distribution implements DistributionInterface {
 		
 		// Potential for DB::connection()->disableQueryLog(); somewhere here
 
-
 		$streamer = $this->users->find($streamerId);
 
 		$unsettledMatches = $this->matches->forStreamer($streamerId)->isUnsettled()->all();
@@ -123,6 +131,9 @@ class Distribution implements DistributionInterface {
 			// Financial transactions to log in the database
 			$transactions = [];
 
+			// Pledges that have just expired
+			$expired = [];
+
 			foreach ($unsettledMatches as $match)
 			{
 				// Only care about won matches!
@@ -133,13 +144,24 @@ class Distribution implements DistributionInterface {
 
 				foreach ($running as $pledge)
 				{
+					if ($pledge->owner->funds < $pledge->amount) continue;
+
 					// Increment total funds to be added to streamer account
 					$funds += $pledge->amount;
 
 					// Decrement the pledger's funds
-					if ($pledge->owner->funds >= $pledge->amount)
+					$this->users->update($pledge->owner, ['funds' => $pledge->owner->funds - $pledge->amount]);
+
+					// Pledge has reached its max win limit
+					$won = ($pledge->win_limit !== null && ($pledge->win_limit - 1) == $pledge->times_donated);
+
+					// Pledge has reached its total pledged limit
+					$spent = ($pledge->sum_limit !== null && ($pledge->sum_limit - ($pledge->times_donated * $pledge->amount)) == $pledge->amount);
+
+					// Add this pledge to the expired list
+					if ($won || $spent)
 					{
-						$this->users->update($pledge->owner, ['funds' => $pledge->owner->funds - $pledge->amount]);
+						$expired[] = $pledge->id;
 					}
 
 					// Add a financial transaction for the pledger
@@ -177,14 +199,13 @@ class Distribution implements DistributionInterface {
 			})->toArray(), 'times_donated');
 
 			// Add the total funds gather from pledges to the streamer's earnings
-
 			$this->users->update($streamer, ['earnings' => $streamer->earnings + $funds]);
+
+			// Stop expired pledges
+			$this->pledges->updateAll($expired, ['running' => 0]);
 
 			// We're going to bulk insert the Transactions objects to cut down on total number of queries
 			$this->transactions->createAll($transactions);
-
-			// Next, stop all pledges that reached limits
-
 		});
 	}
 
