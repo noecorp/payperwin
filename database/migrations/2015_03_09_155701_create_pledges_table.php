@@ -20,7 +20,7 @@ class CreatePledgesTable extends Migration {
 			$table->tinyInteger('type');
 			$table->string('message',256);
 
-			$table->tinyInteger('game_limit')->nullable();
+			$table->tinyInteger('win_limit')->nullable();
 			$table->decimal('sum_limit',6,2)->nullable();
 
 			$table->integer('user_id')->unsigned();

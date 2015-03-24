@@ -78,6 +78,8 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$this->cache->tags($this->model->getTable())->flush();
 
+		$this->reset();
+
 		return $model;
 	}
 
@@ -92,6 +94,8 @@ abstract class AbstractRepository implements RepositoryContract {
 		{
 			$item['created_at'] = Carbon::now();
 			$item['updated_at'] = Carbon::now();
+
+			return $item;
 		}, $data);
 		
 		$perChunk = 100;
@@ -104,6 +108,8 @@ abstract class AbstractRepository implements RepositoryContract {
 		}
 
 		$this->cache->tags($this->model->getTable())->flush();
+
+		$this->reset();
 	}
 
 	/**
@@ -127,6 +133,8 @@ abstract class AbstractRepository implements RepositoryContract {
 
 			$this->cache->tags($this->model->getTable())->flush();
 
+			$this->reset();
+
 			return;
 		}
 		else
@@ -141,6 +149,8 @@ abstract class AbstractRepository implements RepositoryContract {
 
 				$this->cache->tags($this->model->getTable())->flush();
 			}
+
+			$this->reset();
 
 			return $model;
 		}
@@ -158,6 +168,8 @@ abstract class AbstractRepository implements RepositoryContract {
 		$this->query()->whereIn('id',$ids)->update($data);
 
 		$this->cache->tags($this->model->getTable())->flush();
+
+		$this->reset();
 	}
 
 	/**
@@ -171,6 +183,8 @@ abstract class AbstractRepository implements RepositoryContract {
 		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now()]);
 
 		$this->cache->tags($this->model->getTable())->flush();
+
+		$this->reset();
 	}
 
 	/**

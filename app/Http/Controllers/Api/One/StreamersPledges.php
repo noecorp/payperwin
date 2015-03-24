@@ -36,7 +36,7 @@ class StreamersPledges extends Controller {
 				'amount' => $pledge->amount,
 				'message' => $pledge->message,
 				'end_date' => $pledge->end_date,
-				'game_limit' => $pledge->game_limit,
+				'win_limit' => $pledge->win_limit,
 				'sum_limit' => $pledge->sum_limit,
 				'user' => $pledge->user->username,
 				'running' => $pledge->running,

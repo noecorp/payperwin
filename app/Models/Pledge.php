@@ -14,7 +14,7 @@ class Pledge extends Model {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['amount','type','message','game_limit','sum_limit','user_id','streamer_id','end_date'];
+	protected $fillable = ['amount','type','message','win_limit','sum_limit','user_id','streamer_id','end_date'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
