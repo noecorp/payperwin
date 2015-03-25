@@ -4,10 +4,12 @@ interface Pledges extends RepositoryContract {
 
 	public function withStreamer();
 
-	public function withUser();
+	public function withOwner();
 
 	public function forStreamer($streamerId);
 
 	public function fromUser($userId);
+
+	public function isRunning();
 	
 }

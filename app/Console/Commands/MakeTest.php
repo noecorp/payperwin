@@ -1,4 +1,4 @@
-<?php namespace App\Commands;
+<?php namespace App\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 

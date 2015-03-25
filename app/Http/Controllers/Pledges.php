@@ -7,6 +7,7 @@ use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
 use App\Http\Requests\CreatePledge;
 use Illuminate\Routing\Redirector as Redirect;
+use App\Services\PledgeGuru;
 
 class Pledges extends Controller {
 
@@ -57,7 +58,7 @@ class Pledges extends Controller {
 	 */
 	public function index()
 	{
-		$pledges = $this->pledges->withUser()->withStreamer()->latest()->limit(10)->all();
+		$pledges = $this->pledges->withOwner()->withStreamer()->latest()->limit(10)->all();
 
 		return $this->view->make('pledges.index')->with(compact('pledges'));
 	}
@@ -67,16 +68,17 @@ class Pledges extends Controller {
 	 *
 	 * @param Users $users
 	 * @param Request $request
+	 * @param PledgeGuru $guru
 	 *
 	 * @return Response
 	 */
-	public function create(Users $users, Request $request)
+	public function create(Users $users, Request $request, PledgeGuru $guru)
 	{
 		$streamerId = $request->get('streamerId');
 
 		$streamer = ($streamerId) ? $users->isStreamer()->find($id) : null;
 
-		return $this->view->make('pledges.create')->with(compact('streamer'));
+		return $this->view->make('pledges.create')->with(compact('streamer','guru'));
 	}
 
 	/**
@@ -102,7 +104,7 @@ class Pledges extends Controller {
 	 */
 	public function show($id)
 	{
-		$pledge = $this->pledges->withUser()->withStreamer()->find($id);
+		$pledge = $this->pledges->withOwner()->withStreamer()->find($id);
 
 		return $this->view->make('pledges.show')->with(compact('pledge'));
 	}

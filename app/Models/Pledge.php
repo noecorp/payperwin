@@ -1,7 +1,5 @@
 <?php namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class Pledge extends Model {
 
 	/**
@@ -16,7 +14,7 @@ class Pledge extends Model {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['amount','type','game_limit','sum_limit','user_id','streamer_id','end_date'];
+	protected $fillable = ['amount','type','message','win_limit','sum_limit','user_id','streamer_id','end_date'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -30,6 +28,13 @@ class Pledge extends Model {
 	protected $casts = [
 		'running' => 'boolean'
 	];
+
+	/**
+	 * The attributes that should be set to null if empty.
+	 *
+	 * @var array
+	 */
+	protected $nullable = ['end_date'];
 
 	public function owner()
 	{

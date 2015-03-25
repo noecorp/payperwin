@@ -3,6 +3,7 @@
 use App\Contracts\Service\GameApi\League\Client as ClientInterface;
 
 use App\Contracts\Service\GameApi\Player;
+use App\Contracts\Service\GameApi\League\Match;
 
 use GuzzleHttp\Client as Guzzle;
 
@@ -10,6 +11,9 @@ use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ParseException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
+
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class Client implements ClientInterface {
 
@@ -20,8 +24,9 @@ class Client implements ClientInterface {
 	protected $apiKey;
 
 	protected $player;
+	protected $match;
 
-	public function __construct(Guzzle $guzzle, Player $player)
+	public function __construct(Guzzle $guzzle, Player $player, Match $match)
 	{
 		$this->guzzle = $guzzle;
 
@@ -30,6 +35,7 @@ class Client implements ClientInterface {
 		$this->apiKey = env('RIOT_KEY');
 
 		$this->player = $player;
+		$this->match = $match;
 	}
 
 	/**
@@ -64,7 +70,7 @@ class Client implements ClientInterface {
 	{
 		try
 		{
-			$response = $this->guzzle->get($this->url('v2.2/matchhistory/'.$summonerId, $region), [
+			$response = $this->guzzle->get($this->url('v2.2/matchhistory/'.$summonerId, $region, ['rankedQueues'=>'RANKED_SOLO_5x5']), [
 				'timeout' => $this->timeout(),
 				'exceptions' => true
 			]);
@@ -72,7 +78,19 @@ class Client implements ClientInterface {
 			// echo $response->getStatusCode();
 			// echo $response->getBody();
 			$object = $response->json();
-			return $object['matches'];
+
+			$matches = new Collection;
+
+			foreach ($object['matches'] as $m)
+			{
+				$matches->push($this->match->createForPlayerId($m,$summonerId));
+			}
+
+			$matches->sort(function($a,$b) {
+				return ($a->timestamp() > $b->timestamp());
+			});
+
+			return $matches;
 		}
 		catch (\Exception $e)
 		{
@@ -85,12 +103,16 @@ class Client implements ClientInterface {
 	 *
 	 * @param string $uri
 	 * @param string $region
+	 * @param array $parameters
 	 *
 	 * @return string
 	 */
-	protected function url($uri, $region)
+	protected function url($uri, $region, $parameters = array())
 	{
-		return 'https://' . $region . '.' . $this->baseUrl . $region . '/' .  $uri . '?api_key=' . $this->apiKey;
+		$parameters['api_key'] = $this->apiKey;
+		$query = http_build_query($parameters);
+
+		return 'https://' . $region . '.' . $this->baseUrl . $region . '/' .  $uri . '?'. $query;
 	}
 
 	protected function timeout()
@@ -100,6 +122,9 @@ class Client implements ClientInterface {
 
 	protected function handle(\Exception $e)
 	{
+		//temp
+		throw $e;
+
 		if ($e instanceof ClientException)
 		{
 			//throw App\Exceptions\Api\League\...
