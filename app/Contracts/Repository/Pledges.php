@@ -11,9 +11,7 @@ interface Pledges extends RepositoryContract {
 	public function fromUser($userId);
 
 	public function isRunning();
-
-	public function averageAmount();
-
+	
 	public function orderingByAmount($highest = true);
 	
 }

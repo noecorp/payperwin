@@ -54,8 +54,8 @@ class Users extends Controller {
 
 		$feed = $pledges->withStreamer()->latest()->limit(10)->fromUser($id)->all();
 
-		$average = round($pledges->fromUser($id)->averageAmount(),2);
 		$highestPledge = $pledges->withOwner()->forStreamer($id)->orderingByAmount()->find();
+		$average = round($pledges->fromUser($id)->average('amount'),2);
 
 		$stats = compact('average','highestPledge');
 
