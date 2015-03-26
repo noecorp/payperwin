@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory as View;
 use App\Contracts\Repository\Users;
+use App\Contracts\Repository\Pledges;
 
 class Streamers extends Controller {
 
@@ -41,20 +42,39 @@ class Streamers extends Controller {
 	 */
 	public function index()
 	{
-		return $this->view->make('streamers.index');
+		$streamers = $this->users->isStreamer()->hasTwitchId()->hasSummonerId()->all();
+
+		$live = $streamers->filter(function($streamer)
+		{
+			return ($streamer->live === 1);
+		});
+
+		$notLive = $streamers->diff($live);
+
+		return $this->view->make('streamers.index')->with(compact('live','notLive'));
 	}
 
 	/**
 	 * Display the specified resource.
 	 *
+	 * @param Pledges $pledges
 	 * @param  int  $id
+	 *
 	 * @return Response
 	 */
-	public function show($id)
+	public function show(Pledges $pledges, $id)
 	{
 		$streamer = $this->users->isStreamer()->find($id);
+
+		$feed = $pledges->withOwner()->forStreamer($id)->latest()->limit(10)->all();
+
+		$average = round($pledges->forStreamer($id)->averageAmount(),2);
+		$highestPledge = $pledges->withOwner()->forStreamer($id)->orderingByAmount()->find();
+		$topPledger = null;
+
+		$stats = compact('average','highestPledge','topPledger');
 		
-		return $this->view->make('streamers.show')->with(compact('streamer'));
+		return $this->view->make('streamers.show')->with(compact('streamer','feed', 'stats'));
 	}
 
 }

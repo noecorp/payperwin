@@ -50,4 +50,27 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 		return $this;
 	}
 
+	public function averageAmount()
+	{
+		$result = $this->query()->avg('amount');
+
+		$this->reset();
+
+		return $result;
+	}
+
+	public function orderingByAmount($highest = true)
+	{
+		if ($highest)
+		{
+			$this->query()->orderBy('amount','desc');
+		}
+		else
+		{
+			$this->query()->orderBy('amount','asc');	
+		}
+
+		return $this;
+	}
+
 }
