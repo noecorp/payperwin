@@ -243,6 +243,38 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
+	public function average($column)
+	{
+		return $this->calculate('avg',$column);
+	}
+
+	/**
+	 * Perform a calculation query.
+	 *
+	 * @param string $type
+	 * @param string $column
+	 *
+	 * @return mixed
+	 */
+	protected function calculate($type, $column)
+	{
+		$hash = $this->getQueryHash();
+
+		$tags = $this->getCacheTags();
+
+		$results = $this->cache->tags($tags)->rememberForever($hash, function() use ($type, $column)
+		{
+			return call_user_func([$this->query(),$type],$column);
+		});
+
+		$this->reset();
+
+		return $results;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function latest()
 	{
 		$this->query()->orderBy('created_at','desc');
