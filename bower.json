@@ -21,6 +21,7 @@
     "requirejs-domready": "~2.0.1",
     "requirejs-i18n": "~2.0.4",
     "requirejs-router": "~0.8.0",
-    "requirejs-text": "~2.0.14"
+    "requirejs-text": "~2.0.14",
+    "flat-ui": "~2.2.2"
   }
 }

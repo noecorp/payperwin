@@ -16,7 +16,11 @@ elixir(function(mix) {
     	.copy(
     		'bower_components/bootstrap-sass-official/assets/fonts/',
     		'public/fonts/'
-    	);
+    	)
+        .copy(
+            'bower_components/flat-ui/dist/css/flat-ui.min.css',
+            'public/css/vendor/flat-ui.min.css'
+        );
 });
 
 elixir(function(mix) {
@@ -40,6 +44,10 @@ elixir(function(mix) {
         .copy(
             'bower_components/requirejs-domready/domReady.js',
             'public/js/vendor/domReady.js'
+        )
+        .copy(
+            'bower_components/flat-ui/dist/js/flat-ui.min.js',
+            'public/js/vendor/flat-ui.min.js'
         );
 });
 
