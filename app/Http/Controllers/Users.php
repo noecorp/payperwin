@@ -52,9 +52,14 @@ class Users extends Controller {
 	{
 		$user = $this->users->find($id);
 
-		$pledges = $pledges->withStreamer()->latest()->limit(10)->fromUser($user->id)->all();
+		$feed = $pledges->withStreamer()->latest()->limit(10)->fromUser($id)->all();
 
-		return $this->view->make('users.show')->with(compact('user','pledges'));
+		$average = round($pledges->fromUser($id)->averageAmount(),2);
+		$highestPledge = $pledges->withOwner()->forStreamer($id)->orderingByAmount()->find();
+
+		$stats = compact('average','highestPledge');
+
+		return $this->view->make('users.show')->with(compact('user','feed','stats'));
 	}
 
 	/**
