@@ -15,7 +15,9 @@
 	<script src="{{ asset('js/vendor/jquery.min.js') }}"></script>
 	<script src="{{ asset('js/vendor/flat-ui.min.js') }}"></script>
 	<script data-main="{{ elixir("js/main.js") }}" src="{{ asset('js/vendor/require.js') }}"></script>
-
+	
+	<script async src="https://assets.helpful.io/assets/widget.js"></script>
+	
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -56,6 +58,8 @@
 				</ul>
 			</div>
 		</div>
+
+		<a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="off">Questions or suggestions?</a>
 	</nav>
 
 	@yield('content')
