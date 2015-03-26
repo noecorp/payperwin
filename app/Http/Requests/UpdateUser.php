@@ -12,7 +12,12 @@ class UpdateUser extends Request {
 	public function rules()
 	{
 		return [
-			
+			'username' => 'max:100',
+			'email' => 'email|max:254|unique:users',
+			'password' => 'confirmed|min:8',
+			'streamer' => 'in:1,0',
+			'summoner_id' => 'integer',
+			'region' => 'in:br,eune,euw,kr,lan,las,na,oce,ru,tr',
 		];
 	}
 
