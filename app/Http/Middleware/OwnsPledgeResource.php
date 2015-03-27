@@ -50,7 +50,7 @@ class OwnsPledgeResource {
 
 			if ($pledge && $this->auth->user()->id != $pledge->user_id)
 			{
-				return response('Unauthorized.', 401);
+				return abort(401);
 			}
 		}
 
