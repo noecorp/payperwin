@@ -52,6 +52,8 @@ class Users extends Controller {
 	{
 		$user = $this->users->find($id);
 
+		if (!$user) return abort(404);
+
 		$feed = $pledges->withStreamer()->latest()->limit(10)->fromUser($id)->all();
 
 		$average = round($pledges->fromUser($id)->average('amount'),2);
@@ -71,6 +73,8 @@ class Users extends Controller {
 	public function edit($id)
 	{
 		$user = $this->users->find($id);
+
+		if (!$user) return abort(404);
 
 		return $this->view->make('users.edit')->with(compact('user'));
 	}
