@@ -11,8 +11,11 @@
          syntaxCheck="false"
          beStrictAboutTestsThatDoNotTestAnything="true">
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory>./tests</directory>
+        <testsuite name="Unit">
+            <directory suffix=".php">./tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory suffix=".php">./tests/Integration</directory>
         </testsuite>
     </testsuites>
     <listeners>
