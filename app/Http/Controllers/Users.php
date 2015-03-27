@@ -95,7 +95,7 @@ class Users extends Controller {
 
 		if ($request->ajax())
 		{
-			return $response->json(['']);
+			return $response->json(['success'=>true]);
 		}
 		else
 		{
