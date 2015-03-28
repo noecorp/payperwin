@@ -22,8 +22,12 @@ elixir(function(mix) {
     mix.sass()
     	.copy(
     		'bower_components/bootstrap-sass-official/assets/fonts/',
-    		'public/fonts/'
+    		'public/css/fonts/'
     	)
+        .copy(
+            'bower_components/flat-ui/dist/fonts/',
+            'public/css/fonts/'
+        )
         .copy(
             'bower_components/flat-ui/dist/css/flat-ui.min.css',
             'public/css/vendor/flat-ui.min.css'
