@@ -74,6 +74,13 @@ class Users extends AbstractRepository implements UsersRepository {
 		return $this;
 	}
 
+	public function isLive()
+	{
+		$this->query()->whereLive(1);
+
+		return $this;
+	}
+
 	public function withPledges()
 	{
 		$this->query()->with('pledges');
