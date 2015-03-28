@@ -4,13 +4,11 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Laravel</title>
+	<title>@yield('title') - PayPerWin</title>
 
+	<link href="{{ asset('css/vendor/bootstrap.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/vendor/flat-ui.min.css') }}" rel="stylesheet">
-	<link href="/css/app.css" rel="stylesheet">
-
-	<!-- Fonts -->
-	<link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
+	<link href="{{ elixir("css/app.css") }}" rel="stylesheet">
 
 	<script src="{{ asset('js/vendor/jquery.min.js') }}"></script>
 	<script src="{{ asset('js/vendor/flat-ui.min.js') }}"></script>
@@ -26,34 +24,54 @@
 	<![endif]-->
 </head>
 <body>
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<li><a href="/">Home</a></li>
-				</ul>
-
-				<ul class="nav navbar-nav navbar-right">
-					@if (Auth::guest())
-						<li><a href="/auth/login">Login</a></li>
-						<li><a href="/auth/register">Register</a></li>
-					@else
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
-							<ul class="dropdown-menu" role="menu">
-								<li><a href="/auth/logout">Logout</a></li>
-							</ul>
-						</li>
-					@endif
-				</ul>
-			</div>
+	<nav class="navbar navbar-inverse navbar-lg navbar-fixed-top" role="navigation">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+		  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-7">
+			<span class="sr-only">Toggle navigation</span>
+		  </button>
+		  <a class="navbar-brand" href="/">PayPerWin</a>
 		</div>
 
-		<a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="off">Questions or suggestions?</a>
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="navbar-collapse-7">
+		  <ul class="nav navbar-nav">
+			<li><a href="/streamers">Streamers {{ ($streamersLiveNow) ? '('.$streamersLiveNow.' live)' : '' }}</a></li>
+		   </ul>
+		  <ul class="nav navbar-nav navbar-right">
+			@if ($auth->guest())
+				<li><a href="/auth/login" >Login</a></li>
+				<li><a href="/auth/register" >Register</a></li>
+			@else
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ $auth->user()->username }} <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="/users/{{ $auth->user()->id }}">Profile</a></li>
+						<li><a href="/users/{{ $auth->user()->id }}/edit">Settings</a></li>
+						<li class="divider"></li>
+						<li><a href="/deposits/create">Deposit</a></li>
+						@if ($auth->user()->streamer)
+							<li><a href="javascript:;">Request Payout</a></li>
+						@endif
+						<li class="divider"></li>
+						<li><a href="/auth/logout">Logout</a></li>
+					</ul>
+				</li>
+			@endif
+		  </ul>
+		</div><!-- /.navbar-collapse -->
 	</nav>
 
-	@yield('content')
+	<div class="container">
+		@yield('content')
+	</div>
+
+	<footer>
+	</footer>
+
+	<div id="helpful">
+		<a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on" class="btn btn-info">Help &amp; Feedback</a>
+	</div>
 
 </body>
 </html>
