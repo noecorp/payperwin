@@ -88,7 +88,7 @@ class Auth extends Controller {
 	 */
 	public function postRegister(\App\Http\Requests\Register $request)
 	{
-		$this->auth->login($this->users->create($request->all()));
+		$this->auth->login($this->users->create($request->all()),true);
 
 		return $this->redirect->to('/auth/register');
 	}
@@ -220,7 +220,7 @@ class Auth extends Controller {
 
 	protected function loginExisting(\App\Models\User $user, $uri = null)
 	{
-		$this->auth->login($user);
+		$this->auth->login($user, true);
 
 		if ($uri)
 			return $this->redirect->to($uri);
