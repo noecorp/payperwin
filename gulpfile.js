@@ -1,4 +1,6 @@
 var elixir = require('laravel-elixir');
+var gulp = require('gulp');
+var del = require('del');
 
 /*
  |--------------------------------------------------------------------------
@@ -10,6 +12,37 @@ var elixir = require('laravel-elixir');
  | file for our application, as well as publishing vendor resources.
  |
  */
+elixir.extend('cleanup', function(dir, except) {
+
+    var patterns = [dir.replace(/\/+$/,'')+'/**'];
+    var task = 'cleanup:'+dir+':';
+
+    if (except != undefined)
+    {
+        task += except.toString();
+
+        except.each(function(pattern) {
+            return "!"+pattern;
+        });
+        
+        patterns = patterns.concat(except);
+    }
+
+    gulp.task(task, function(cb) {
+        del(patterns,cb);
+    });
+
+    return this.queueTask(task);
+
+ });
+
+ elixir(function(mix) {
+    mix.cleanup('public/build')
+        .cleanup('public/css')
+        .cleanup('public/fonts')
+        .cleanup('public/js')
+        .cleanup('public/img')
+ });
 
  elixir(function(mix) {
     mix.copy(
