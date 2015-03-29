@@ -1,37 +1,38 @@
-define(['./Base'], (BaseController) ->
-	AuthController = new BaseController()
+class Auth extends Controller
+	actions: {
+		login: (parameters) ->
+			$('[data-toggle="checkbox"]').radiocheck();
 
-	AuthController.login = () ->
-		$('[data-toggle="checkbox"]').radiocheck();
+			twitchClicked = false
 
-		twitchClicked = false
+			$twitch = $('#login-twitch')
 
-		$twitch = $('#login-twitch')
+			$twitch.click((event) ->
+				if twitchClicked
+					event.preventDefault()
+					return false
 
-		$twitch.click((event) ->
-			if twitchClicked
-				event.preventDefault()
-				return false
+				twitchClicked = true
 
-			twitchClicked = true
+				$twitch.after('&nbsp;<img src="/img/loading.gif"/>');
+			)
 
-			$twitch.after('&nbsp;<img src="/img/loading.gif"/>');
-		)
+		register: (parameters) ->
+			twitchClicked = false
 
-	AuthController.register = () ->
-		twitchClicked = false
+			$twitch = $('#register-twitch')
 
-		$twitch = $('#register-twitch')
+			$twitch.click((event) ->
+				if twitchClicked
+					event.preventDefault()
+					return false
 
-		$twitch.click((event) ->
-			if twitchClicked
-				event.preventDefault()
-				return false
+				twitchClicked = true
 
-			twitchClicked = true
+				$twitch.after('&nbsp;<img src="/img/loading.gif"/>');
+			)
+	}
 
-			$twitch.after('&nbsp;<img src="/img/loading.gif"/>');
-		)
-
-	return AuthController
-)
+window.app.route('auth/login','auth.login')
+window.app.route('auth/register','auth.register')
+window.app.controller('auth',Auth)

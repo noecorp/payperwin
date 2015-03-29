@@ -12,7 +12,7 @@
 
 	<script src="{{ asset('js/vendor/jquery.min.js') }}"></script>
 	<script src="{{ asset('js/vendor/flat-ui.min.js') }}"></script>
-	<script data-main="{{ elixir("js/main.js") }}" src="{{ asset('js/vendor/require.js') }}"></script>
+	<script type="text/javascript" src="{{ elixir('js/all.js') }}"></script>
 	
 	<script async src="https://assets.helpful.io/assets/widget.js"></script>
 	
