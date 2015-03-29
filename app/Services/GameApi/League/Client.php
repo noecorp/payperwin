@@ -43,6 +43,8 @@ class Client implements ClientInterface {
 	 */
 	public function summonerForNameInRegion($name, $region)
 	{
+		$name = strtolower(str_replace(' ', '', $name));
+		
 		try
 		{
 			$response = $this->guzzle->get($this->url('v1.4/summoner/by-name/'.$name, $region), [

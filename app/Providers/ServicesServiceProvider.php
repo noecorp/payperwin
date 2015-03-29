@@ -40,6 +40,11 @@ class ServicesServiceProvider extends ServiceProvider {
 			'App\Contracts\Service\Gurus\Transaction',
 			'App\Services\Gurus\Transaction'
 		);
+
+		$this->app->singleton(
+			'App\Contracts\Service\Gurus\Champion',
+			'App\Services\Gurus\Champion'
+		);
 	}
 
 	protected function bindApis()

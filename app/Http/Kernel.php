@@ -29,6 +29,7 @@ class Kernel extends HttpKernel {
 		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
 		'own.user' => 'App\Http\Middleware\OwnsUserResource',
 		'own.pledge' => 'App\Http\Middleware\OwnsPledgeResource',
+		'ajax' => 'App\Http\Middleware\OnlyRespondIfAjax',
 	];
 
 }

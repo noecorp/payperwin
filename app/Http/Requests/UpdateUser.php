@@ -17,6 +17,7 @@ class UpdateUser extends Request {
 			'password' => 'confirmed|min:8',
 			'streamer' => 'in:1,0',
 			'summoner_id' => 'integer',
+			'summoner_name' => 'max:64|min:1',
 			'region' => 'in:br,eune,euw,kr,lan,las,na,oce,ru,tr',
 		];
 	}
