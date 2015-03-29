@@ -1,68 +1,46 @@
 @extends('app')
 
 @section('content')
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-			<div class="panel panel-default">
-				<div class="panel-heading">Register</div>
-				<div class="panel-body">
-					@if (count($errors) > 0)
-						<div class="alert alert-danger">
-							<strong>Whoops!</strong> There were some problems with your input.<br><br>
-							<ul>
-								@foreach ($errors->all() as $error)
-									<li>{{ $error }}</li>
-								@endforeach
-							</ul>
-						</div>
-					@endif
-
-					<form class="form-horizontal" role="form" method="POST" action="/auth/register">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">Username</label>
-							<div class="col-md-6">
-								<input type="text" class="form-control" name="username" value="{{ old('username') }}">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">E-Mail Address</label>
-							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">Password</label>
-							<div class="col-md-6">
-								<input type="password" class="form-control" name="password">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label class="col-md-4 control-label">Confirm Password</label>
-							<div class="col-md-6">
-								<input type="password" class="form-control" name="password_confirmation">
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<button type="submit" class="btn btn-primary">
-									Register
-								</button>
-							</div>
-						</div>
-
-						<a href="/auth/with/twitch"><img src="http://ttv-api.s3.amazonaws.com/assets/connect_light.png" class="twitch-connect" /></a>
-
-					</form>
-				</div>
+<div class="row">
+	<div class="col-md-4 col-xs-12 col-md-offset-4">
+		<form role="form" method="POST" action="/auth/register">
+	        <legend>Register</legend>
+	        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+	        <div class="form-group">
+		        <p class="help-block">You can use your Twitch account to login instantly.</p>
+	        	<a href="/auth/with/twitch" id="register-twitch"><img src="{{ asset('img/connect-twitch.png') }}"/></a>
+	        </div>
+	        <div class="form-group">
+		    	@if (count($errors) > 0)
+					<div class="alert alert-danger">
+						<strong>Whoops!</strong>
+						<ul>
+							@foreach ($errors->all() as $error)
+								<li>{{ $error }}</li>
+							@endforeach
+						</ul>
+					</div>
+				@endif
+	        </div>
+	        <div class="form-group">
+		        <p class="help-block">Or just create a standard account...</p>
 			</div>
-		</div>
+	        <div class="form-group">
+	            <input type="text" class="form-control" id="register-username" name="username" placeholder="Username" value="{{ old('username') }}">
+	        </div>
+	        <div class="form-group">
+	            <input type="email" class="form-control" id="register-email" name="email" placeholder="Email" value="{{ old('email') }}">
+	        </div>
+	        <div class="form-group">
+	            <input type="password" class="form-control" id="register-password" name="password" placeholder="Password">
+	        </div>
+	        <div class="form-group">
+	            <input type="password" class="form-control" id="register-password-confirmation" name="password_confirmation" placeholder="Confirm Password">
+	        </div>
+	        <div class="form-group">
+	            <button type="submit" class="btn btn-success btn-lg btn-block">Start!</button>
+			</div>
+	    </form>
 	</div>
 </div>
 @endsection

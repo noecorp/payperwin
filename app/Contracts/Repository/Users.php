@@ -16,6 +16,8 @@ interface Users extends RepositoryContract {
 
 	public function isStreamer();
 
+	public function isLive();
+
 	public function withPledges();
 
 	public function hasTwitchId();

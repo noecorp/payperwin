@@ -4,5 +4,35 @@
  
 body
 {
-	
+	min-height: 1000px;
+	padding-top: 120px;
+	padding-bottom: 120px;
+}
+
+nav
+{
+	&.navbar
+	{
+		padding-right: 20px;
+	}
+}
+
+#helpful
+{
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+}
+
+h1, .h1
+{
+	font-size: 48px;
+}
+
+form
+{
+	.select
+	{
+		min-width: inherit;
+	}
 }

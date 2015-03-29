@@ -40,7 +40,8 @@ class CreateUsersTable extends Migration {
 			$table->decimal('funds',6,2)->default(0);
 			$table->decimal('earnings',8,2)->default(0);
 
-			$table->bigInteger('summoner_id')->unsigned()->nullable()->unique();
+			$table->bigInteger('summoner_id')->unsigned()->nullable();
+			$table->string('summoner_name',64)->nullable();
 			$table->string('region',10)->nullable();
 
 			$table->rememberToken();

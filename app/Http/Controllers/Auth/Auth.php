@@ -65,7 +65,7 @@ class Auth extends Controller {
 		$this->view = $view;
 		$this->redirect = $redirect;
 
-		$this->middleware('guest', ['except' => 'getLogout']);
+		$this->middleware('guest', ['except' => ['getLogout','getWith','getProvider']]);
 	}
 
 	/**
@@ -88,7 +88,7 @@ class Auth extends Controller {
 	 */
 	public function postRegister(\App\Http\Requests\Register $request)
 	{
-		$this->auth->login($this->users->create($request->all()));
+		$this->auth->login($this->users->create($request->all()),true);
 
 		return $this->redirect->to('/auth/register');
 	}
@@ -179,26 +179,41 @@ class Auth extends Controller {
 
 			if ($existing)
 			{
-				return $this->loginExisting($existing);
+				if ($this->auth->guest())
+					return $this->loginExisting($existing);
+				else
+					return $this->redirect->to('/users/'.$existing->id);
 			}
 			else
 			{
-				// What if the username is already taken in the system?
-
-				if ($provider == 'twitch')
+				if ($this->auth->guest())
 				{
-					$existing = $this->users->havingUsername($user->getNickname())->find();
-					
-					if ($existing)
+					// What if the username is already taken in the system?
+
+					if ($provider == 'twitch')
 					{
-						// We'll set it to null for now and require that it be set later
-						$user->nickname = null;
+						$existing = $this->users->havingUsername($user->getNickname())->find();
+						
+						if ($existing)
+						{
+							// We'll set it to null for now and require that it be set later
+							$user->nickname = null;
+						}
 					}
+
+					$newUser = $this->createWithSocial($provider, $user);
+
+					return $this->loginExisting($newUser, '/users/'.$newUser->id);
 				}
+				else
+				{
+					$this->users->update($this->auth->user(),[
+						'twitch_id' => $user->getId(),
+						'twitch_username' => $user->getNickname()
+					]);
 
-				$newUser = $this->createWithSocial($provider, $user);
-
-				return $this->loginExisting($newUser, '/profile');
+					return $this->redirect->to('/users/'.$this->auth->user()->id.'/edit');
+				}
 			}
 		}
 	}
@@ -220,12 +235,12 @@ class Auth extends Controller {
 
 	protected function loginExisting(\App\Models\User $user, $uri = null)
 	{
-		$this->auth->login($user);
+		$this->auth->login($user, true);
 
 		if ($uri)
 			return $this->redirect->to($uri);
 
-		return $this->redirect->to('/dashboard');
+		return $this->redirect->to('/users/'.$user->id);
 	}
 
 	protected function createWithSocial($provider, \Laravel\Socialite\Contracts\User $user)
