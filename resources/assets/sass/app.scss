@@ -6,7 +6,7 @@ body
 {
 	min-height: 1000px;
 	padding-top: 120px;
-	padding-bottom: 60px;
+	padding-bottom: 120px;
 }
 
 nav
@@ -27,4 +27,12 @@ nav
 h1, .h1
 {
 	font-size: 48px;
+}
+
+form
+{
+	.select
+	{
+		min-width: inherit;
+	}
 }

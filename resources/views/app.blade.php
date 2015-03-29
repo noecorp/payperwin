@@ -63,7 +63,11 @@
 	</nav>
 
 	<div class="container">
-		@yield('content')
+		<div class="row">
+			<div class="col-xs-12">
+				@yield('content')
+			</div>
+		</div>
 	</div>
 
 	<footer>
