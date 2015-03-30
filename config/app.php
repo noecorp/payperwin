@@ -139,7 +139,8 @@ return [
 		/*
 		 * External Service Providers...
 		 */
-		'SocialiteProviders\Manager\ServiceProvider',		
+		'SocialiteProviders\Manager\ServiceProvider',
+		'Intervention\Image\ImageServiceProvider',
 
 		/*
 		 * Application Service Providers...
