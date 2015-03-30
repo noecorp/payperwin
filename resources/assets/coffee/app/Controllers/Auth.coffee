@@ -18,6 +18,8 @@ class Auth extends Controller
 			)
 
 		register: (parameters) ->
+			$('[data-toggle="checkbox"]').radiocheck();
+			
 			twitchClicked = false
 
 			$twitch = $('#register-twitch')
