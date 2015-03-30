@@ -6,6 +6,7 @@ use App\Contracts\Repository\Users;
 use App\Contracts\Repository\Criteria\Pledges\Since;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Routing\ResponseFactory as Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class StreamersPledges extends Controller {
 
@@ -27,7 +28,7 @@ class StreamersPledges extends Controller {
 
 		if (!$streamer)
 		{
-			return $response->jsonNotFound();
+			throw new NotFoundHttpException;
 		}
 
 		$pledges = $pledges->latest()->after($request->get('after'))->forStreamer($streamer->id)->limit(10)->all()->map(function($pledge) {
