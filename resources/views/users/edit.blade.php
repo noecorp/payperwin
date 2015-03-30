@@ -1,5 +1,7 @@
 @extends('app')
 
+@section('title','Settings')
+
 @section('content')
 	<div class="row">
 		<div class="col-xs-12">
@@ -8,9 +10,10 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-12 col-sm-5">
-			<form role="form" method="PUT" action="/users/{{ $user->id }}">
+			<form role="form" method="PUT" action="/users/{{ $user->id }}" id="profile-form">
 				<legend>Profile</legend>
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
+				<input type="hidden" name="_user_id" value="{{ $user->id }}">
 				@if (!$user->twitch_id)
 					<div class="form-group">
 						<p class="help-block">Connect your Twitch profile for easy login.</p>
@@ -21,25 +24,19 @@
 						<p class="help-block">Connected Twitch account: {{ $user->twitch_username }}</p>
 					</div>
 				@endif
-				@if ($errors->first('email') || $errors->first('username') || $errors->first('password') || $errors->first('password_confirmation'))
-					<div class="form-group">
-						<div class="alert alert-danger" >
-							<strong>Whoops!</strong>
-							<ul>
-								@foreach ($errors->all() as $error)
-									<li>{{ $error }}</li>
-								@endforeach
-							</ul>
-						</div>
+				<div class="form-group">
+					<div class="alert" style="display:none;" id="profile-results">
+						<ul>
+						</ul>
 					</div>
-				@endif
+				</div>
 				<div class="form-group">
 					<p class="help-block">This is the name that others will see on your PayPerWin profile:</p>
 					<input type="text" class="form-control" id="profile-username" name="username" placeholder="Username" value="{{ (old('username')) ?: $user->username }}">
 				</div>
 				<div class="form-group">
 					<p class="help-block">We keep your email private and use it only for sending you updates and notifications.</p>
-					<input type="email" class="form-control" id="profile-email" name="email" placeholder="Email" value="{{ (old('email')) ?: $user->email }}">
+					<input type="text" class="form-control" id="profile-email" name="email" placeholder="Email" value="{{ (old('email')) ?: $user->email }}">
 				</div>
 				<div class="form-group">
 					@if ($user->password === null)
@@ -51,12 +48,12 @@
 					<input type="password" class="form-control" id="profile-password-confirmation" name="password_confirmation" placeholder="{{ ($user->password !== null) ? 'Confirm New Password' : 'Confirm Password' }}">
 				</div>
 				<div class="form-group">
-					<button type="submit" class="btn btn-success btn-lg btn-block">Update</button>
+					<button type="submit" class="btn btn-success btn-lg btn-block" id="profile-submit">Update</button>
 				</div>
 			</form>
 		</div>
 		<div class="col-xs-12 col-sm-5 col-sm-offset-2">
-			<form role="form" method="PUT" action="/users/{{ $user->id }}/edit">
+			<form role="form" method="PUT" action="/users/{{ $user->id }}" id="streaming-form">
 				<legend>Streaming</legend>
 				<input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
@@ -68,18 +65,7 @@
 						<input type="checkbox" name="streamer" data-toggle="switch" data-on-color="success" data-off-color="default" id="streamer-on" />
 					</div>
 				@else
-					@if ($errors->first('summoner_id') || $errors->first('region'))
-						<div class="form-group">
-							<div class="alert alert-danger">
-								<strong>Whoops!</strong>
-								<ul>
-									@foreach ($errors->all() as $error)
-										<li>{{ $error }}</li>
-									@endforeach
-								</ul>
-							</div>
-						</div>
-					@elseif (!$user->summoner_id || !$user->twitch_id)
+					@if (!$user->summoner_id || !$user->twitch_id)
 						<div class="form-group">
 							<div class="alert alert-warning">
 								Your streamer profile is not yet complete...
@@ -94,7 +80,12 @@
 							</div>
 						</div>
 					@endif
-
+					<div class="form-group">
+						<div class="alert" style="display:none;" id="streaming-results">
+							<ul>
+							</ul>
+						</div>
+					</div>
 					@if (!$user->twitch_id)
 						<div class="form-group">
 							<a href="/auth/with/twitch" id="streaming-twitch"><img src="{{ asset('img/connect-twitch.png') }}"/></a>
@@ -142,6 +133,10 @@
 						</div>
 						<div class="form-group">
 							<button type="submit" id="streaming-form-submit" class="btn btn-success btn-lg btn-block" disabled>Complete</button>
+						</div>
+					@else
+						<div class="form-group">
+							<p class="help-block">Connected League of Legends account: {{ $user->summoner_name }}, {{ strtoupper($user->region) }} ({{ $user->summoner_id }})</p>
 						</div>
 					@endif
 				@endif
