@@ -35,6 +35,8 @@ class CreateUsersTable extends Migration {
 			//can be set after.
 			$table->string('password', 60)->nullable();
 
+			$table->string('avatar',32)->nullable();
+
 			$table->boolean('streamer')->default(0);
 
 			$table->decimal('funds',6,2)->default(0);

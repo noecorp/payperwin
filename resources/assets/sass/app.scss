@@ -6,27 +6,80 @@ body
 {
 	min-height: 1000px;
 	padding-top: 120px;
-	padding-bottom: 120px;
+	
+	font-size: 14px;
 }
-
+.navbar-inverse .navbar-nav>.dropdown>a .caret
+{
+	border-top-color: #fff;
+	border-bottom-color: #fff;
+}
 nav
 {
 	&.navbar
 	{
 		padding-right: 20px;
 	}
+
+	img.avatar
+	{
+		width: 30px;
+		height: 30px;
+		margin-right: 10px;
+		border-width: 1px;
+		vertical-align: top;
+	}
+}
+
+article
+{
+	min-height: 880px;
+}
+
+footer
+{
+	margin-top: 120px;
+	padding: 40px;
+	text-align: center;
+	ul
+	{
+		margin-bottom: 40px;
+		list-style-type: none;
+
+		li
+		{
+			display: inline-block;
+			margin-right: 20px;
+		}
+	}
 }
 
 #helpful
 {
 	position: fixed;
-	right: 20px;
-	bottom: 20px;
+	right: 30px;
+	bottom: 30px;
 }
 
 h1, .h1
 {
-	font-size: 48px;
+	font-size: 42px;
+
+	.avatar {
+		margin-left: 20px;
+		vertical-align: bottom;
+	}
+}
+
+h2, .h2
+{
+	font-size: 24px;
+	font-weight: normal;
+}
+
+p
+{
+	font-size: 14px;
 }
 
 form
@@ -34,5 +87,22 @@ form
 	.select
 	{
 		min-width: inherit;
+	}
+}
+
+img
+{
+	&.avatar
+	{
+		background-color: #fff;
+		width: 50px;
+		height: 50px;
+		-webkit-border-radius: 50%;
+		-moz-border-radius: 50%;
+		border-radius: 50%;
+		-webkit-box-shadow: 0 1px 2px 0 #2f4154;
+		-moz-box-shadow: 0 1px 2px 0 #2f4154;
+		box-shadow: 0 1px 2px 0 #2f4154;
+		border: solid 3px #FFF;
 	}
 }

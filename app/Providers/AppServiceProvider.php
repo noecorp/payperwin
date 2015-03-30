@@ -12,9 +12,7 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function boot(Response $response)
 	{
-		$response->macro('jsonNotFound', function() use ($response) {
-			return $response->make(['error'=>'not found'], 404);
-		});
+		
 	}
 
 	/**

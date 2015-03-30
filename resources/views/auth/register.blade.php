@@ -38,6 +38,12 @@
 	            <input type="password" class="form-control" id="register-password-confirmation" name="password_confirmation" placeholder="Confirm Password">
 	        </div>
 	        <div class="form-group">
+	            <label class="checkbox" for="register-agree">
+		            <input type="checkbox" {{ (old('terms') || !old('email')) ? 'checked' : '' }} data-toggle="checkbox" value="1" name="terms" id="register-agree">
+		            I agree to the <a href="/terms">Terms &amp; Conditions</a>
+				</label>
+	        </div>
+	        <div class="form-group">
 	            <button type="submit" class="btn btn-success btn-lg btn-block">Start!</button>
 			</div>
 	    </form>

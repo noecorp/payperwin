@@ -3,6 +3,61 @@ class Users extends Controller
 		show: (parameters) ->
 
 		edit: (parameters) ->
+
+			showMessages = ($ul,messages,error) ->
+				newClass = if error == true then 'alert-danger' else 'alert-success'
+				$ul.empty()
+				for message in messages
+					$ul.append('<li>'+message+'</li>')
+				$ul.parent().removeClass('alert-danger').removeClass('alert-success').addClass(newClass)
+				$ul.parent().show()
+				$('html, body').animate({
+			        scrollTop: $ul.offset().top
+			    }, 500)
+
+			$profileForm = $('#profile-form')
+			
+			profileFormSubmitting = false
+
+			$profileForm.submit((event) ->
+				event.preventDefault()
+				if (profileFormSubmitting)
+					return false
+				profileFormSubmitting = true
+
+				$profileSubmit = $('#profile-submit')
+				$profileSubmit.prop('disabled',true)
+				$profileResults = $('#profile-results')
+				$profileResults.hide()
+
+				$.ajax({
+					type: 'put',
+					url: $profileForm.attr('action'),
+					data: $profileForm.serialize(),
+					dataType: 'json'
+				})
+				.done((data,textStatus,jqXHR) ->
+					if jqXHR.status == 200
+						return showMessages($profileResults.children().first(),['Updated!'],false)
+				).fail((jqXHR, textStatus, errorThrown) ->
+					if jqXHR.responseJSON?
+						if jqXHR.status == 422
+							errors = []
+							for error,values of jqXHR.responseJSON
+								errors = errors.concat(values)
+							return showMessages($profileResults.children().first(),errors,true)
+						else if jqXHR.responseJSON.error?
+							return showMessages($profileResults.children().first(),[jqXHR.responseJSON.error],true)
+					
+					return showMessages($profileResults.children().first(),['An error occurred. Let us know if this keeps happening.'],true)
+				).always(() ->
+					profileFormSubmitting = false
+					$profileSubmit.prop('disabled',false)
+				)
+
+				return false
+			)
+
 			$streamerSwitch = $('#streamer-on')
 
 			if $streamerSwitch
@@ -86,6 +141,48 @@ class Users extends Controller
 					$searchButton.html(buttonValue)
 					$searchButton.prop('disabled',false)
 				)
+			)
+
+			streamingFormSubmitting = false
+			$streamingForm = $('#streaming-form')
+
+			$streamingForm.submit((event) ->
+				event.preventDefault()
+				if (streamingFormSubmitting)
+					return false
+				streamingFormSubmitting = true
+
+				$streamingSubmitButton.prop('disabled',true)
+				$streamingResults = $('#streaming-results')
+				$streamingResults.hide()
+
+				$.ajax({
+					type: 'put',
+					url: $streamingForm.attr('action'),
+					data: $streamingForm.serialize(),
+					dataType: 'json'
+				})
+				.done((data,textStatus,jqXHR) ->
+					if jqXHR.status == 200
+						showMessages($streamingResults.children().first(),['Updated!'],false)
+						return window.location.reload()
+				).fail((jqXHR, textStatus, errorThrown) ->
+					if jqXHR.responseJSON?
+						if jqXHR.status == 422
+							errors = []
+							for error,values of jqXHR.responseJSON
+								errors = errors.concat(values)
+							return showMessages($streamingResults.children().first(),errors,true)
+						else if jqXHR.responseJSON.error?
+							return showMessages($streamingResults.children().first(),[jqXHR.responseJSON.error],true)
+					
+					return showMessages($streamingResults.children().first(),['An error occurred. Let us know if this keeps happening.'],true)
+				).always(() ->
+					streamingFormSubmitting = false
+					$streamingSubmitButton.prop('disabled',false)
+				)
+
+				return false
 			)
 	}
 
