@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
 use Illuminate\Routing\Redirector as Redirect;
+use Intervention\Image\ImageManager;
 
 class Auth extends Controller {
 
@@ -169,7 +170,7 @@ class Auth extends Controller {
 		else
 		{
 			$user = $this->socialite->with($provider)->user();
-
+			
 			if (!$user->email)
 			{
 				return $this->redirectWithSocialError('email');
@@ -186,6 +187,7 @@ class Auth extends Controller {
 			}
 			else
 			{
+
 				if ($this->auth->guest())
 				{
 					// What if the username is already taken in the system?
@@ -209,7 +211,8 @@ class Auth extends Controller {
 				{
 					$this->users->update($this->auth->user(),[
 						'twitch_id' => $user->getId(),
-						'twitch_username' => $user->getNickname()
+						'twitch_username' => $user->getNickname(),
+						'avatar' => $this->getLocalImagePath($user)
 					]);
 
 					return $this->redirect->to('/users/'.$this->auth->user()->id.'/edit');
@@ -260,11 +263,47 @@ class Auth extends Controller {
 			$data['facebook_id'] = $user->getId();
 		}
 
+		$data['avatar'] = $this->getLocalImagePath($user);
+
 		return $this->users->create($data);
 
 		### -> flash something?
 		### -> redirect to choosing username and password
 		### -> if email null, account locked until email set
+	}
+
+	protected function getImageManager()
+	{
+		return new ImageManager(config('image'));
+	}
+
+	protected function getLocalImagePath(\Laravel\Socialite\Contracts\User $user)
+	{
+		if (!$user->getAvatar())
+		{
+			return null;
+		}
+
+		$manager = $this->getImageManager();
+
+		$url = $user->getAvatar();
+
+		$img = $manager->make($url)->widen(100);
+
+		$hash = md5($user->getEmail());
+
+		$folder = 'avatars/'.substr($hash, 0, 2).'/'.substr($hash, 2, 2);
+
+		if (!is_dir($folder))
+			mkdir(public_path($folder), 0775, true);
+
+		$path = $folder.'/'.time().'.'.preg_replace('/^.*\.(jpg|jpeg|png|gif)$/i', '$1', $url);
+
+		$img->save($path,100);
+
+		chmod(public_path($path), 0774);
+
+		return $path;
 	}
 
 }
