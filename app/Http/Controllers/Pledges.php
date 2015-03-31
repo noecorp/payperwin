@@ -48,7 +48,7 @@ class Pledges extends Controller {
 		$this->redirect = $redirect;
 
 		$this->middleware('auth',['except'=>['index','show']]);
-		$this->middleware('own.pledge',['except'=>['index','show']]);
+		$this->middleware('own.pledge',['only'=>['edit','update']]);
 	}
 
 	/**
