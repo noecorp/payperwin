@@ -31,7 +31,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	protected $hidden = ['password', 'remember_token'];
 
 	protected $casts = [
-		'streamer' => 'boolean'
+		'streamer' => 'boolean',
+		'funds' => 'float',
+		'earnings' => 'float'
 	];
 
 	public function pledges()

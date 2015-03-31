@@ -8,11 +8,17 @@
 
 	<link href="{{ asset('css/vendor/bootstrap.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/vendor/flat-ui.min.css') }}" rel="stylesheet">
+	
+	@yield('styles')
+
 	<link href="{{ elixir("css/app.css") }}" rel="stylesheet">
 
 	<script src="{{ asset('js/vendor/jquery.min.js') }}"></script>
 	<script src="{{ asset('js/vendor/flat-ui.min.js') }}"></script>
-	<script type="text/javascript" src="{{ elixir('js/all.js') }}"></script>
+
+	@yield('scripts')
+
+	<script src="{{ elixir('js/all.js') }}"></script>
 	
 	<script async src="https://assets.helpful.io/assets/widget.js"></script>
 	
@@ -44,18 +50,18 @@
 				<li><a href="/auth/register" >Register</a></li>
 			@else
 				@if ($auth->user()->streamer)
-					<li><a href="/earnings/{{ $auth->user()->id }}">Earnings: ${{ round($auth->user()->earnings,2) }}</a></li>
+					<li><a href="/earnings/{{ $auth->user()->id }}">Earnings: ${{ sprintf("%0.2f",$auth->user()->earnings) }}</a></li>
 				@else
-					<li><a href="/transactions/{{ $auth->user()->id }}">Funds: ${{ round($auth->user()->funds,2) }}</a></li>
+					<li><a href="/transactions/{{ $auth->user()->id }}">Funds: ${{ sprintf("%0.2f",$auth->user()->funds) }}</a></li>
+					<li><button id="nav-deposit" class="btn btn-sm btn-primary navbar-btn" type="button" data-href="{{ url('deposits/create') }}">Deposit</button></li>
 				@endif
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ asset($auth->user()->avatar) }}" class="avatar"> {{ $auth->user()->username }} <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="/users/{{ $auth->user()->id }}">Profile</a></li>
 						<li><a href="/users/{{ $auth->user()->id }}/edit">Settings</a></li>
-						<li class="divider"></li>
-						<li><a href="/deposits/create">Deposit</a></li>
 						@if ($auth->user()->streamer)
+							<li class="divider"></li>
 							<li><a href="javascript:;">Request Payout</a></li>
 						@endif
 						<li class="divider"></li>
@@ -92,5 +98,16 @@
 		<a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on" class="btn btn-info">Help &amp; Feedback</a>
 	</div>
 
+	@if ($auth->user())
+		<script>
+			window.intercomSettings = {
+				name: "{{ $auth->user()->username }}",
+				email: "{{ $auth->user()->email }}",
+				created_at: "{{ $auth->user()->created_at->timestamp }}",
+				app_id: "{{ (env('APP_ENV') == 'production') ? "w0ju1yb6" : "egqks52q" }}"
+			};
+		</script>
+		<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/w0ju1yb6';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
+	@endif
 </body>
 </html>

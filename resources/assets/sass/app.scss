@@ -9,6 +9,14 @@ body
 	
 	font-size: 14px;
 }
+
+.modal-backdrop {
+	width: 100% !important;
+	height: 100% !important;
+	position: fixed !important;
+	// z-index: 1030;
+}
+
 .navbar-inverse .navbar-nav>.dropdown>a .caret
 {
 	border-top-color: #fff;
@@ -87,6 +95,10 @@ form
 	.select
 	{
 		min-width: inherit;
+	}
+
+	textarea {
+		resize: none;
 	}
 }
 

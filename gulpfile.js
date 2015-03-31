@@ -52,6 +52,10 @@ elixir(function(mix) {
 		.copy(
 			'bower_components/flat-ui/dist/css/flat-ui.min.css',
 			'public/css/vendor/flat-ui.min.css'
+		)
+		.copy(
+			'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.min.css',
+			'public/css/vendor/bootstrap.datepicker.min.css'
 		);
 });
 
@@ -71,6 +75,14 @@ elixir(function(mix) {
 		.copy(
 			'bower_components/flat-ui/dist/js/flat-ui.min.js',
 			'public/js/vendor/flat-ui.min.js'
+		)
+		.copy(
+			'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js',
+			'public/js/vendor/bootstrap.modal.js'
+		)
+		.copy(
+			'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+			'public/js/vendor/bootstrap.datepicker.min.js'
 		)
 		.scripts([
 			'app.js',

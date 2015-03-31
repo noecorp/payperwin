@@ -10,6 +10,13 @@ interface Pledge {
 	public function types();
 
 	/**
+	 * Returns Pledge type name for the given type id.
+	 *
+	 * @return string
+	 */
+	public function type($type);
+
+	/**
 	 * Returns the Pledge type associated with a win.
 	 *
 	 * @return int

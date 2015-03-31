@@ -4,13 +4,15 @@ use App\Contracts\Service\Gurus\Pledge as PledgeGuruInterface;
 
 class Pledge implements PledgeGuruInterface {
 
+	const Win = 1;
+
 	/**
 	 * List of all valid Pledge types.
 	 *
 	 * @var array
 	 */
 	protected $types = [
-		'win' => 1,
+		self::Win => 'win',
 	];
 
 	/**
@@ -18,7 +20,15 @@ class Pledge implements PledgeGuruInterface {
 	 */
 	public function types()
 	{
-		return array_values($this->types);
+		return array_keys($this->types);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function type($type)
+	{
+		return $this->types[$type];
 	}
 
 	/**
@@ -26,7 +36,7 @@ class Pledge implements PledgeGuruInterface {
 	 */
 	public function win()
 	{
-		return $this->types['win'];
+		return self::Win;
 	}
 
 }

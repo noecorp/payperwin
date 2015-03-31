@@ -22,7 +22,7 @@ Route::controllers([
 
 Route::resource('users','Users',['except'=>['index','create','store','destroy']]);
 Route::resource('streamers','Streamers',['only'=>['index','show']]);
-Route::resource('pledges','Pledges',['except'=>'destroy']);
+Route::resource('pledges','Pledges',['except'=>['destroy','create']]);
 Route::resource('users.pledges','UsersPledges', ['only'=>'index']);
 Route::resource('streamers.pledges','StreamersPledges', ['only'=>'index']);
 Route::resource('deposits','Deposits',['only'=>['create','store']]);

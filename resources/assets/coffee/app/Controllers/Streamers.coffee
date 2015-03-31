@@ -1,7 +1,35 @@
 class Streamers extends Controller
 	actions: {
 		show: (parameters) ->
-			$('[data-toggle=tooltip]').tooltip()
+			model = $('[data-model]').first().data()
+			update = () ->
+				$heading = $('#loading')
+				value = $heading.html()
+				$heading.html('<img src="/img/loading.gif"/>')
+				$pledgeList = $('#pledges-list')
+
+				$.ajax({
+					type: 'get',
+					url: '/streamers/'+model.id+'/pledges',
+					dataType: 'json'
+				})
+				.done((data,textStatus,jqXHR) ->
+					pledges = data.pledges
+					if pledges
+						$pledgeList.empty()
+						for pledge in pledges
+							$pledgeList.append('<li><a href="/users/'+pledge.user.id+'">'+pledge.user.username+'</a> with '+pledge.amount+' per '+pledge.type+'.'+(if pledge.message then '<br><blockquote>'+pledge.message+'</blockquote>' else '')+'</li>')
+				).fail((jqXHR, textStatus, errorThrown) ->
+					
+				).always(() ->
+					$heading.html(value)
+					queueUpdate()
+				)
+			queueUpdate = () ->
+				window.setTimeout(() ->
+					update()
+				, 10000)
+			queueUpdate()
 
 			$streamerChat = $('#streamer-chat')
 			$streamerChat.html('
@@ -35,6 +63,78 @@ class Streamers extends Controller
 
 			$('#streamer-hide').click(() ->
 				$('#streamer-stream').toggle()
+			)
+
+			$streamerPledge = $('#streamer-pledge')
+			if $streamerPledge.length
+				$streamerPledge.click(() ->
+					$('#'+$streamerPledge.attr('data-modal')).modal('show')
+				)
+
+			$('#streamer-pledge-optional').click(() ->
+				$('#streamer-pledge-extras').toggle()
+			)
+
+			pledgeFormSubmitting = false
+			
+			$pledgeForm = $('#streamer-pledge-form')
+			$pledgeFormSubmit = $('#streamer-pledge-submit')
+
+			showMessages = ($ul,messages,error) ->
+				newClass = if error == true then 'alert-danger' else 'alert-success'
+				$ul.empty()
+				for message in messages
+					$ul.append('<li>'+message+'</li>')
+				$ul.parent().removeClass('alert-danger').removeClass('alert-success').addClass(newClass)
+				$ul.parent().show()
+
+			$pledgeForm.submit((event) ->
+				event.preventDefault()
+				if pledgeFormSubmitting
+					return false;
+
+				pledgeFormSubmitting = true
+				$pledgeFormSubmit.prop('disabled',true)
+				buttonValue = $pledgeFormSubmit.html()
+				$pledgeFormSubmit.html('<img src="/img/loading.gif"/>')
+
+				$profileResults = $('#streamer-pledge-results')
+				$profileResults.hide()
+
+				$.ajax({
+					type: $pledgeForm.attr('method'),
+					url: $pledgeForm.attr('action'),
+					data: $pledgeForm.serialize(),
+					dataType: 'json'
+				})
+				.done((data,textStatus,jqXHR) ->
+					showMessages($profileResults.children().first(),['Pledge created!'], false)
+					window.setTimeout(() ->
+						$pledgeForm.parents('.modal').first().modal('hide')
+						$pledgeForm[0].reset()
+					, 2000)
+				).fail((jqXHR, textStatus, errorThrown) ->
+					if jqXHR.responseJSON?
+						if jqXHR.status == 422
+							errors = []
+							for error,values of jqXHR.responseJSON
+								errors = errors.concat(values)
+							return showMessages($profileResults.children().first(),errors,true)
+						else if jqXHR.responseJSON.error?
+							return showMessages($profileResults.children().first(),[jqXHR.responseJSON.error],true)
+					
+					return showMessages($profileResults.children().first(),['An error occurred. Let us know if this keeps happening.'],true)
+				).always(() ->
+					pledgeFormSubmitting = false
+					$pledgeFormSubmit.prop('disabled',false)
+					$pledgeFormSubmit.html(buttonValue)
+				)
+			)
+
+			$pledgeFormSubmit.click((event) ->
+				event.preventDefault()
+				$pledgeForm.submit()
+				return false
 			)
 			
 	}

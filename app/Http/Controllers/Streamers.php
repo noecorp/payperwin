@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory as View;
 use App\Contracts\Repository\Users;
 use App\Contracts\Repository\Pledges;
+use App\Contracts\Service\Gurus\Pledge as PledgeGuru;
 
 class Streamers extends Controller {
 
@@ -58,11 +59,12 @@ class Streamers extends Controller {
 	 * Display the specified resource.
 	 *
 	 * @param Pledges $pledges
+	 * @param PledgeGuru $guru
 	 * @param  int  $id
 	 *
 	 * @return Response
 	 */
-	public function show(Pledges $pledges, $id)
+	public function show(Pledges $pledges, PledgeGuru $guru, $id)
 	{
 		$streamer = $this->users->isStreamer()->find($id);
 
@@ -74,7 +76,7 @@ class Streamers extends Controller {
 
 		$stats = compact('average','highestPledge','topPledger');
 		
-		return $this->view->make('streamers.show')->with(compact('streamer','feed', 'stats'));
+		return $this->view->make('streamers.show')->with(compact('streamer','feed', 'stats', 'guru'));
 	}
 
 }
