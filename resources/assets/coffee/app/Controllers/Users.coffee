@@ -86,8 +86,6 @@ class Users extends Controller
 							)
 				})
 
-			$('[data-toggle="select"]').select2()
-
 			$summonerNameField = $('#streaming-summoner-name')
 			$summonerRegionField = $('#streaming-region')
 			$streamingSubmitButton = $('#streaming-form-submit')

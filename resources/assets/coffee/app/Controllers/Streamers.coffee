@@ -1,7 +1,6 @@
 class Streamers extends Controller
 	actions: {
 		show: (parameters) ->
-			$('[data-toggle=tooltip]').tooltip()
 
 			$streamerChat = $('#streamer-chat')
 			$streamerChat.html('
