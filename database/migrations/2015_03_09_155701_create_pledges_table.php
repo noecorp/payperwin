@@ -21,7 +21,7 @@ class CreatePledgesTable extends Migration {
 			$table->string('message',256);
 
 			$table->tinyInteger('win_limit')->nullable();
-			$table->decimal('sum_limit',6,2)->nullable();
+			$table->decimal('spending_limit',6,2)->nullable();
 
 			$table->integer('user_id')->unsigned();
 			$table->integer('streamer_id')->unsigned();
