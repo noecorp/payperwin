@@ -7,6 +7,8 @@ use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
 use App\Http\Requests\CreatePledge;
 use Illuminate\Routing\Redirector as Redirect;
+use Illuminate\Contracts\Routing\ResponseFactory as Response;
+use Carbon\Carbon;
 
 class Pledges extends Controller {
 
@@ -66,14 +68,22 @@ class Pledges extends Controller {
 	 * Store a newly created resource in storage.
 	 *
 	 * @param CreatePledge $request
+	 * @param Response $response
 	 *
 	 * @return Response
 	 */
-	public function store(CreatePledge $request)
+	public function store(CreatePledge $request, Response $response)
 	{
-		$pledge = $this->pledges->create($request->all());
+		$data = $request->all();
+		
+		if ($request->has('end_date'))
+		{
+			$data['end_date'] = Carbon::createFromFormat('d-m-Y', $request->get('end_date'));
+		}
+		
+		$pledge = $this->pledges->create($data);
 
-		return $this->redirect->to('pledges/'.$pledge->id);
+		return $response->make(['id'=>$pledge->id], 201);
 	}
 
 	/**
