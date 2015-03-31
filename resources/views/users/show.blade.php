@@ -14,7 +14,7 @@
 				<ul>
 					
 					@foreach ($feed as $pledge)
-						<li>${{ $pledge->amount }} per win to {{ $pledge->streamer->username }}. 
+						<li>${{ sprintf("%0.2f",$pledge->amount) }} per win to <a href="/streamers/{{ $pledge->streamer->id }}">{{ $pledge->streamer->username }}</a>. 
 							@if ($pledge->message)
 								<small>Message: {{ $pledge->message }}</small>
 							@endif
@@ -33,12 +33,12 @@
 				<ul>
 					<li>Average pledge: 
 						@if (isset($stats['average']))
-							${{ $stats['average'] }}
+							${{ sprintf("%0.2f",$stats['average']) }}
 						@endif
 					</li>
 					<li>Highest pledge: 
 						@if (isset($stats['highestPledge']))
-							${{ $stats['highestPledge']->amount }} to {{ $stats['highestPledge']->streamer->username }}
+							${{ sprintf("%0.2f",$stats['highestPledge']->amount) }} to <a href="/streamers/{{ $stats['highestPledge']->streamer->id }}">{{ $stats['highestPledge']->streamer->username }}</a>
 						@endif
 					</li>
 				</ul>
