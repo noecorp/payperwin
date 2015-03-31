@@ -12,8 +12,26 @@ class Support
 class App
 	controllers: {}
 	routes: []
+	config: {
+		foo : {
+			bar : 'baz'
+		}
+	}
 
 	support: new Support()
+	
+	# Allow dot-syntax nesting of keys.
+	get: (key) ->
+		keys = key.split('.')
+
+		c = @config
+
+		loop
+			k = keys.shift()
+			c = c[k]
+			break unless (keys.length)
+
+		return c
 
 	init: () ->
 		segments = window.location.pathname.split('/')
