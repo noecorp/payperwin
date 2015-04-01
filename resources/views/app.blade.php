@@ -42,7 +42,7 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="navbar-collapse-7">
 			<ul class="nav navbar-nav">
-				<li><a href="/streamers">Streamers {{ ($streamersLiveNow) ? '('.$streamersLiveNow.' live)' : '' }}</a></li>
+				<li><a href="/streamers"><span class="hidden-xs fui-list-numbered"></span> Streamers <small>{{ ($streamersLiveNow) ? '('.$streamersLiveNow.' live)' : '' }}</small></a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 			@if ($auth->guest())
@@ -56,9 +56,13 @@
 					<li><button id="nav-deposit" class="btn btn-sm btn-primary navbar-btn" type="button" data-href="{{ url('deposits/create') }}">Deposit</button></li>
 				@endif
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{{ asset($auth->user()->avatar) }}" class="avatar"> {{ $auth->user()->username }} <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						@if ($auth->user()->avatar)
+							<img src="{{ asset($auth->user()->avatar) }}" class="avatar">&nbsp;
+						@endif
+						{{ $auth->user()->username }} <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="/users/{{ $auth->user()->id }}">Profile</a></li>
+						<li><a href="{{ ($auth->user()->streamer) ? '/streamers/' : '/users/' }}{{ $auth->user()->id }}">Profile</a></li>
 						<li><a href="/users/{{ $auth->user()->id }}/edit">Settings</a></li>
 						@if ($auth->user()->streamer)
 							<li class="divider"></li>
@@ -73,7 +77,7 @@
 		</div><!-- /.navbar-collapse -->
 	</nav>
 
-	<article class="container">
+	<article class="@yield('container-class','container')">
 		<div class="row">
 			<div class="col-xs-12">
 				@yield('content')
@@ -82,13 +86,15 @@
 	</article>
 
 	<footer>
-		<ul>
-			<li><a href="/">Home</a></li>
-			<li><a href="/streamers">Streamers</a></li>
-			<li><a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on">Contact Us</a></li>
-			<li><a href="/privacy">Privacy Policy</a></li>
-			<li><a href="/terms">Terms &amp; Conditions</a></li>
-		</ul>
+		<nav>
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/streamers">Streamers</a></li>
+				<li><a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on">Contact Us</a></li>
+				<li><a href="/privacy">Privacy Policy</a></li>
+				<li><a href="/terms">Terms &amp; Conditions</a></li>
+			</ul>
+		</nav>
 		<p>
 			<small>PayPerWin isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</small>
 		</p>

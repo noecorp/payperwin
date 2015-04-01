@@ -7,6 +7,7 @@ use Illuminate\Routing\Redirector as Redirect;
 use Illuminate\Contracts\View\Factory as View;
 use App\Http\Requests\CreateDeposit;
 use Illuminate\Contracts\Auth\Guard;
+use App\Contracts\Service\Acidifier;
 
 class Deposits extends Controller {
 
@@ -48,7 +49,7 @@ class Deposits extends Controller {
 	{
 		$acid->transaction(function() use ($request, $auth, $users, $deposits)
 		{
-			$deposits->create($request->all());
+			// $deposits->create($request->all());
 			$users->update($auth->user()->id, ['funds'=>$auth->user()->funds + $request->get('amount')]);
 		});
 

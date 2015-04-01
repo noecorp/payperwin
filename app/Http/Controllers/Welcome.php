@@ -1,36 +1,46 @@
 <?php namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\Factory as View;
+
 class Welcome extends Controller {
 
-	/*
-	|--------------------------------------------------------------------------
-	| Welcome Controller
-	|--------------------------------------------------------------------------
-	|
-	| This controller renders the "marketing page" for the application and
-	| is configured to only allow guests. Like most of the other sample
-	| controllers, you are free to modify or remove it as you desire.
-	|
-	*/
+	/**
+	 * View factory implementation.
+	 *
+	 * @var View
+	 */
+	protected $view;
 
 	/**
 	 * Create a new controller instance.
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct(View $view)
 	{
-		$this->middleware('guest');
+		$this->view = $view;
+		
+		$this->middleware('auth',['only'=>'start']);
 	}
 
 	/**
-	 * Show the application welcome screen to the user.
+	 * Show the application welcome screen to the visitor.
 	 *
-	 * @return Response
+	 * @return \Illuminate\View\View
 	 */
 	public function index()
 	{
-		return view('welcome');
+		return $this->view->make('welcome.index');
+	}
+
+	/**
+	 * Show the getting started screen to the newly-registered user.
+	 *
+	 * @return \Illuminate\View\View
+	 */
+	public function start()
+	{
+		return $this->view->make('welcome.start');
 	}
 
 }

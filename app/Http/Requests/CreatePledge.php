@@ -17,7 +17,7 @@ class CreatePledge extends Request {
 	public function rules(PledgeGuru $guru, Guard $auth)
 	{
 		return [
-			'amount' => 'required|numeric|min:0.01|max:999.99',
+			'amount' => 'required|numeric|min:0.01|max:'.$auth->user()->funds,
 			'type' => 'required|in:'.implode(',', $guru->types()),
 			'streamer_id' => 'required|integer|min:1|exists:users,id,streamer,1',
 			'message' => 'max:256',

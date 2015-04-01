@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration {
 			$table->bigInteger('facebook_id')->unsigned()->nullable()->unique();
 			$table->bigInteger('twitch_id')->unsigned()->nullable()->unique();
 			$table->string('twitch_username',25)->nullable();
+			$table->string('short_url',32)->nullable();
 			$table->boolean('live')->default(0);
 
 			//Again, email can be missing when logging in through a social provider.

@@ -3,7 +3,12 @@
 @section('content')
 	<div class="row">
 		<div class="col-xs-12">
-			<h1>{{ $user->username }}<img class="avatar" src="{{ asset($user->avatar) }}"></h1>
+			<h1>{{ $user->username }}
+				@if ($user->avatar)
+					<img class="avatar" src="{{ asset($user->avatar) }}">
+				@endif
+			</h1>
+			<hr/>
 		</div>
 	</div>
 	<div class="row">
