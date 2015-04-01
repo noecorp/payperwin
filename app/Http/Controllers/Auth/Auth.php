@@ -117,7 +117,7 @@ class Auth extends Controller {
 
 		if ($this->auth->attempt($credentials, $request->has('remember')))
 		{
-			return $this->redirect->intended('/dashboard');
+			return $this->redirect->intended('/auth/login');
 		}
 
 		return $this->redirect->to('/auth/login')
@@ -243,7 +243,14 @@ class Auth extends Controller {
 		if ($uri)
 			return $this->redirect->to($uri);
 
-		return $this->redirect->to('/users/'.$user->id);
+		if ($this->auth->user()->streamer)
+		{
+			return $this->redirect->to('/streamers/'.$user->id);
+		}
+		else
+		{
+			return $this->redirect->to('/users/'.$user->id);	
+		}
 	}
 
 	protected function createWithSocial($provider, \Laravel\Socialite\Contracts\User $user)
