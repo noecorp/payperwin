@@ -15,6 +15,16 @@ class Users extends AbstractRepository implements UsersRepository {
 		return new User;
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function create(array $data)
+	{
+		$data['password'] = $this->container->make('hash')->make($data['password']);
+
+		return parent::create($data);
+	}
+
 	public function createWithFacebook(array $data)
 	{
 		$fields = [

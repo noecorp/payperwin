@@ -73,15 +73,8 @@ class Pledges extends Controller {
 	 * @return Response
 	 */
 	public function store(CreatePledge $request, Response $response)
-	{
-		$data = $request->all();
-		
-		if ($request->has('end_date'))
-		{
-			$data['end_date'] = Carbon::createFromFormat('d-m-Y', $request->get('end_date'));
-		}
-		
-		$pledge = $this->pledges->create($data);
+	{	
+		$pledge = $this->pledges->create($request->all());
 
 		return $response->make(['id'=>$pledge->id], 201);
 	}
