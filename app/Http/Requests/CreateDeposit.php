@@ -12,7 +12,7 @@ class CreateDeposit extends Request {
 	public function rules()
 	{
 		return [
-			//
+			'amount' => 'required|numeric|min:0.01|max:500',
 		];
 	}
 

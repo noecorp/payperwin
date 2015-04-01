@@ -15,7 +15,15 @@
 	<span data-model="User" data-id="{{ $streamer->id }}"></span>
 	<div class="row">
 		<div class="col-xs-12">
-			<h1>{{ $streamer->username }}<img class="avatar" src="{{ asset($streamer->avatar) }}"></h1>
+			<h1>{{ $streamer->username }}
+				@if ($streamer->avatar)
+					<img class="avatar" src="{{ asset($streamer->avatar) }}">
+				@endif
+			</h1>
+			@if ($streamer->short_url)
+				Short link: <a href="{{ $streamer->short_url }}">{{ $streamer->short_url }}</a>
+			@endif
+			<hr/>
 			@if ($streamer->live)
 				<p class="text-primary"><strong>Live now!</strong></p>
 			@else
@@ -31,7 +39,14 @@
 				@if ($auth->user()->id != $streamer->id)
 					<button type="button" id="streamer-pledge" class="btn btn-lg btn-success btn-block" title="This will bring up a form." data-placement="top" data-toggle="tooltip" data-modal="streamer-pledge-modal">Start a Pledge!</button>
 				@else
-					<button type="button" class="btn btn-lg btn-info btn-block">That's you!</button>
+					@if ($streamer->twitch_id && $streamer->summoner_id)
+						<button type="button" class="btn btn-lg btn-info btn-block">That's you!</button>
+					@else
+						<div class="alert alert-warning" id="streamer-pledge-results">
+							<p>You haven't completed your streamer profile yet!</p>
+							<p><a href="/users/{{ $streamer->id }}/edit">Finish setting up &raquo;</a></p>
+						</div>
+					@endif
 				@endif
 			@endif
 		</div>
@@ -62,12 +77,19 @@
 					<li>Average pledge: ${{ sprintf("%0.2f",$stats['average']) }}</li>
 					<li>Highest pledge: ${{ sprintf("%0.2f",$stats['highestPledge']->amount) }}, <a href="/users/{{ $stats['highestPledge']->owner->id }}">{{ $stats['highestPledge']->owner->username }}</a></li>
 				</ul>
+				<ul>
+					<li>Active pledges: #</li>
+					<li>Total pledges: #</li>
+				</ul>
+				<ul>
+					<li>Recent wins: %</li>
+					<li>Recent KDA: #</li>
+				</ul>
 			@else
 				<p>No stats yet!</p>
 			@endif
 		</div>
 	</div>
-	@if (0)
 	<div class="row">
 		<div class="col-xs-12">
 			<h2>Stream</h2>
@@ -88,7 +110,6 @@
 			@endif
 		</div>
 	</div>
-	@endif
 	@if ($auth->user() && $auth->user()->id != $streamer->id)
 		<div class="modal fade" id="streamer-pledge-modal" tabindex="-1" role="dialog" aria-labelledby="streamer-pledge-modal-label" aria-hidden="false">
 			<div class="modal-dialog">

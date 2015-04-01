@@ -6,14 +6,21 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<h1>Settings</h1>
+			<hr/>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-12 col-sm-5">
+			<h2>Profile</h2>
 			<form role="form" method="PUT" action="/users/{{ $user->id }}" id="profile-form">
-				<legend>Profile</legend>
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
 				<input type="hidden" name="_user_id" value="{{ $user->id }}">
+				<div class="form-group">
+					<div class="alert" style="display:none;" id="profile-results">
+						<ul>
+						</ul>
+					</div>
+				</div>
 				@if (!$user->twitch_id)
 					<div class="form-group">
 						<p class="help-block">Connect your Twitch profile for easy login.</p>
@@ -21,17 +28,12 @@
 					</div>
 				@else
 					<div class="form-group">
-						<p class="help-block">Connected Twitch account: {{ $user->twitch_username }}</p>
+						<p class="help-block">Connected Twitch account: </p>
+						<input disabled type="text" class="form-control" value="{{ $user->twitch_username }}" />
 					</div>
 				@endif
 				<div class="form-group">
-					<div class="alert" style="display:none;" id="profile-results">
-						<ul>
-						</ul>
-					</div>
-				</div>
-				<div class="form-group">
-					<p class="help-block">This is the name that others will see on your PayPerWin profile:</p>
+					<p class="help-block">Your publicly-visible PayPerWin username:</p>
 					<input type="text" class="form-control" id="profile-username" name="username" placeholder="Username" value="{{ (old('username')) ?: $user->username }}">
 				</div>
 				<div class="form-group">
@@ -53,8 +55,8 @@
 			</form>
 		</div>
 		<div class="col-xs-12 col-sm-5 col-sm-offset-2">
+			<h2>Streaming</h2>
 			<form role="form" method="PUT" action="/users/{{ $user->id }}" id="streaming-form">
-				<legend>Streaming</legend>
 				<input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
 				@if (!$user->streamer)
@@ -92,7 +94,8 @@
 						</div>
 					@else
 						<div class="form-group">
-							<p class="help-block">Connected Twitch account: {{ $user->twitch_username }}</p>
+							<p class="help-block">Connected Twitch account: </p>
+						<input disabled type="text" class="form-control" value="{{ $user->twitch_username }}" />
 						</div>
 					@endif
 
@@ -136,11 +139,33 @@
 						</div>
 					@else
 						<div class="form-group">
-							<p class="help-block">Connected League of Legends account: {{ $user->summoner_name }}, {{ strtoupper($user->region) }} ({{ $user->summoner_id }})</p>
+							<p class="help-block">Connected League of Legends account: </p>
+							<input disabled type="text" class="form-control" value="{{ $user->summoner_name }}, {{ strtoupper($user->region) }} ({{ $user->summoner_id }})" />
 						</div>
 					@endif
+
+
 				@endif
 			</form>
+			@if ($user->twitch_id && $user->summoner_id)
+				<h2>Your Link</h2>
+				<p>Share this URL on your stream:</p>
+				@if (!$user->short_url)
+					<p class="help-block"><small>We'll set up a shortened URL (on the ppw.gg domain) within a few hours!</small></p>
+					<div class="alert alert-info">
+						<a href="{{ url('streamers',$user->id) }}">{{ url('streamers',$user->id) }}</a>
+					</div>
+				@else
+					<div class="alert alert-info">
+						<a href="{{ $user->short_url }}">{{ $user->short_url }}</a>
+					</div>
+				@endif
+				<h2>Affiliate</h2>
+				<p>Invite other streamers and get a slightly lower commission for every streamer that registers with your affiliate link and completes their PayPerWin profile! Your unique affiliate URL is:
+				<div class="alert alert-info">
+					<a href="{{ url('/?auid='.$user->id) }}">{{ url('/?auid='.$user->id) }}</a>
+				</div>
+			@endif
 		</div>
 	</div>
 @endsection

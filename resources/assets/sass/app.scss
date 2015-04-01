@@ -5,8 +5,6 @@
 body
 {
 	min-height: 1000px;
-	padding-top: 120px;
-	
 	font-size: 14px;
 }
 
@@ -27,6 +25,12 @@ nav
 	&.navbar
 	{
 		padding-right: 20px;
+
+		.fui-list-numbered
+		{
+			margin-right: 8px;
+			vertical-align: middle;
+		}
 	}
 
 	img.avatar
@@ -42,6 +46,117 @@ nav
 article
 {
 	min-height: 880px;
+	padding-top: 76px;
+
+	&>.row
+	{
+		padding-top: 60px;
+	}
+	&.container-fluid>.row
+	{
+		padding-top: 0px;
+	}
+
+	.welcome
+	{
+		color: #fff;
+		padding-top: 80px;
+		padding-bottom: 80px;
+		background: #0caeff;
+
+		a
+		{
+			&.btn
+			{
+				background: #99cc00;
+				color: #fff;
+				padding-left: 40px;
+				padding-right: 40px;
+				padding-top: 15px;
+				padding-bottom: 15px;
+
+				&:hover
+				{
+					background: lighten(#99cc00,3%);
+				}
+			}
+		}
+
+		& + .row
+		{
+			padding-top: 60px;
+		}
+	}
+
+	.features
+	{
+		.fui-user, .fui-video
+		{
+			margin-right: 10px;
+			vertical-align: middle;
+		}
+	}
+
+	.cta-bottom
+	{
+		padding-top: 120px;
+	}
+
+	.tile
+	{
+		img.avatar
+		{
+			width: 100px;
+			height: 100px;
+			border-width: 5px;
+		}
+
+		ul
+		{
+			list-style-type: none;
+			padding: 0;
+			margin-top: 10px;
+		}
+	}
+
+	.live
+	{
+		.tile
+		{
+			background: #16A085;
+			color: #fff;
+			a
+			{
+				color: #fff;
+
+				&:hover
+				{
+					color: lighten(#2ECC71, 30%)
+				}
+			}
+		}
+	}
+
+	.start
+	{
+		p.lead
+		{
+			padding-top: 60px;
+			padding-bottom: 60px;
+		}
+	}
+
+	.todo-search
+	{
+		&::before
+		{
+			content: none;
+		}
+		h2
+		{
+			color: #fff;
+		}
+	}
 }
 
 footer
@@ -117,4 +232,9 @@ img
 		box-shadow: 0 1px 2px 0 #2f4154;
 		border: solid 3px #FFF;
 	}
+}
+
+.form-control[disabled]
+{
+	color: #555;
 }

@@ -6,6 +6,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<h1>Privacy Policy</h1>
+			<hr/>
 		</div>
 	</div>
 	<div class="row">

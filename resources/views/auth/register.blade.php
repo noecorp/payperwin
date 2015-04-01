@@ -11,7 +11,7 @@
 	        	<a href="/auth/with/twitch" id="register-twitch"><img src="{{ asset('img/connect-twitch.png') }}"/></a>
 	        </div>
 	        <div class="form-group">
-		    	@if (count($errors) > 0)
+		    	@if (!$errors->isEmpty())
 					<div class="alert alert-danger">
 						<strong>Whoops!</strong>
 						<ul>

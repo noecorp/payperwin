@@ -2,6 +2,7 @@
 
 use App\Contracts\Repository\Pledges as PledgesRepository;
 use App\Models\Pledge;
+use Carbon\Carbon;
 
 class Pledges extends AbstractRepository implements PledgesRepository {
 
@@ -13,6 +14,16 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 	protected function model()
 	{
 		return new Pledge;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function create(array $data)
+	{
+		$data['end_date'] = (isset($data['end_date'])) ? Carbon::createFromFormat('d-m-Y', $data['end_date']) : null;
+
+		return parent::create($data);
 	}
 
 	public function withStreamer()

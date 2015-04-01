@@ -31,9 +31,11 @@ abstract class AbstractRepository implements RepositoryContract {
 	protected $cache;
 
 	/**
-	 * Database connection instance
+	 * App container instance
+	 *
+	 * @var Container
 	 */
-	protected $db;
+	protected $container;
 
 	/**
 	 * Create a new instance of the repository.
@@ -44,7 +46,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	{
 		$this->model = $this->model();
 		$this->cache = $cache;
-		$this->db = $container->make('db');
+		$this->container = $container;
 	}
 
 	/**
@@ -186,7 +188,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	{
 		if (empty($ids)) return;
 
-		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now(), $column => $this->db->raw('`'.$column.'` + 1')]);
+		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now(), $column => $container->make('db')->raw('`'.$column.'` + 1')]);
 
 		$this->cache->tags($this->model->getTable())->flush();
 
