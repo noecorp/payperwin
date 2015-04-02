@@ -205,7 +205,7 @@ class Auth extends Controller {
 
 					$newUser = $this->createWithSocial($provider, $user);
 
-					return $this->loginExisting($newUser, '/users/'.$newUser->id);
+					return $this->loginExisting($newUser, '/start');
 				}
 				else
 				{
