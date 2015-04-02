@@ -33,7 +33,7 @@ class Spy extends Command {
 	 */
 	public function handle(Users $users, QueueingDispatcher $dispatcher)
 	{
-		$streamers = $users->isStreamer()->hasTwitchId()->all();
+		$streamers = $users->isStreamer()->hasTwitchId()->hasSummonerId()->all();
 
 		foreach ($streamers as $streamer)
 		{
