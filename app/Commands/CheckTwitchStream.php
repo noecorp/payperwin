@@ -75,6 +75,8 @@ class CheckTwitchStream extends Command implements SelfHandling, ShouldBeQueued 
 		{
 			return $this->handleException($e);
 		}
+
+		$this->delete();
 	}
 
 	protected function handleException(\Exception $e)

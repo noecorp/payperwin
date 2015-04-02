@@ -80,6 +80,8 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 		}
 
 		$distribute->pledgesFor($this->streamerId);
+
+		$this->delete();
 	}
 
 }
