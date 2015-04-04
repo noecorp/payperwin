@@ -3,8 +3,7 @@
 @section('title', $streamer->username)
 
 @section('scripts')
-	<script src="{{ asset('js/vendor/bootstrap.modal.js') }}"></script>
-	<script src="{{ asset('js/vendor/bootstrap.datepicker.min.js') }}"></script>
+	<script src="{{ asset('js/vendor/bootstrap.js') }}"></script>
 @endsection
 
 @section('styles')
