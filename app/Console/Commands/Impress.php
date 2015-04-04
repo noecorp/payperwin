@@ -42,7 +42,10 @@ class Impress extends Command {
 		{
 			$latest = $matches->orderingByMatchDate()->forStreamer($streamer->id)->find();
 
-			if (!$latest || Carbon::now()->subHour()->gte($latest->match_date))
+			// Even if there's a surrender at 20 minutes, the match creation timestamp
+			// is from the lobby creation rather than from 0:00. Lobby times typically
+			// are around 5 minutes or so.
+			if (!$latest || Carbon::now()->subMinutes(25)->gte($latest->match_date))
 			{
 				if ($latest) $latest = $latest->id;
 
