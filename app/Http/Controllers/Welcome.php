@@ -1,6 +1,8 @@
 <?php namespace App\Http\Controllers;
 
 use Illuminate\Contracts\View\Factory as View;
+use Illuminate\Routing\Redirector as Redirect;
+use Illuminate\Contracts\Auth\Guard;
 
 class Welcome extends Controller {
 
@@ -26,10 +28,18 @@ class Welcome extends Controller {
 	/**
 	 * Show the application welcome screen to the visitor.
 	 *
+	 * @param Guard $auth
+	 * @param Redirect $redirect
+	 *
 	 * @return \Illuminate\View\View
 	 */
-	public function index()
+	public function index(Guard $auth, Redirect $redirect)
 	{
+		if ($auth->user())
+		{
+			return $redirect->to('start');
+		}
+
 		return $this->view->make('welcome.index');
 	}
 
