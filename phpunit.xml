@@ -32,4 +32,9 @@
         <env name="DB_DRIVER" value="sqlite"/>
         <env name="DB_DATABASE" value=":memory:"/>
     </php>
+    <filter>
+        <blacklist>
+              <directory>./vendor</directory>
+        </blacklist>
+    </filter>
 </phpunit>
