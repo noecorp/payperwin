@@ -52,7 +52,7 @@ class MakeTest extends GeneratorCommand {
 	{
 		$name = str_replace($this->getAppNamespace(), '', $name);
 
-		return base_path().'/tests/'.str_replace('\\', '/', $name).'.php';
+		return base_path().'/tests/'.str_replace('\\', '/', $name).'Test.php';
 	}
 
 	/**

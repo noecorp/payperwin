@@ -2,7 +2,7 @@
 
 use Mockery as m;
 
-class {{class}} extends \{{rootNamespace}}TestCase {
+class {{class}}Test extends \{{rootNamespace}}TestCase {
 
 	public function testFoo()
 	{
