@@ -1,6 +1,12 @@
 # PayPerWin
 
-## Game Result Monetization for eSports Streamers
+Game Result Monetization for eSports Streamers.
+
+[![Build Status](https://travis-ci.org/asm-products/payperwin.svg?branch=master)](https://travis-ci.org/asm-products/payperwin)
+
+[![Code Climate](https://codeclimate.com/github/asm-products/payperwin/badges/gpa.svg)](https://codeclimate.com/github/asm-products/payperwin)
+
+[![Coverage Status](https://coveralls.io/repos/asm-products/payperwin/badge.svg?branch=master)](https://coveralls.io/r/asm-products/payperwin?branch=master)
 
 <a href="https://assembly.com/payperwin/bounties?utm_campaign=assemblage&utm_source=payperwin&utm_medium=repo_badge"><img src="https://asm-badger.herokuapp.com/payperwin/badges/tasks.svg" height="24px" alt="Open Tasks" /></a>
 
