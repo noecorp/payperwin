@@ -19,7 +19,7 @@ script:
     # - phpunit --testsuite=Unit --coverage-clover tests/clover-unit.xml
     - phpunit --testsuite=Functional --coverage-clover tests/clover-functional.xml
 
-after-script:
+after_script:
     - php vendor/bin/coveralls -v
 
 after_failure:
