@@ -16,8 +16,8 @@ before_script:
     # - chmod -R 777 app/storage/
 
 script:
-    # - phpunit --testsuite=Unit --coverage-clover /tests/clover-unit.xml
-    - phpunit --testsuite=Functional --coverage-clover /tests/clover-functional.xml
+    # - phpunit --testsuite=Unit --coverage-clover tests/clover-unit.xml
+    - phpunit --testsuite=Functional --coverage-clover tests/clover-functional.xml
 
 after-script:
     - php vendor/bin/coveralls -v
