@@ -21,6 +21,8 @@ class UsersPledges extends Controller {
 	{
 		$user = $users->find($userId);
 
+		if (!$user) abort(404);
+
 		$pledges = $pledges->withStreamer()->latest()->limit(10)->fromUser($userId);
 
 		return $view->make('users.pledges.index')->with(compact('user','pledges'));
