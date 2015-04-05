@@ -47,7 +47,7 @@ class Streamers extends Controller {
 
 		$live = $streamers->filter(function($streamer)
 		{
-			return ($streamer->live === 1);
+			return ($streamer->live == 1);
 		});
 
 		$notLive = $streamers->diff($live);
