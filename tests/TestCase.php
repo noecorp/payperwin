@@ -51,6 +51,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 	public function tearDown()
 	{
 		$this->artisan('migrate:rollback');
+		$this->artisan('cache:clear');
 		$this->flushSession();
 
 		parent::tearDown();
