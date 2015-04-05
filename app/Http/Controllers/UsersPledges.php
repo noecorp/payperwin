@@ -23,7 +23,7 @@ class UsersPledges extends Controller {
 
 		if (!$user) abort(404);
 
-		$pledges = $pledges->withStreamer()->latest()->limit(10)->fromUser($userId);
+		$pledges = $pledges->withStreamer()->latest()->limit(10)->fromUser($userId)->all();
 
 		return $view->make('users.pledges.index')->with(compact('user','pledges'));
 	}
