@@ -21,7 +21,7 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 	 */
 	public function create(array $data)
 	{
-		$data['end_date'] = (isset($data['end_date'])) ? Carbon::createFromFormat('d-m-Y', $data['end_date']) : null;
+		$data['end_date'] = (isset($data['end_date']) && $data['end_date']) ? Carbon::createFromFormat('d-m-Y', $data['end_date']) : null;
 
 		return parent::create($data);
 	}
