@@ -16,8 +16,7 @@ before_script:
     - npm install -global gulp
     - npm install -g bower
     - npm install
-    - echo '{ "interactive": false }' > .bowerrc
-    - bower --allow-root install
+    - bower install
     - gulp
 
 script:
