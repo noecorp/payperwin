@@ -2,7 +2,7 @@
 
 use App\Models\User;
 
-class Users extends \AppTests\TestCase {
+class UsersTest extends \AppTests\TestCase {
 
 	public function testIndexPredictablyAborts()
 	{

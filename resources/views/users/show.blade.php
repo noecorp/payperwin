@@ -15,9 +15,8 @@
 		<div class="col-xs-12 col-sm-6">
 			<h2>Pledges</h2>
 
-			@if (!$feed->isEmpty())
-				<ul>
-					
+			<ul>
+				@if (!$feed->isEmpty())
 					@foreach ($feed as $pledge)
 						<li>${{ sprintf("%0.2f",$pledge->amount) }} per win to <a href="/streamers/{{ $pledge->streamer->id }}">{{ $pledge->streamer->username }}</a>. 
 							@if ($pledge->message)
@@ -25,11 +24,10 @@
 							@endif
 						</li>
 					@endforeach
-					
-				</ul>
-			@else
-				<p>No pledges yet!</p>
-			@endif
+				@else
+					<li>No pledges yet!</li>
+				@endif
+			</ul>
 		</div>
 		<div class="col-xs-12 col-sm-6">
 			<h2>Stats</h2>

@@ -3,8 +3,7 @@
 @section('title', $streamer->username)
 
 @section('scripts')
-	<script src="{{ asset('js/vendor/bootstrap.modal.js') }}"></script>
-	<script src="{{ asset('js/vendor/bootstrap.datepicker.min.js') }}"></script>
+	<script src="{{ asset('js/vendor/bootstrap.js') }}"></script>
 @endsection
 
 @section('styles')
@@ -55,8 +54,8 @@
 		<div class="col-xs-12 col-md-6">
 			<h2 id="loading">Pledges</h2>
 
-			@if (!$feed->isEmpty())
-				<ul id="pledges-list">
+			<ul id="pledges-list">
+				@if (!$feed->isEmpty())
 					@foreach ($feed as $pledge)
 						<li><a href="/users/{{ $pledge->owner->id }}">{{ $pledge->owner->username }}</a> with ${{ sprintf("%0.2f",$pledge->amount) }} per win.
 							@if ($pledge->message)
@@ -64,10 +63,10 @@
 							@endif
 						</li>
 					@endforeach
-				</ul>
-			@else
-				<p>No pledges yet!</p>
-			@endif
+				@else
+					<li>No pledges yet!</li>
+				@endif
+			</ul>
 		</div>
 		<div class="col-xs-12 col-md-6">
 			<h2>Stats</h2>

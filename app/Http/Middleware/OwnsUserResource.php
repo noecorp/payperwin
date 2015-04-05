@@ -41,6 +41,10 @@ class OwnsUserResource {
 				return abort(401);
 			}
 		}
+		else
+		{
+			return abort(401);
+		}
 
 		return $next($request);
 	}

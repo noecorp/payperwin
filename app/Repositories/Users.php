@@ -20,7 +20,10 @@ class Users extends AbstractRepository implements UsersRepository {
 	 */
 	public function create(array $data)
 	{
-		$data['password'] = $this->container->make('hash')->make($data['password']);
+		if (isset($data['password']))
+		{
+			$data['password'] = $this->container->make('hash')->make($data['password']);
+		}
 
 		return parent::create($data);
 	}

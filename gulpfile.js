@@ -85,6 +85,10 @@ elixir(function(mix) {
 			'public/js/vendor/bootstrap.datepicker.min.js'
 		)
 		.scripts([
+			'public/js/vendor/bootstrap.modal.js',
+			'public/js/vendor/bootstrap.datepicker.min.js'	
+		], 'public/js/vendor/bootstrap.js', 'public/js')
+		.scripts([
 			'app.js',
 			'app/Controllers/*',
 			'init.js'
