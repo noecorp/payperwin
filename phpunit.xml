@@ -23,6 +23,7 @@
     </listeners>
     <php>
         <ini name="memory_limit" value="512M"/>
+        <env name="APP_KEY" value="foo"/>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_URL" value="http://payperwin.app"/>
         <env name="CACHE_DRIVER" value="array"/>
