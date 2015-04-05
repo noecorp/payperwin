@@ -25,7 +25,7 @@ class UsersPledges extends Controller {
 
 		$pledges = $pledges->withStreamer()->latest()->limit(10)->fromUser($userId)->all();
 
-		return 'test';//$view->make('users.pledges.index')->with(compact('user','pledges'));
+		return $view->make('users.pledges.index')->with(compact('user','pledges'));
 	}
 
 }

@@ -7,7 +7,7 @@ class UsersPledgesTest extends \AppTests\TestCase {
 		$response = $this->call('GET','users/1/pledges');
 
 		$this->assertResponseOk();
-		// $this->assertViewHas('pledges');
+		$this->assertViewHas('pledges');
 	}
 
 	public function testIndexOkWithPledges()
@@ -15,7 +15,7 @@ class UsersPledgesTest extends \AppTests\TestCase {
 		$response = $this->call('GET','users/2/pledges');
 
 		$this->assertResponseOk();
-		// $this->assertViewHas('pledges');
+		$this->assertViewHas('pledges');
 	}
 
 	public function testIndexAbortsWhenNotFound()
