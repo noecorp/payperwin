@@ -23,5 +23,5 @@ after-script:
     - php vendor/bin/coveralls -v
 
 after_failure:
-    # - cat app/storage/logs/laravel.log
+    - cat storage/logs/*
     # - cat tests/_output/*
