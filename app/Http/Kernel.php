@@ -1,5 +1,6 @@
 <?php namespace App\Http;
 
+use App\Http\Middleware\PaypalVerifyIPN;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel {
@@ -30,7 +31,8 @@ class Kernel extends HttpKernel {
 		'own.user' => 'App\Http\Middleware\OwnsUserResource',
 		'own.pledge' => 'App\Http\Middleware\OwnsPledgeResource',
 		'ajax' => 'App\Http\Middleware\OnlyRespondIfAjax',
-		'json' => 'App\Http\Middleware\JsonIsExpected'
+		'json' => 'App\Http\Middleware\JsonIsExpected',
+		'paypal.verfiy.ipn' => PaypalVerifyIPN::class,
 	];
 
 }
