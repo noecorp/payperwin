@@ -34,6 +34,12 @@
 					</div>
 				</div>
 			</form>
+
+			{{--
+			@include('deposits.paypalButton', ['amount'=>20, 'sandbox'=>true])
+			@include('deposits.paypalButton', ['amount'=>50, 'sandbox'=>true])
+			--}}
+
 		</div>
 	</div>
 @endsection
