@@ -11,7 +11,9 @@ Use this request to get a list of latest pledges, ordered latest to earliest, fo
 ### Request Format
 
 *Method:* GET
+
 *URI:* `streamers/<twitch-username>/pledges`
+
 *Query Parameters:*
 - `after`: the date as a unix timestamp after which the pledges should have been created, not including the date itself (no default)
 - `limit`: the number of results per page (default `50`, max `500`)
@@ -26,9 +28,12 @@ https://payperwin.gg/api/v1/streamers/imaqtpie/pledges?after=1427825237&limit=10
 ### Response Format
 
 *HTTP Status:* `200 OK`
+
 *Header:* `Content-type: application/json`
+
 *Content:* the returned content contains the following field structure:
 - `pledges`: (array) list of pledges, each having:
+
   - `id`: (integer) the pledge's unique identifier
   - `type`: (string) the 
   - `amount`: (number) amount in USD that the streamer will earn from each each winning game
@@ -90,7 +95,9 @@ https://payperwin.gg/api/v1/streamers/imaqtpie/pledges?after=1427825237&limit=10
 #### Invalid Streamer
 
 *HTTP Status:* `404 Not Found`
+
 *Header:* `Content-type: application/json`
+
 *Content:*
 
 ```json
@@ -107,7 +114,9 @@ Apart from typos, the streamer specified by Twitch username might be invalid for
 #### Invalid Request
 
 *HTTP Status:* `400 Bad Request`
+
 *Header:* `Content-type: application/json`
+
 *Content:*
 
 ```json
@@ -120,7 +129,7 @@ Apart from typos, the streamer specified by Twitch username might be invalid for
 }
 ```
 
-This may be thrown one of the query parameters is invalid. For example:
+This may be thrown if one or more of the query parameters is invalid. For example:
 
 ```json
 curl https://payperwin.gg/api/v1/streamers/imaqtpie/pledges?after=foo
@@ -138,8 +147,11 @@ curl https://payperwin.gg/api/v1/streamers/imaqtpie/pledges?after=foo
 #### Server Error
 
 *HTTP Status:* `500 Internal Server Error`
+
 *Header:* `Content-type: application/json`
+
 *Content:*
+
 ```json
 {
   "error": "Server error"
