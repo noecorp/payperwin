@@ -2,7 +2,6 @@
 
 use App\Commands\Command;
 
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldBeQueued;
@@ -16,7 +15,7 @@ use Carbon\Carbon;
 
 class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 
-	use InteractsWithQueue, SerializesModels;
+	use InteractsWithQueue;
 
 	/**
 	 * Streamer identifier for whom to fetch latest matches.
@@ -81,6 +80,8 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 		}
 
 		$distribute->pledgesFor($this->streamerId);
+
+		$this->delete();
 	}
 
 }

@@ -21,7 +21,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'username', 'email', 'twitch_id', 'facebook_id', 'twitch_username', 'password', 'streamer', 'summoner_id', 'region', 'funds', 'earnings'];
+	protected $fillable = ['name', 'username', 'email', 'twitch_id', 'facebook_id', 'twitch_username', 'password', 'streamer', 'summoner_id', 'summoner_name', 'region', 'funds', 'earnings', 'live','avatar'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -31,7 +31,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	protected $hidden = ['password', 'remember_token'];
 
 	protected $casts = [
-		'streamer' => 'boolean'
+		'streamer' => 'boolean',
+		'funds' => 'float',
+		'earnings' => 'float'
 	];
 
 	public function pledges()

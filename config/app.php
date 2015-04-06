@@ -26,7 +26,7 @@ return [
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => env('APP_URL','http://localhost'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -139,7 +139,8 @@ return [
 		/*
 		 * External Service Providers...
 		 */
-		'SocialiteProviders\Manager\ServiceProvider',		
+		'SocialiteProviders\Manager\ServiceProvider',
+		'Intervention\Image\ImageServiceProvider',
 
 		/*
 		 * Application Service Providers...

@@ -1,0 +1,30 @@
+language: php
+
+php:
+    - 5.5
+
+matrix:
+    fast_finish: true
+
+before_script:
+    - phpenv config-add .travis.config.ini
+    # - phpenv config-rm xdebug.ini
+
+    - composer self-update
+    - composer install --prefer-source --no-interaction --dev
+
+    - npm install -global gulp
+    - npm install -g bower
+    - npm install
+    - bower install
+    - gulp
+
+script:
+    # - phpunit --testsuite=Unit --coverage-clover tests/clover-unit.xml
+    - phpunit --testsuite=Functional --coverage-clover tests/logs/clover-functional.xml
+
+after_script:
+    - php vendor/bin/coveralls -v
+
+after_failure:
+    - cat storage/logs/*

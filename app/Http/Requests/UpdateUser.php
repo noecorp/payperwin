@@ -12,7 +12,13 @@ class UpdateUser extends Request {
 	public function rules()
 	{
 		return [
-			
+			'username' => 'max:100',
+			'email' => 'email|max:254|unique:users,email,'.$this->get('_user_id'),
+			'password' => 'min:8|confirmed',
+			'streamer' => 'in:1,0',
+			'summoner_id' => 'integer',
+			'summoner_name' => 'min:1|max:64',
+			'region' => 'in:br,eune,euw,kr,lan,las,na,oce,ru,tr',
 		];
 	}
 

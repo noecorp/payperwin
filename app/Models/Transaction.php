@@ -23,4 +23,8 @@ class Transaction extends Model {
 	 */
 	protected $hidden = [];
 
+	protected $casts = [
+		'amount' => 'float'
+	];
+
 }

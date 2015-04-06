@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
 use Illuminate\Routing\Redirector as Redirect;
+use Intervention\Image\ImageManager;
 
 class Auth extends Controller {
 
@@ -65,7 +66,7 @@ class Auth extends Controller {
 		$this->view = $view;
 		$this->redirect = $redirect;
 
-		$this->middleware('guest', ['except' => 'getLogout']);
+		$this->middleware('guest', ['except' => ['getLogout','getWith','getProvider']]);
 	}
 
 	/**
@@ -88,7 +89,7 @@ class Auth extends Controller {
 	 */
 	public function postRegister(\App\Http\Requests\Register $request)
 	{
-		$this->auth->login($this->users->create($request->all()));
+		$this->auth->login($this->users->create($request->all()),true);
 
 		return $this->redirect->to('/auth/register');
 	}
@@ -116,7 +117,7 @@ class Auth extends Controller {
 
 		if ($this->auth->attempt($credentials, $request->has('remember')))
 		{
-			return $this->redirect->intended('/dashboard');
+			return $this->redirect->intended('/auth/login');
 		}
 
 		return $this->redirect->to('/auth/login')
@@ -169,7 +170,7 @@ class Auth extends Controller {
 		else
 		{
 			$user = $this->socialite->with($provider)->user();
-
+			
 			if (!$user->email)
 			{
 				return $this->redirectWithSocialError('email');
@@ -179,26 +180,43 @@ class Auth extends Controller {
 
 			if ($existing)
 			{
-				return $this->loginExisting($existing);
+				if ($this->auth->guest())
+					return $this->loginExisting($existing);
+				else
+					return $this->redirect->to('/users/'.$existing->id);
 			}
 			else
 			{
-				// What if the username is already taken in the system?
 
-				if ($provider == 'twitch')
+				if ($this->auth->guest())
 				{
-					$existing = $this->users->havingUsername($user->getNickname())->find();
-					
-					if ($existing)
+					// What if the username is already taken in the system?
+
+					if ($provider == 'twitch')
 					{
-						// We'll set it to null for now and require that it be set later
-						$user->nickname = null;
+						$existing = $this->users->havingUsername($user->getNickname())->find();
+						
+						if ($existing)
+						{
+							// We'll set it to null for now and require that it be set later
+							$user->nickname = null;
+						}
 					}
+
+					$newUser = $this->createWithSocial($provider, $user);
+
+					return $this->loginExisting($newUser, '/start');
 				}
+				else
+				{
+					$this->users->update($this->auth->user(),[
+						'twitch_id' => $user->getId(),
+						'twitch_username' => $user->getNickname(),
+						'avatar' => $this->getLocalImagePath($user)
+					]);
 
-				$newUser = $this->createWithSocial($provider, $user);
-
-				return $this->loginExisting($newUser, '/profile');
+					return $this->redirect->to('/users/'.$this->auth->user()->id.'/edit');
+				}
 			}
 		}
 	}
@@ -220,12 +238,19 @@ class Auth extends Controller {
 
 	protected function loginExisting(\App\Models\User $user, $uri = null)
 	{
-		$this->auth->login($user);
+		$this->auth->login($user, true);
 
 		if ($uri)
 			return $this->redirect->to($uri);
 
-		return $this->redirect->to('/dashboard');
+		if ($this->auth->user()->streamer)
+		{
+			return $this->redirect->to('/streamers/'.$user->id);
+		}
+		else
+		{
+			return $this->redirect->to('/users/'.$user->id);	
+		}
 	}
 
 	protected function createWithSocial($provider, \Laravel\Socialite\Contracts\User $user)
@@ -245,11 +270,47 @@ class Auth extends Controller {
 			$data['facebook_id'] = $user->getId();
 		}
 
+		$data['avatar'] = $this->getLocalImagePath($user);
+
 		return $this->users->create($data);
 
 		### -> flash something?
 		### -> redirect to choosing username and password
 		### -> if email null, account locked until email set
+	}
+
+	protected function getImageManager()
+	{
+		return new ImageManager(config('image'));
+	}
+
+	protected function getLocalImagePath(\Laravel\Socialite\Contracts\User $user)
+	{
+		if (!$user->getAvatar())
+		{
+			return null;
+		}
+
+		$manager = $this->getImageManager();
+
+		$url = $user->getAvatar();
+
+		$img = $manager->make($url)->widen(100);
+
+		$hash = md5($user->getEmail());
+
+		$folder = 'avatars/'.substr($hash, 0, 2).'/'.substr($hash, 2, 2);
+
+		if (!is_dir($folder))
+			mkdir(public_path($folder), 0775, true);
+
+		$path = $folder.'/'.time().'.'.preg_replace('/^.*\.(jpg|jpeg|png|gif)$/i', '$1', $url);
+
+		$img->save($path,100);
+
+		chmod(public_path($path), 0774);
+
+		return $path;
 	}
 
 }

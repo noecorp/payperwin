@@ -2,6 +2,8 @@
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpFoundation\Response;
 
 class Handler extends ExceptionHandler {
 
@@ -36,6 +38,27 @@ class Handler extends ExceptionHandler {
 	 */
 	public function render($request, Exception $e)
 	{
+		if ($request->ajax() || $request->expectsJson)
+		{
+			if ($e instanceof HttpException)
+			{
+				$data = ['error' => Response::$statusTexts[$e->getStatusCode()]];
+
+				$message = $e->getMessage();
+				if ($message)
+				{
+					$json = json_decode($message);
+					$data['reason'] = ($json) ?: $message;
+				}
+
+				return response()->make($data, $e->getStatusCode(), ['Content-type' => 'application/json']);
+			}
+			else
+			{
+				return response()->make(['error'=>'Server Error'], 500, ['Content-type' => 'application/json']);
+			}
+		}
+
 		return parent::render($request, $e);
 	}
 

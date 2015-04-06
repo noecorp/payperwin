@@ -2,6 +2,7 @@
 
 use App\Contracts\Repository\RepositoryContract;
 use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Container\Container;
 use Carbon\Carbon;
 
 abstract class AbstractRepository implements RepositoryContract {
@@ -25,19 +26,27 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * Cache repository instance
 	 *
-	 * @var \Illuminate\Contracts\Cache\Repository
+	 * @var Cache
 	 */
 	protected $cache;
+
+	/**
+	 * App container instance
+	 *
+	 * @var Container
+	 */
+	protected $container;
 
 	/**
 	 * Create a new instance of the repository.
 	 *
 	 * @param Cache $cache
 	 */
-	public function __construct(Cache $cache)
+	public function __construct(Cache $cache, Container $container)
 	{
 		$this->model = $this->model();
 		$this->cache = $cache;
+		$this->container = $container;
 	}
 
 	/**
@@ -179,8 +188,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	{
 		if (empty($ids)) return;
 
-		$this->query()->whereIn('id',$ids)->increment($column);
-		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now()]);
+		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now(), $column => $this->container->make('db')->raw('`'.$column.'` + 1')]);
 
 		$this->cache->tags($this->model->getTable())->flush();
 
@@ -227,6 +235,57 @@ abstract class AbstractRepository implements RepositoryContract {
 		$results = $this->cache->tags($tags)->rememberForever($hash, function()
 		{
 		    return $this->query()->get();
+		});
+
+		$this->reset();
+
+		return $results;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function count()
+	{
+		$hash = $this->getQueryHash();
+
+		$tags = $this->getCacheTags();
+
+		$results = $this->cache->tags($tags)->rememberForever($hash, function()
+		{
+		    return $this->query()->count('id');
+		});
+
+		$this->reset();
+
+		return $results;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function average($column)
+	{
+		return $this->calculate('avg',$column);
+	}
+
+	/**
+	 * Perform a calculation query.
+	 *
+	 * @param string $type
+	 * @param string $column
+	 *
+	 * @return mixed
+	 */
+	protected function calculate($type, $column)
+	{
+		$hash = $this->getQueryHash();
+
+		$tags = $this->getCacheTags();
+
+		$results = $this->cache->tags($tags)->rememberForever($hash, function() use ($type, $column)
+		{
+			return call_user_func([$this->query(),$type],$column);
 		});
 
 		$this->reset();

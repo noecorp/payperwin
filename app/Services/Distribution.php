@@ -90,7 +90,7 @@ class Distribution implements DistributionInterface {
 			$won = ($pledge->win_limit !== null && $pledge->times_donated >= $pledge->win_limit);
 
 			// ...and reaching their total pledged limit.
-			$spent = ($pledge->sum_limit !== null && ($pledge->times_donated * $pledge->amount) >= $pledge->sum_limit);
+			$spent = ($pledge->spending_limit !== null && ($pledge->times_donated * $pledge->amount) >= $pledge->spending_limit);
 
 			return ($dated || $won || $spent);
 		});
@@ -156,7 +156,7 @@ class Distribution implements DistributionInterface {
 					$won = ($pledge->win_limit !== null && ($pledge->win_limit - 1) == $pledge->times_donated);
 
 					// Pledge has reached its total pledged limit
-					$spent = ($pledge->sum_limit !== null && ($pledge->sum_limit - ($pledge->times_donated * $pledge->amount)) == $pledge->amount);
+					$spent = ($pledge->spending_limit !== null && ($pledge->spending_limit - ($pledge->times_donated * $pledge->amount)) == $pledge->amount);
 
 					// Add this pledge to the expired list
 					if ($won || $spent)

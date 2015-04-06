@@ -68,6 +68,22 @@ interface RepositoryContract {
 	public function all();
 
 	/**
+	 * Count the number of results for the query.
+	 *
+	 * @return int
+	 */
+	public function count();
+	
+	/**
+	 * Calculate the average value for a column.
+	 *
+	 * @param string $column
+	 *
+	 * @return float
+	 */
+	public function average($column);
+
+	/**
 	 * Order query results by latest first.
 	 *
 	 * @return static

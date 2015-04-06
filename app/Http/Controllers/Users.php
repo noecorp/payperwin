@@ -52,9 +52,16 @@ class Users extends Controller {
 	{
 		$user = $this->users->find($id);
 
-		$pledges = $pledges->withStreamer()->latest()->limit(10)->fromUser($user->id)->all();
+		if (!$user) return abort(404);
 
-		return $this->view->make('users.show')->with(compact('user','pledges'));
+		$feed = $pledges->withStreamer()->latest()->limit(10)->fromUser($id)->all();
+
+		$average = round($pledges->fromUser($id)->average('amount'),2);
+		$highestPledge = $pledges->withStreamer()->forStreamer($id)->orderingByAmount()->find();
+
+		$stats = compact('average','highestPledge');
+
+		return $this->view->make('users.show')->with(compact('user','feed','stats'));
 	}
 
 	/**
@@ -66,6 +73,8 @@ class Users extends Controller {
 	public function edit($id)
 	{
 		$user = $this->users->find($id);
+
+		if (!$user) return abort(404);
 
 		return $this->view->make('users.edit')->with(compact('user'));
 	}
@@ -86,7 +95,7 @@ class Users extends Controller {
 
 		if ($request->ajax())
 		{
-			return $response->json(['']);
+			return $response->json(['success'=>true]);
 		}
 		else
 		{

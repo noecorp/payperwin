@@ -15,12 +15,9 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.1.3",
-    "bootstrap-sass-official": "~3.3.3",
-    "requirejs": "~2.1.16",
-    "requirejs-domready": "~2.0.1",
-    "requirejs-i18n": "~2.0.4",
-    "requirejs-router": "~0.8.0",
-    "requirejs-text": "~2.0.14"
+    "jquery": "2.1.3",
+    "bootstrap-sass-official": "3.3.3",
+    "flat-ui": "2.2.2",
+    "bootstrap-datepicker": "1.4.0"
   }
 }

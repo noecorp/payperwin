@@ -7,7 +7,8 @@ use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
 use App\Http\Requests\CreatePledge;
 use Illuminate\Routing\Redirector as Redirect;
-use App\Services\PledgeGuru;
+use Illuminate\Contracts\Routing\ResponseFactory as Response;
+use Carbon\Carbon;
 
 class Pledges extends Controller {
 
@@ -48,7 +49,7 @@ class Pledges extends Controller {
 		$this->redirect = $redirect;
 
 		$this->middleware('auth',['except'=>['index','show']]);
-		$this->middleware('own.pledge',['except'=>['index','show']]);
+		$this->middleware('own.pledge',['only'=>['edit','update']]);
 	}
 
 	/**
@@ -64,35 +65,18 @@ class Pledges extends Controller {
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @param Users $users
-	 * @param Request $request
-	 * @param PledgeGuru $guru
-	 *
-	 * @return Response
-	 */
-	public function create(Users $users, Request $request, PledgeGuru $guru)
-	{
-		$streamerId = $request->get('streamerId');
-
-		$streamer = ($streamerId) ? $users->isStreamer()->find($id) : null;
-
-		return $this->view->make('pledges.create')->with(compact('streamer','guru'));
-	}
-
-	/**
 	 * Store a newly created resource in storage.
 	 *
 	 * @param CreatePledge $request
+	 * @param Response $response
 	 *
 	 * @return Response
 	 */
-	public function store(CreatePledge $request)
-	{
+	public function store(CreatePledge $request, Response $response)
+	{	
 		$pledge = $this->pledges->create($request->all());
 
-		return $this->redirect->to('pledges/'.$pledge->id);
+		return $response->make(['id'=>$pledge->id], 201);
 	}
 
 	/**

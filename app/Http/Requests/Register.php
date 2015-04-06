@@ -15,6 +15,7 @@ class Register extends Request {
 			'username' => 'required|max:100',
 			'email' => 'required|email|max:254|unique:users',
 			'password' => 'required|confirmed|min:8',
+			'terms' => 'accepted'
 		];
 	}
 

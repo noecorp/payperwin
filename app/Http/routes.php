@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'Welcome@index');
+Route::get('start', 'Welcome@start');
 
 Route::get('home', 'Home@index');
 
@@ -20,11 +21,16 @@ Route::controllers([
 	'password' => 'Auth\Password',
 ]);
 
-Route::resource('users','Users',['except'=>'index','create','store','destroy']);
-Route::resource('streamers','Streamers',['only'=>'index','show']);
-Route::resource('pledges','Pledges',['except'=>'destroy']);
+Route::resource('users','Users',['except'=>['index','create','store','destroy']]);
+Route::resource('streamers','Streamers',['only'=>['index','show']]);
+Route::resource('pledges','Pledges',['except'=>['destroy','create']]);
 Route::resource('users.pledges','UsersPledges', ['only'=>'index']);
 Route::resource('streamers.pledges','StreamersPledges', ['only'=>'index']);
-Route::resource('deposits','Deposits',['only'=>'create','store']);
+Route::resource('deposits','Deposits',['only'=>['create','store']]);
+
+Route::controller('clients/league', 'Clients\League');
 
 Route::get('api/v1/streamers/{username}/pledges','Api\One\StreamersPledges@index');
+
+Route::get('privacy','Legal@privacy');
+Route::get('terms','Legal@terms');

@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected $commands = [
 		'App\Console\Commands\Impress',
+		'App\Console\Commands\Spy',
 		'App\Console\Commands\MakeTest',
 	];
 
@@ -24,6 +25,9 @@ class Kernel extends ConsoleKernel {
 	protected function schedule(Schedule $schedule)
 	{
 		$schedule->command('impress')
+				->everyFiveMinutes();
+
+		$schedule->command('spy')
 				->everyFiveMinutes();
 	}
 

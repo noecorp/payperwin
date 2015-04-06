@@ -25,6 +25,8 @@ class CreateUsersTable extends Migration {
 			$table->bigInteger('facebook_id')->unsigned()->nullable()->unique();
 			$table->bigInteger('twitch_id')->unsigned()->nullable()->unique();
 			$table->string('twitch_username',25)->nullable();
+			$table->string('short_url',32)->nullable();
+			$table->boolean('live')->default(0);
 
 			//Again, email can be missing when logging in through a social provider.
 			//It would have be set in the profile and the account would be locked without it.
@@ -34,12 +36,15 @@ class CreateUsersTable extends Migration {
 			//can be set after.
 			$table->string('password', 60)->nullable();
 
+			$table->string('avatar',32)->nullable();
+
 			$table->boolean('streamer')->default(0);
 
 			$table->decimal('funds',6,2)->default(0);
 			$table->decimal('earnings',8,2)->default(0);
 
-			$table->bigInteger('summoner_id')->unsigned()->nullable()->unique();
+			$table->bigInteger('summoner_id')->unsigned()->nullable();
+			$table->string('summoner_name',64)->nullable();
 			$table->string('region',10)->nullable();
 
 			$table->rememberToken();

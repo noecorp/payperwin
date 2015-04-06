@@ -2,6 +2,7 @@
 
 use Closure;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
+use Illuminate\Session\TokenMismatchException;
 
 class VerifyCsrfToken extends BaseVerifier {
 
@@ -14,7 +15,21 @@ class VerifyCsrfToken extends BaseVerifier {
 	 */
 	public function handle($request, Closure $next)
 	{
-		return parent::handle($request, $next);
+		try
+		{
+			return parent::handle($request, $next);
+		}
+		catch (TokenMismatchException $e)
+		{
+			if ($request->ajax())
+			{
+				return response("{}",418);
+			}
+			else
+			{
+				return abort(418, "I'm a teapot.");	
+			}
+		}
 	}
 
 }
