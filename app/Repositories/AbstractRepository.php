@@ -5,6 +5,8 @@ use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Container\Container;
 use Carbon\Carbon;
+use App\Models\Model;
+use App\Exceptions\Repositories\ModelClassMismatch;
 
 abstract class AbstractRepository implements RepositoryContract {
 
@@ -13,7 +15,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 *
 	 * Used to build queries.
 	 *
-	 * @var \Illuminate\Database\Eloquent\Model
+	 * @var Model
 	 */
 	protected $model;
 
@@ -61,7 +63,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * Get a clean model instance specific to this repository.
 	 *
-	 * @return \Illuminate\Database\Eloquent\Model
+	 * @return Model
 	 */
 	abstract protected function model();
 
@@ -170,47 +172,27 @@ abstract class AbstractRepository implements RepositoryContract {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @throws ModelClassMismatch
 	 */
-	public function update($id, array $data, $return = true)
+	public function update(Model $model, array $data)
 	{
-		$model = null;
+		if (!is_a($model, get_class($this->model))) throw new ModelClassMismatch;
 
-		if ( is_a($id, get_class($this->model)) )
+		$model->fill($data);
+		
+		if ($model->isDirty())
 		{
-			$model = $id;
-			$id = $model->id;
-		}
-
-		if (!$return)
-		{
-			$data['updated_at'] = Carbon::now();
-			
-			$this->query()->where('id',$id)->update($data);
+			$model->save(); 
 
 			$this->cache->tags($this->model->getTable())->flush();
-
-			$this->reset();
-
-			return;
-		}
-		else
-		{
-			if (!$model) $model = $this->query()->findOrFail($id);
-
-			$model->fill($data);
 			
-			if ($model->isDirty())
-			{
-				$model->save(); 
-
-				$this->cache->tags($this->model->getTable())->flush();
-			}
 			$this->events->fire($this->eventForModelUpdated($model));
-
-			$this->reset();
-
-			return $model;
 		}
+
+		$this->reset();
+
+		return $model;
 	}
 
 	/**

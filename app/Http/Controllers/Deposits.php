@@ -50,7 +50,7 @@ class Deposits extends Controller {
 		$acid->transaction(function() use ($request, $auth, $users, $deposits)
 		{
 			// $deposits->create($request->all());
-			$users->update($auth->user()->id, ['funds'=>$auth->user()->funds + $request->get('amount')]);
+			$users->update($auth->user(), ['funds'=>$auth->user()->funds + $request->get('amount')]);
 		});
 
 		return $redirect->back()->withSuccess('Done!');

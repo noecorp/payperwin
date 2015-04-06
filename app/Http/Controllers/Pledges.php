@@ -117,7 +117,11 @@ class Pledges extends Controller {
 	 */
 	public function update(\App\Requests\UpdatePledge $request, $id)
 	{
-		$pledge = $this->pledges->update($id,$request->all());
+		$pledge = $this->pledges->find($id);
+
+		if (!$pledge) return abort(404);
+
+		$this->pledges->update($pledge,$request->all());
 
 		return $this->redirect->back()->withSuccess('Done!');
 	}
