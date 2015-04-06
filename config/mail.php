@@ -15,7 +15,7 @@ return [
 	|
 	*/
 
-	'driver' => 'smtp',
+	'driver' => env('MAIL_DRIVER'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
 	|
 	*/
 
-	'from' => ['address' => null, 'name' => null],
+	'from' => ['address' => env('MAIL_FROM_EMAIL'), 'name' => 'PayPerWin'],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -119,6 +119,16 @@ return [
 	|
 	*/
 
-	'pretend' => false,
+	'pretend' => env('MAIL_PRETEND', false),
+
+	/*
+	|--------------------------------------------------------------------------
+	| Admin Email
+	|--------------------------------------------------------------------------
+	|
+	| Used for specific notifications.
+	|
+	*/
+	'admin' => env('MAIL_ADMIN_EMAIL')
 
 ];
