@@ -230,7 +230,7 @@ class IPNListenerTest extends TestCase
     public function getUsersRepo()
     {
         //return a cacheless user repo to avoid possible side effects (users not updated on find etc.)
-        return new \App\Repositories\Users(new Repository(new NullStore()));
+        return new \App\Repositories\Users(new Repository(new NullStore()), $this->app);
     }
 
     public function getUsersRepoMock()

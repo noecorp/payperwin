@@ -3,16 +3,16 @@
 use App\Contracts\Repository\Deposits as DepositsRepository;
 use App\Models\Deposit;
 use Illuminate\Cache\NullStore;
-
+use Illuminate\Contracts\Container\Container;
 
 class Deposits extends AbstractRepository implements DepositsRepository
 {
 
 
-    public function __construct()
+    public function __construct(Container $container)
     {
         //disable cache
-        parent::__construct(new \Illuminate\Cache\Repository(new NullStore()));
+        parent::__construct(new \Illuminate\Cache\Repository(new NullStore()), $container);
     }
 
     /**
