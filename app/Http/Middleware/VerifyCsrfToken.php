@@ -15,6 +15,17 @@ class VerifyCsrfToken extends BaseVerifier {
 	 */
 	public function handle($request, Closure $next)
 	{
+		$routes = [
+			'/payment/paypal/ipn/',
+		];
+
+		foreach($routes as $route) {
+
+			if (substr($request->getPathInfo(), 0, strlen($route)) === $route) {
+				return $this->addCookieToResponse($request, $next($request));
+			}
+		}
+
 		try
 		{
 			return parent::handle($request, $next);
