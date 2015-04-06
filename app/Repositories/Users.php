@@ -73,9 +73,9 @@ class Users extends AbstractRepository implements UsersRepository {
 		return $this;
 	}
 
-	public function havingStreamingUsername($streamingUsername)
+	public function havingTwitchUsername($twitchUsername)
 	{
-		$this->query()->whereStreamingUsername($streamingUsername);
+		$this->query()->whereTwitchUsername($twitchUsername);
 
 		return $this;
 	}
