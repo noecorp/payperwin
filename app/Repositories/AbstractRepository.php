@@ -2,6 +2,7 @@
 
 use App\Contracts\Repository\RepositoryContract;
 use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Container\Container;
 use Carbon\Carbon;
 
@@ -31,6 +32,13 @@ abstract class AbstractRepository implements RepositoryContract {
 	protected $cache;
 
 	/**
+	 * Events dispatcher instance
+	 *
+	 * @var Events
+	 */
+	protected $events;
+
+	/**
 	 * App container instance
 	 *
 	 * @var Container
@@ -42,10 +50,11 @@ abstract class AbstractRepository implements RepositoryContract {
 	 *
 	 * @param Cache $cache
 	 */
-	public function __construct(Cache $cache, Container $container)
+	public function __construct(Cache $cache, Events $events, Container $container)
 	{
 		$this->model = $this->model();
 		$this->cache = $cache;
+		$this->events = $events;
 		$this->container = $container;
 	}
 
@@ -55,6 +64,42 @@ abstract class AbstractRepository implements RepositoryContract {
 	 * @return \Illuminate\Database\Eloquent\Model
 	 */
 	abstract protected function model();
+
+	/**
+	 * Get a model created event instance specific to this repository.
+	 *
+	 * @param Model $model
+	 *
+	 * @return \App\Events\Event
+	 */
+	abstract protected function eventForModelCreated($model);
+
+	/**
+	 * Get a model created event instance specific to this repository.
+	 *
+	 * @param array $models
+	 *
+	 * @return \App\Events\Event
+	 */
+	abstract protected function eventForModelsCreated(array $models);
+
+	/**
+	 * Get a model updated event instance specific to this repository.
+	 *
+	 * @param Model $model
+	 *
+	 * @return \App\Events\Event
+	 */
+	abstract protected function eventForModelUpdated($model);
+
+	/**
+	 * Get a model updated event instance specific to this repository.
+	 *
+	 * @param array $models
+	 *
+	 * @return \App\Events\Event
+	 */
+	abstract protected function eventForModelsUpdated(array $models);
 
 	/**
 	 * Get the current query or create a new one.
@@ -88,6 +133,8 @@ abstract class AbstractRepository implements RepositoryContract {
 		$this->cache->tags($this->model->getTable())->flush();
 
 		$this->reset();
+
+		$this->events->fire($this->eventForModelCreated());
 
 		return $model;
 	}
@@ -158,6 +205,7 @@ abstract class AbstractRepository implements RepositoryContract {
 
 				$this->cache->tags($this->model->getTable())->flush();
 			}
+			$this->events->fire($this->eventForModelUpdated($model));
 
 			$this->reset();
 
