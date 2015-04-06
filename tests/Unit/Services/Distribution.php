@@ -1,4 +1,4 @@
-<?php namespace AppTests\Services;
+<?php namespace AppTests\Unit\Services;
 
 use Mockery as m;
 use App\Services\Distribution as DistributionService;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace AppTests\Services;
+namespace AppTests\Unit\Services;
 
 
 use App\Contracts\Service\Acidifier;

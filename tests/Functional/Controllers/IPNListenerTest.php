@@ -1,8 +1,7 @@
 <?php
 
 
-namespace AppTests\Services;
-
+namespace AppTests\Functional\Controllers;
 
 use App\Contracts\Service\Acidifier;
 use AppTests\TestCase;
