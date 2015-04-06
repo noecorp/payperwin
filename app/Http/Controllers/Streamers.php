@@ -66,7 +66,9 @@ class Streamers extends Controller {
 	 */
 	public function show(Pledges $pledges, PledgeGuru $guru, $id)
 	{
-		$streamer = $this->users->isStreamer()->find($id);
+		$streamer = $this->users->isStreamer()->hasTwitchId()->hasSummonerId()->find($id);
+
+		if (!$streamer) return abort(404);
 
 		$feed = $pledges->withOwner()->forStreamer($id)->latest()->limit(10)->all();
 
