@@ -4,6 +4,7 @@ use App\Contracts\Repository\RepositoryContract;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Container\Container;
 use Carbon\Carbon;
+use Mockery as m;
 
 abstract class AbstractRepository implements RepositoryContract {
 
@@ -184,11 +185,12 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function incrementAll(array $ids, $column)
+	public function incrementAll(array $ids, $column, $amount=1)
 	{
 		if (empty($ids)) return;
 
-		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now(), $column => $this->container->make('db')->raw('`'.$column.'` + 1')]);
+//		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now(), $column => $this->container->make('db')->raw('`'.$column.'` + 1')]);
+		$this->query()->whereIn('id',$ids)->increment($column, $amount,['updated_at' => Carbon::now()]);
 
 		$this->cache->tags($this->model->getTable())->flush();
 

@@ -46,10 +46,11 @@ interface RepositoryContract {
 	 *
 	 * @param array $ids
 	 * @param string $column
+	 * @param float $amount
 	 *
 	 * @return void
 	 */
-	public function incrementAll(array $ids, $column);
+	public function incrementAll(array $ids, $column, $amount=1.0);
 
 	/**
 	 * Fetch the model that has the specified id or the first model from the query.
