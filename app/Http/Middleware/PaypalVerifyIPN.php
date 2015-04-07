@@ -29,14 +29,9 @@ class PaypalVerifyIPN
      */
     public function handle(Request $request, Closure $next)
     {
-        $testing = $request->get('test_ipn', 0) == 1;
-
         try {
-            if ($testing) {
-                $response = $this->client->get(env('PAYPAL_VERIFY_URL_SANDBOX'), ['query' => $request->except(['userId'])]);
-            } else {
-                $response = $this->client->get(env('PAYPAL_VERIFY_URL'), ['query' => $request->except(['userId'])]);
-            }
+
+            $response = $this->client->get(config('services.paypal.verify_url'), ['query' => $request->except(['userId'])]);
 
             //check if ipn message is actual a valid ipn message send by paypal
             if ('VERIFIED' !== $response->getBody()->getContents()) {
@@ -53,19 +48,19 @@ class PaypalVerifyIPN
         //now that this is an actual paypal ipn message check for integrity
 
         //check receiver email (beneficier)
-        if ($request->get('receiver_email') !== env('PAYPAL_RECEIVER')) {
+        if ($request->get('receiver_email') !== config('services.paypal.receiver')) {
             event(new WrongReceiver($request));
             return response(200);
         }
 
         //the custom field contains ppw value for asm accounting reasons
-        if ($request->get('custom') !== env('PAYPAL_CUSTOM_VALUE')) {
+        if ($request->get('custom') !== config('services.paypal.custom_value')) {
             event(new WrongCustom($request));
             return response(200);
         }
 
         //check currency
-        if ($request->get('mc_currency') !== env('PAYPAL_CURRENCY')) {
+        if ($request->get('mc_currency') !== config('services.paypal.currency')) {
             event(new WrongCurrency($request));
             return response(200);
         }

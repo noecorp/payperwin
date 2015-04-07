@@ -13,6 +13,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
 	public function boot(View $view)
 	{
 		$view->composer('*', 'App\Http\ViewComposers\Wildcard');
+		$view->composer('deposits.paypalButton', 'App\Http\ViewComposers\PaypalButton');
 	}
 
 	/**

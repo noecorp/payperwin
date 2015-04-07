@@ -24,8 +24,8 @@ class IPNListenerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        config(['database.default' => 'sqlite_testing']);
-        $this->artisan('migrate');
+
+        $this->artisan('migrate:refresh');
 
         $deposits = $this->getDepositRepo();
         $users = $this->getUsersRepo();
@@ -61,7 +61,6 @@ class IPNListenerTest extends TestCase
         //create dummy user to add funds to
         $user=$users->create([]);
         $this->assertNotNull($user);
-
 
         $gross=20;
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $this->generateCompleteMessageData($gross));
@@ -228,8 +227,7 @@ class IPNListenerTest extends TestCase
      */
     public function getUsersRepo()
     {
-        //return a cacheless user repo to avoid possible side effects (users not updated on find etc.)
-        return new \App\Repositories\Users(new Repository(new NullStore()), $this->app);
+        return new \App\Repositories\Users($this->app);
     }
 
     public function getUsersRepoMock()
@@ -281,9 +279,9 @@ class IPNListenerTest extends TestCase
             'payment_date' => Carbon::now()->format('H:i:s M d, Y T'),
             'payment_status' => 'Completed',
             'payer_email' => 'no@no.no',
-            'custom' => env('PAYPAL_CUSTOM_VALUE'),
-            'mc_currency' => env('PAYPAL_CURRENCY'),
-            'receiver_email' => env('PAYPAL_RECEIVER'),
+            'custom' => config('services.paypal.custom_value'),
+            'mc_currency' => config('services.paypal.currency'),
+            'receiver_email' => config('services.paypal.receiver'),
         ];
     }
 
@@ -319,12 +317,6 @@ class IPNListenerTest extends TestCase
                 'parent_txn_id' => $parentId,
                 'payment_status'=>'Canceled_Reversal',
             ]);
-    }
-
-    public function tearDown()
-    {
-        m::close();
-        parent::tearDown();
     }
 
     public static function calculateFee($gross)

@@ -20,7 +20,7 @@ return [
 	],
 
 	'mandrill' => [
-		'secret' => '',
+		'secret' => env('MANDRILL_KEY'),
 	],
 
 	'ses' => [
@@ -45,5 +45,11 @@ return [
 		'client_secret' => env('FACEBOOK_SECRET'),
 		'redirect' => env('FACEBOOK_REDIRECT_URI'),
 	],
+	'paypal' => [
+		'receiver' => env('PAYPAL_RECEIVER'),
+		'custom_value' => env('PAYPAL_CUSTOM_VALUE'),
+		'currency' => env('PAYPAL_CURRENCY'),
+		'verify_url' => env('PAYPAL_VERIFY_URL'),
+	]
 
 ];

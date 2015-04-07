@@ -36,4 +36,3 @@ Route::get('privacy','Legal@privacy');
 Route::get('terms','Legal@terms');
 
 Route::match(['get','post'], 'payment/paypal/ipn/{userId}', ['as' => 'paypalIpn', 'uses' => 'PaypalPaymentController@index'])->where(['userId' => '[0-9]+']);
-Route::match(['get'], 'deposit', ['as' => 'createDeposit', 'uses' => 'PaypalCreateDepositController@index']);

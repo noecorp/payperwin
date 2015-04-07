@@ -156,7 +156,6 @@ return [
 		'App\Providers\ViewComposerServiceProvider',
 
 		\App\Providers\GuzzleServiceProvider::class,
-		\App\Providers\PaypalButtonComposerProvider::class,
 
 	],
 

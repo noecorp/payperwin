@@ -25,7 +25,7 @@ class PaypalPaymentController extends Controller
     public function __construct()
     {
         //require verification middleware before processing ipn message
-        $this->middleware('paypal.verfiy.ipn');
+        $this->middleware('paypal.verify.ipn');
     }
 
     public function index($userId, Request $request, Deposits $deposits, Users $users, Acidifier $acid)

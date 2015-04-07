@@ -18,8 +18,8 @@ class UsersRepositoryTest extends TestCase {
 
     public function setUp() {
         parent::setUp();
-        config(['database.default'=>'sqlite_testing']);
-        $this->artisan('migrate');
+        
+        $this->artisan('migrate:refresh');
     }
 
     public function testDeleteUser() {

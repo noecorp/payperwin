@@ -13,28 +13,26 @@ class CreateDepositsTable extends Migration {
 	public function up()
 	{
 		Schema::create('deposits', function(Blueprint $table) {
-			$table->engine = 'InnoDB';
-
 			$table->increments('id');
 
 			$table->integer('user_id')->unsigned();
 
-			$table->string('payment_provider');
+			$table->string('payment_provider',24);
 
 			$table->string('transaction_id',128);
 
-			$table->string('parent_transaction_id')->nullable();
+			$table->string('parent_transaction_id',32)->nullable();
 
 			//assuming USD
 			$table->decimal('gross',12,2);
 
-			$table->string('email');
+			$table->string('email',254);
 
 			$table->decimal('fee', 12,2);
 
 			$table->dateTime('payment_date');
 
-			$table->string('status');
+			$table->string('status',32);
 
 			$table->integer('status_code')->unsigned;
 
@@ -44,10 +42,7 @@ class CreateDepositsTable extends Migration {
 
 			$table->timestamps();
 
-
 			$table->unique(['transaction_id','status']);
-			$table->foreign('user_id')->references('id')->on('users');
-
 		});
 	}
 

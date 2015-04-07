@@ -2,7 +2,12 @@
 
 use App\Contracts\Repository\Pledges as PledgesRepository;
 use App\Models\Pledge;
+use App\Models\Model;
 use Carbon\Carbon;
+use App\Events\Repositories\PledgeWasCreated;
+use App\Events\Repositories\PledgeWasUpdated;
+use App\Events\Repositories\PledgesWereCreated;
+use App\Events\Repositories\PledgesWereUpdated;
 
 class Pledges extends AbstractRepository implements PledgesRepository {
 
@@ -14,6 +19,46 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 	protected function model()
 	{
 		return new Pledge;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return PledgeWasCreated
+	 */
+	protected function eventForModelCreated(Model $model)
+	{
+		return new PledgeWasCreated($model);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return PledgesWereCreated
+	 */
+	protected function eventForModelsCreated(array $models)
+	{
+		return new PledgesWereCreated($models);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return PledgeWasUpdated
+	 */
+	protected function eventForModelUpdated(Model $model)
+	{
+		return new PledgeWasUpdated($model);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return PledgesWereUpdated
+	 */
+	protected function eventForModelsUpdated(array $models)
+	{
+		return new PledgesWereUpdated($models);
 	}
 
 	/**

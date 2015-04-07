@@ -3,7 +3,7 @@
 
 namespace AppTests\Unit\Services;
 
-
+use AppTests\Functional\Controllers\IPNListenerTest;
 use App\Contracts\Service\Acidifier;
 use App\Models\Deposit;
 use AppTests\TestCase;
@@ -23,8 +23,7 @@ class DepositsRepositoryTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        config(['database.default' => 'sqlite_testing']);
-        $this->artisan('migrate');
+        $this->artisan('migrate:refresh');
     }
 
     public function testCreateAndDeleteAndAll()
@@ -156,11 +155,5 @@ class DepositsRepositoryTest extends TestCase
     public function getDepositRepo()
     {
         return $this->app->make(Deposits::class);
-    }
-
-    public function tearDown()
-    {
-        m::close();
-        parent::tearDown();
     }
 }

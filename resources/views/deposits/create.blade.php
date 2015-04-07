@@ -35,9 +35,9 @@
 				</div>
 			</form>
 
-			{{--
-			@include('deposits.paypalButton', ['amount'=>20, 'sandbox'=>true])
-			@include('deposits.paypalButton', ['amount'=>50, 'sandbox'=>true])
+			{{-- 
+			@include('deposits.paypalButton', ['amount'=>20])
+			@include('deposits.paypalButton', ['amount'=>50])
 			--}}
 
 		</div>

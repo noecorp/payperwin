@@ -32,7 +32,7 @@ class Kernel extends HttpKernel {
 		'own.pledge' => 'App\Http\Middleware\OwnsPledgeResource',
 		'ajax' => 'App\Http\Middleware\OnlyRespondIfAjax',
 		'json' => 'App\Http\Middleware\JsonIsExpected',
-		'paypal.verfiy.ipn' => PaypalVerifyIPN::class,
+		'paypal.verify.ipn' => PaypalVerifyIPN::class,
 	];
 
 }

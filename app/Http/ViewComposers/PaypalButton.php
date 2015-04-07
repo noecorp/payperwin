@@ -32,18 +32,12 @@ class PaypalButton
      */
     public function compose(View $view)
     {
-        $auth = $this->auth;
-        $view->with('paypalReceiver', '');
-        $view->with('paypalIpnUrl', $auth->check()?route('paypalIpn',['userId'=> $auth->user()->id]):'');
-        $view->with('paypalUrl', function ($testing=true) use ($auth) {
-            if ($auth->check()) {
-                return $testing?env('PAYPAL_VERIFY_URL_SANDBOX'):env('PAYPAL_VERIFY_URL');
-            }
-            return '';
-        });
-        $view->with('paypalInvoice', $auth->check()?'user:'.$auth->user()->id:'');
-        $view->with('paypalCustom', env('PAYPAL_CUSTOM_VALUE'));
-        $view->with('paypalCurrency', env('PAYPAL_CURRENCY'));
+        $view->with('paypalReceiver', config('services.paypal.receiver'));
+        $view->with('paypalIpnUrl', $this->auth->check()?route('paypalIpn',['userId'=> $this->auth->user()->id]):'');
+        $view->with('paypalUrl', $this->auth->check()?config('services.paypal.verify_url'):'');
+        $view->with('paypalInvoice', $this->auth->check()?'user:'.$this->auth->user()->id:'');
+        $view->with('paypalCustom', config('services.paypal.custom_value'));
+        $view->with('paypalCurrency', config('services.paypal.currency'));
     }
 
 }
