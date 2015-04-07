@@ -2,6 +2,10 @@
 
 use App\Contracts\Repository\Matches as MatchesRepository;
 use App\Models\Match;
+use App\Events\Repositories\MatchWasCreated;
+use App\Events\Repositories\MatchWasUpdated;
+use App\Events\Repositories\MatchesWereCreated;
+use App\Events\Repositories\MatchesWereUpdated;
 
 class Matches extends AbstractRepository implements MatchesRepository {
 
@@ -13,6 +17,46 @@ class Matches extends AbstractRepository implements MatchesRepository {
 	protected function model()
 	{
 		return new Match;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return MatchWasCreated
+	 */
+	protected function eventForModelCreated($model)
+	{
+		return new MatchWasCreated($model);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return MatchesWereCreated
+	 */
+	protected function eventForModelsCreated(array $models)
+	{
+		return new MatchesWereCreated($models);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return MatchWasUpdated
+	 */
+	protected function eventForModelUpdated($model)
+	{
+		return new MatchWasUpdated($model);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return MatchesWereUpdated
+	 */
+	protected function eventForModelsUpdated(array $models)
+	{
+		return new MatchesWereUpdated($models);
 	}
 
 	/**

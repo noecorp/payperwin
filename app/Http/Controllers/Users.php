@@ -91,7 +91,11 @@ class Users extends Controller {
 	 */
 	public function update(UpdateUser $request, Response $response, Redirect $redirect, $id)
 	{
-		$user = $this->users->update($id, $request->all());
+		$user = $this->users->find($id);
+
+		if (!$user) return abort(404);
+
+		$this->users->update($user, $request->all());
 
 		if ($request->ajax())
 		{

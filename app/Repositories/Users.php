@@ -2,6 +2,10 @@
 
 use App\Contracts\Repository\Users as UsersRepository;
 use App\Models\User;
+use App\Events\Repositories\UserWasCreated;
+use App\Events\Repositories\UserWasUpdated;
+use App\Events\Repositories\UsersWereCreated;
+use App\Events\Repositories\UsersWereUpdated;
 
 class Users extends AbstractRepository implements UsersRepository {
 	
@@ -13,6 +17,46 @@ class Users extends AbstractRepository implements UsersRepository {
 	protected function model()
 	{
 		return new User;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return UserWasCreated
+	 */
+	protected function eventForModelCreated($model)
+	{
+		return new UserWasCreated($model);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return UsersWereCreated
+	 */
+	protected function eventForModelsCreated(array $models)
+	{
+		return new UsersWereCreated($models);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return UserWasUpdated
+	 */
+	protected function eventForModelUpdated($model)
+	{
+		return new UserWasUpdated($model);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @return UsersWereUpdated
+	 */
+	protected function eventForModelsUpdated(array $models)
+	{
+		return new UsersWereUpdated($models);
 	}
 
 	/**

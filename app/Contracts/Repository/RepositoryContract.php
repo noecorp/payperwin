@@ -1,5 +1,7 @@
 <?php namespace App\Contracts\Repository;
 
+use App\Models\Model;
+
 interface RepositoryContract {
 
 	/**
@@ -7,7 +9,7 @@ interface RepositoryContract {
 	 *
 	 * @param array $data
 	 *
-	 * @return \Illuminate\Database\Eloquent\Model
+	 * @return Model
 	 */
 	public function create(array $data);
 
@@ -23,13 +25,12 @@ interface RepositoryContract {
 	/**
 	 * Update and return the stored model based on id with the provided data.
 	 *
-	 * @param int|\Illuminate\Database\Eloquent\Model $id Id of the model to update or the actual model object.
+	 * @param Model $model The model to update.
 	 * @param array $data
-	 * @param boolean $return Whether or not to return the model object after updating.
 	 *
-	 * @return \Illuminate\Database\Eloquent\Model|void
+	 * @return Model
 	 */
-	public function update($id, array $data, $return = true);
+	public function update(Model $model, array $data);
 
 	/**
 	 * Update all stored models based on ids with the provided data.
@@ -56,7 +57,7 @@ interface RepositoryContract {
 	 *
 	 * @param int $id Optional
 	 *
-	 * @return \Illuminate\Database\Eloquent\Model|null
+	 * @return Model|null
 	 */
 	public function find($id = null);
 

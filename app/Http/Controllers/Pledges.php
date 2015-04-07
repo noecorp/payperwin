@@ -90,6 +90,8 @@ class Pledges extends Controller {
 	{
 		$pledge = $this->pledges->withOwner()->withStreamer()->find($id);
 
+		if (!$pledge) return abort(404);
+
 		return $this->view->make('pledges.show')->with(compact('pledge'));
 	}
 
@@ -104,6 +106,8 @@ class Pledges extends Controller {
 	{
 		$pledge = $this->pledges->withStreamer()->find($id);
 
+		if (!$pledge) return abort(404);
+
 		return $this->view->make('pledges.edit')->with(compact('pledge'));
 	}
 
@@ -117,7 +121,11 @@ class Pledges extends Controller {
 	 */
 	public function update(\App\Requests\UpdatePledge $request, $id)
 	{
-		$pledge = $this->pledges->update($id,$request->all());
+		$pledge = $this->pledges->find($id);
+
+		if (!$pledge) return abort(404);
+
+		$this->pledges->update($pledge,$request->all());
 
 		return $this->redirect->back()->withSuccess('Done!');
 	}

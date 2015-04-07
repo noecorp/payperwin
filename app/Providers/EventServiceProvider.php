@@ -11,9 +11,6 @@ class EventServiceProvider extends ServiceProvider {
 	 * @var array
 	 */
 	protected $listen = [
-		'event.name' => [
-			'EventListener',
-		],
 		'SocialiteProviders\Manager\SocialiteWasCalled' => [
 			'SocialiteProviders\Twitch\TwitchExtendSocialite@handle'
 		]
@@ -29,7 +26,7 @@ class EventServiceProvider extends ServiceProvider {
 	{
 		parent::boot($events);
 
-		//
+		$events->subscribe('App\Handlers\Events\Repositories\Users');
 	}
 
 }
