@@ -118,4 +118,11 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 		return $this;
 	}
 
+	public function mostSpent()
+	{
+		$this->query()->select('*',$this->container->make('db')->raw('sum(`amount` * `times_donated`) as spent'))->groupBy('user_id');
+
+		return $this;
+	}
+
 }

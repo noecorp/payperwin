@@ -73,12 +73,13 @@
 
 			@if (!$feed->isEmpty())
 				<ul>
+					<li>Top pledger: <a href="/users/{{ $stats['topPledger']->owner->id }}">{{ $stats['topPledger']->owner->username }}</a> with ${{ sprintf("%0.2f",$stats['topPledger']->spent) }} total</li>
 					<li>Average pledge: ${{ sprintf("%0.2f",$stats['average']) }}</li>
 					<li>Highest pledge: ${{ sprintf("%0.2f",$stats['highestPledge']->amount) }}, <a href="/users/{{ $stats['highestPledge']->owner->id }}">{{ $stats['highestPledge']->owner->username }}</a></li>
 				</ul>
 				<ul>
-					<li>Active pledges: #</li>
-					<li>Total pledges: #</li>
+					<li>Active pledges: {{ $stats['activePledges'] }}</li>
+					<li>Total pledges: {{ $stats['totalPledges'] }}</li>
 				</ul>
 				<ul>
 					<li>Recent wins: %</li>

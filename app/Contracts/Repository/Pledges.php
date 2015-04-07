@@ -13,5 +13,7 @@ interface Pledges extends RepositoryContract {
 	public function isRunning();
 	
 	public function orderingByAmount($highest = true);
+
+	public function mostSpent();
 	
 }
