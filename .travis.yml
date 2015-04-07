@@ -20,7 +20,7 @@ before_script:
     - gulp
 
 script:
-    # - phpunit --testsuite=Unit --coverage-clover tests/clover-unit.xml
+    - phpunit --testsuite=Unit --coverage-clover tests/clover-unit.xml
     - phpunit --testsuite=Functional --coverage-clover tests/logs/clover-functional.xml
 
 after_script:
