@@ -13,12 +13,10 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 
 	/**
 	 * {@inheritdoc}
-	 *
-	 * @return Pledge
 	 */
 	protected function model()
 	{
-		return new Pledge;
+		return Pledge::class;
 	}
 
 	/**

@@ -54,16 +54,16 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function __construct(Container $container)
 	{
-		$this->model = $this->model();
+		$this->model = $container->make($this->model());
 		$this->cache = $container->make('Illuminate\Contracts\Cache\Repository');
 		$this->events = $container->make('Illuminate\Contracts\Events\Dispatcher');
 		$this->container = $container;
 	}
 
 	/**
-	 * Get a clean model instance specific to this repository.
+	 * Get the class name of the model specific to this repository.
 	 *
-	 * @return Model
+	 * @return string
 	 */
 	abstract protected function model();
 
@@ -128,7 +128,9 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function create(array $data)
 	{
-		$model = $this->model->newInstance($data);
+		$model = $this->container->make($this->model());
+		
+		$model->fill($data);
 
 		$model->save();
 

@@ -12,12 +12,10 @@ class Transactions extends AbstractRepository implements TransactionsRepository 
 
 	/**
 	 * {@inheritdoc}
-	 *
-	 * @return Transaction
 	 */
 	protected function model()
 	{
-		return new Transaction;
+		return Transaction::class;
 	}
 
 	/**

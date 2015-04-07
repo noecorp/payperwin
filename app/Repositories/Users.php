@@ -12,12 +12,10 @@ class Users extends AbstractRepository implements UsersRepository {
 	
 	/**
 	 * {@inheritdoc}
-	 *
-	 * @return User
 	 */
 	protected function model()
 	{
-		return new User;
+		return User::class;
 	}
 
 	/**

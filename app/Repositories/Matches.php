@@ -12,12 +12,10 @@ class Matches extends AbstractRepository implements MatchesRepository {
 
 	/**
 	 * {@inheritdoc}
-	 *
-	 * @return Match
 	 */
 	protected function model()
 	{
-		return new Match;
+		return Match::class;
 	}
 
 	/**

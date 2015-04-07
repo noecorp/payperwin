@@ -23,12 +23,10 @@ class Deposits extends AbstractRepository implements DepositsRepository
 
     /**
      * {@inheritdoc}
-     *
-     * @return Deposit
      */
     protected function model()
     {
-        return new Deposit();
+        return Deposit::class;
     }
 
     /**
