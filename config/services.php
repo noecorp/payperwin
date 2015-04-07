@@ -46,6 +46,7 @@ return [
 		'redirect' => env('FACEBOOK_REDIRECT_URI'),
 	],
 	'paypal' => [
+		'submit_url' => env('PAYPAL_SUBMIT_URL'),
 		'receiver' => env('PAYPAL_RECEIVER'),
 		'custom_value' => env('PAYPAL_CUSTOM_VALUE'),
 		'currency' => env('PAYPAL_CURRENCY'),

@@ -1,5 +1,5 @@
 
-    <form name="_xclick" action="{{ $paypalUrl }}" method="post">
+    <form name="_xclick" action="{{ $paypalSubmitUrl }}" method="post">
         <input type="hidden" name="cmd" value="_xclick">
         <input type="hidden" name="business" value="{{ $paypalReceiver }}">
     <input type="hidden" name="currency_code" value="{{ $paypalCurrency }}">

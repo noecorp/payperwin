@@ -32,6 +32,7 @@ class PaypalButton
      */
     public function compose(View $view)
     {
+        $view->with('paypalSubmitUrl', config('services.paypal.submit_url'));
         $view->with('paypalReceiver', config('services.paypal.receiver'));
         $view->with('paypalIpnUrl', $this->auth->check()?route('paypalIpn',['userId'=> $this->auth->user()->id]):'');
         $view->with('paypalUrl', $this->auth->check()?config('services.paypal.verify_url'):'');
