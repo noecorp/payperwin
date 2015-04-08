@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use PHPUnit_Framework_Assert as PHPUnit;
+use Mockery as m;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
@@ -66,6 +67,11 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 	protected function clearLog()
 	{
 		exec('echo "" > '.storage_path().'/logs/laravel.log');
+	}
+
+	protected function getMockOf($className)
+	{
+		return m::mock($className);
 	}
 
 	/**
