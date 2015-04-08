@@ -58,8 +58,14 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		$this->artisan('migrate:rollback');
 		$this->artisan('cache:clear');
 		$this->flushSession();
+		$this->clearLog();
 
 		parent::tearDown();
+	}
+
+	protected function clearLog()
+	{
+		exec('echo "" > '.storage_path().'/logs/laravel.log');
 	}
 
 	/**
