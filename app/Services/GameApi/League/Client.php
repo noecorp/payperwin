@@ -32,7 +32,7 @@ class Client implements ClientInterface {
 
 		$this->baseUrl = 'api.pvp.net/api/lol/';
 
-		$this->apiKey = env('RIOT_KEY');
+		$this->apiKey = config('services.riot.key');
 
 		$this->player = $player;
 		$this->match = $match;

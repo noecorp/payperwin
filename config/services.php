@@ -45,12 +45,17 @@ return [
 		'client_secret' => env('FACEBOOK_SECRET'),
 		'redirect' => env('FACEBOOK_REDIRECT_URI'),
 	],
+
 	'paypal' => [
 		'submit_url' => env('PAYPAL_SUBMIT_URL'),
 		'receiver' => env('PAYPAL_RECEIVER'),
 		'custom_value' => env('PAYPAL_CUSTOM_VALUE'),
 		'currency' => env('PAYPAL_CURRENCY'),
 		'verify_url' => env('PAYPAL_VERIFY_URL'),
-	]
+	],
+
+	'riot' => [
+		'key' => env('RIOT_KEY'),
+	],
 
 ];
