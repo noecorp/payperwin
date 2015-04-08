@@ -4,6 +4,10 @@ use App\Events\Repositories\UserWasCreated;
 use App\Events\Repositories\UserWasUpdated;
 use App\Events\Repositories\UsersWereCreated;
 use App\Events\Repositories\UsersWereUpdated;
+
+use App\Contracts\Events\Model;
+use App\Contracts\Events\Models;
+
 use Illuminate\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;
 use App\Models\User;
@@ -26,9 +30,9 @@ class Users {
 	/**
 	 * Handle single user creation events.
 	 *
-	 * @param UserWasCreated $event
+	 * @param Model $event
 	 */
-	public function onUserWasCreated(UserWasCreated $event)
+	public function onUserWasCreated(Model $event)
 	{
 
 	}
@@ -36,24 +40,24 @@ class Users {
 	/**
 	 * Handle single user update events.
 	 *
-	 * @param UserWasUpdated $event
+	 * @param Model $event
 	 */
-	public function onUserWasUpdated(UserWasUpdated $event)
+	public function onUserWasUpdated(Model $event)
 	{
 		$user = $event->model();
 
 		if ($user->streamer && $user->twitch_id && $user->summoner_id && !$user->short_url)
 		{
-			$this->dispatcher->dispatchToQueue($this->commandForNotifyingAboutNewStreamer($user));
+			$this->dispatcher->dispatchToQueue(new NotifyAboutNewStreamer($user->id));
 		}
 	}
 
 	/**
 	 * Handle mass user creation events.
 	 *
-	 * @param UserWasCreated $event
+	 * @param Models $event
 	 */
-	public function onUsersWereCreated(UsersWereCreated $event)
+	public function onUsersWereCreated(Models $event)
 	{
 
 	}
@@ -61,9 +65,9 @@ class Users {
 	/**
 	 * Handle single user update events.
 	 *
-	 * @param UserWasUpdated $event
+	 * @param Models $event
 	 */
-	public function onUsersWereUpdated(UsersWereUpdated $event)
+	public function onUsersWereUpdated(Models $event)
 	{
 
 	}
@@ -76,15 +80,10 @@ class Users {
 	 */
 	public function subscribe(Events $events)
 	{
-		$events->listen('App\Events\Repositories\UserWasCreated', 'App\Handlers\Events\Repositories\Users@onUserWasCreated');
-		$events->listen('App\Events\Repositories\UsersWereCreated', 'App\Handlers\Events\Repositories\Users@onUsersWereCreated');
-		$events->listen('App\Events\Repositories\UserWasUpdated', 'App\Handlers\Events\Repositories\Users@onUserWasUpdated');
-		$events->listen('App\Events\Repositories\UsersWereUpdated', 'App\Handlers\Events\Repositories\Users@onUsersWereUpdated');
-	}
-
-	protected function commandForNotifyingAboutNewStreamer(User $streamer)
-	{
-		return new NotifyAboutNewStreamer($streamer->id);
+		$events->listen(UserWasCreated::class, 'App\Handlers\Events\Repositories\Users@onUserWasCreated');
+		$events->listen(UsersWereCreated::class, 'App\Handlers\Events\Repositories\Users@onUsersWereCreated');
+		$events->listen(UserWasUpdated::class, 'App\Handlers\Events\Repositories\Users@onUserWasUpdated');
+		$events->listen(UsersWereUpdated::class, 'App\Handlers\Events\Repositories\Users@onUsersWereUpdated');
 	}
 
 }
