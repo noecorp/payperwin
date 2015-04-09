@@ -4,16 +4,33 @@ use App\Contracts\Service\GameApi\League\Client as ClientInterface;
 
 use App\Contracts\Service\GameApi\Player;
 use App\Contracts\Service\GameApi\League\Match;
-
+use Illuminate\Contracts\Events\Dispatcher as Event;
 use GuzzleHttp\Client as Guzzle;
 
-use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ParseException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
 
+use App\Exceptions\Services\GameApi\PlayerNotFound;
+use App\Exceptions\Services\GameApi\MatchesNotFound;
+use App\Exceptions\Services\GameApi\RateLimitExceeded;
+use App\Exceptions\Services\GameApi\AccessUnauthorized;
+use App\Exceptions\Services\GameApi\InternalServerError;
+use App\Exceptions\Services\GameApi\ServiceUnavailable;
+use App\Exceptions\Services\GameApi\UnknownError;
+use App\Exceptions\Services\GameApi\BadRequest;
+
+use App\Events\Services\GameApi\RateLimitWasExceeded;
+use App\Events\Services\GameApi\AccessWasUnauthorized;
+use App\Events\Services\GameApi\ServiceWasUnavailable;
+use App\Events\Services\GameApi\RequestWasInvalid;
+use App\Events\Services\GameApi\ServerHadAnError;
+use App\Events\Services\GameApi\UnknownErrorOccurred;
+
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Container\Container;
 
 class Client implements ClientInterface {
 
@@ -26,16 +43,23 @@ class Client implements ClientInterface {
 	protected $player;
 	protected $match;
 
-	public function __construct(Guzzle $guzzle, Player $player, Match $match)
-	{
-		$this->guzzle = $guzzle;
+	protected $event;
 
+	protected $url;
+
+	protected $app;
+
+	public function __construct(Container $container)
+	{
 		$this->baseUrl = 'api.pvp.net/api/lol/';
 
 		$this->apiKey = config('services.riot.key');
 
-		$this->player = $player;
-		$this->match = $match;
+		$this->app = $container;
+		$this->guzzle = $this->app->make(Guzzle::class);
+		$this->player = $this->app->make(Player::class);
+		$this->match = $this->app->make(Match::class);
+		$this->event = $this->app->make(Event::class);
 	}
 
 	/**
@@ -43,21 +67,37 @@ class Client implements ClientInterface {
 	 */
 	public function summonerForNameInRegion($name, $region)
 	{
+		if (!$name || !$region)
+		{
+			throw new BadRequest;
+		}
+
+		$this->url = $this->url('v1.4/summoner/by-name/'.$name, $region);
+
 		$name = strtolower(str_replace(' ', '', $name));
 		
 		try
 		{
-			$response = $this->guzzle->get($this->url('v1.4/summoner/by-name/'.$name, $region), [
+			$response = $this->guzzle->get($this->url, [
 				'timeout' => $this->timeout(),
+				'connect_timeout' => $this->timeout(),
 				'exceptions' => true
 			]);
 
 			$object = $response->json();
 
 			return $this->player->create($object[$name]['id'],$object[$name]['name']);
-
-			// echo $response->getStatusCode();
-			// echo $response->getBody();
+		}
+		catch (ClientException $e)
+		{
+			switch ($e->getResponse()->getStatusCode()) {
+				case 404:
+					throw new PlayerNotFound;
+					break;
+				default:
+					return $this->handle($e);
+					break;
+			}
 		}
 		catch (\Exception $e)
 		{
@@ -70,15 +110,21 @@ class Client implements ClientInterface {
 	 */
 	public function matchHistoryForSummonerIdInRegion($summonerId, $region)
 	{
+		if (!$summonerId || !$region)
+		{
+			throw new BadRequest;
+		}
+
+		$this->url = $this->url('v2.2/matchhistory/'.$summonerId, $region, ['rankedQueues'=>'RANKED_SOLO_5x5']);
+
 		try
 		{
-			$response = $this->guzzle->get($this->url('v2.2/matchhistory/'.$summonerId, $region, ['rankedQueues'=>'RANKED_SOLO_5x5']), [
+			$response = $this->guzzle->get($this->url, [
 				'timeout' => $this->timeout(),
+				'connect_timeout' => $this->timeout(),
 				'exceptions' => true
 			]);
 
-			// echo $response->getStatusCode();
-			// echo $response->getBody();
 			$object = $response->json();
 
 			$matches = new Collection;
@@ -93,6 +139,18 @@ class Client implements ClientInterface {
 			});
 
 			return $matches;
+		}
+		catch (ClientException $e)
+		{
+			switch ($e->getResponse()->getStatusCode()) {
+				case 404:
+				case 422:
+					throw new MatchesNotFound;
+					break;
+				default:
+					return $this->handle($e);
+					break;
+			}
 		}
 		catch (\Exception $e)
 		{
@@ -124,35 +182,44 @@ class Client implements ClientInterface {
 
 	protected function handle(\Exception $e)
 	{
-		//temp
-		throw $e;
-
-		if ($e instanceof ClientException)
+		if ($e instanceof TooManyRedirectsException)
 		{
-			//throw App\Exceptions\Api\League\...
-			
-			echo $e->getRequest();
-			if ($e->hasResponse()) {
-		        echo $e->getResponse();
-		    }
-			// handle
+			$this->event->fire($this->app->make(ServerHadAnError::class,['league',$this->url]));
+			throw new InternalServerError;
 		}
-		else if ($e instanceof ServerException)
+		else if ($e instanceof RequestException)
 		{
-			//
-		}
-		else if ($e instanceof TooManyRedirectsException)
-		{
-			//
-		}
-		else if ($e instanceof ParseException)
-		{
-			//
+			switch ($e->getResponse()->getStatusCode()) {
+				case 400:
+					$this->event->fire($this->app->make(RequestWasInvalid::class,['league',$this->url]));
+					throw new BadRequest;
+					break;
+				case 429:
+					$this->event->fire($this->app->make(RateLimitWasExceeded::class,['league',$this->url]));
+					throw new RateLimitExceeded;
+					break;
+				case 401:
+					$this->event->fire($this->app->make(AccessWasUnauthorized::class,['league',$this->url]));
+					throw new AccessUnauthorized;
+					break;
+				case 503:
+					$this->event->fire($this->app->make(ServiceWasUnavailable::class,['league',$this->url]));
+					throw new ServiceUnavailable;
+					break;
+				case 500:
+					$this->event->fire($this->app->make(ServerHadAnError::class,['league',$this->url]));
+					throw new InternalServerError;
+					break;
+				default:
+					$this->event->fire($this->app->make(UnknownErrorOccurred::class,['league',$this->url]));
+					throw new UnknownError($e->getResponse()->getReasonPhrase());
+					break;
+			}
 		}
 		else
 		{
-
+			$this->event->fire($this->app->make(UnknownErrorOccurred::class,['league',$this->url,['message'=>$e->getMessage()]]));
+			throw new UnknownError($e->getMessage());
 		}
 	}
-
 }
