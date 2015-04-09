@@ -2,14 +2,6 @@
 
 @section('title', $streamer->username)
 
-@section('scripts')
-	<script src="{{ asset('js/vendor/bootstrap.js') }}"></script>
-@endsection
-
-@section('styles')
-	<link href="{{ asset('css/vendor/bootstrap.datepicker.min.css') }}" rel="stylesheet">
-@endsection
-
 @section('content')
 	<span data-model="User" data-id="{{ $streamer->id }}"></span>
 	<div class="row">
