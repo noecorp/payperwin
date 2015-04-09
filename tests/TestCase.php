@@ -41,9 +41,9 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		return PHPUnit::assertTrue(is_object($response) && isset($response->original) && $response->original instanceof \Illuminate\View\View);
 	}
 
-	public function responseJson()
+	public function responseJson($array = false)
 	{
-		return json_decode($this->response->getContent());
+		return json_decode($this->response->getContent(),$array);
 	}
 
 	public function setUp()
