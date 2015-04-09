@@ -1,10 +1,44 @@
 <?php namespace AppTests;
 
 use App\Models\User;
+
 use PHPUnit_Framework_Assert as PHPUnit;
 use Mockery as m;
 
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Subscriber\Mock;
+use GuzzleHttp\Message\Response;
+use GuzzleHttp\Stream\Stream;
+
 class TestCase extends \Illuminate\Foundation\Testing\TestCase {
+
+	protected function getGuzzleMock($status = 200, $headers = [], $content = '', $howMany = 1)
+	{
+		$client = new GuzzleClient();
+
+		$responses = [];
+
+		if (is_array($status))
+		{
+			for ($i = 0; $i < count($status); $i++)
+			{
+				$responses[] = new Response($status[$i], $headers[$i], Stream::factory($content[$i]));
+			}
+		}
+		else
+		{
+			for ($i = 1; $i <= $howMany; $i++)
+			{
+				$responses[] = new Response($status, $headers, Stream::factory($content));
+			}
+		}
+
+		$mock = new Mock($responses);
+
+		$client->getEmitter()->attach($mock);
+
+        return $client;
+	}
 
 	public function become($id)
 	{
