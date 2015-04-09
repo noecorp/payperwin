@@ -84,6 +84,10 @@ elixir(function(mix) {
 			'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 			'public/js/vendor/bootstrap.datepicker.min.js'
 		)
+		.copy(
+			'resources/assets/js/vendor/jquery.scrollintoview.js',
+			'public/js/vendor/jquery.scrollintoview.js'
+		)
 		.scripts([
 			'public/js/vendor/bootstrap.modal.js',
 			'public/js/vendor/bootstrap.datepicker.min.js'	

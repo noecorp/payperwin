@@ -11,9 +11,7 @@ class Users extends Controller
 					$ul.append('<li>'+message+'</li>')
 				$ul.parent().removeClass('alert-danger').removeClass('alert-success').addClass(newClass)
 				$ul.parent().show()
-				$('html, body').animate({
-			        scrollTop: $ul.offset().top
-			    }, 500)
+				$ul.scrollintoview({offset:200})
 
 			$profileForm = $('#profile-form')
 			
