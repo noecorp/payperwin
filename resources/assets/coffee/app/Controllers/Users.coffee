@@ -11,9 +11,7 @@ class Users extends Controller
 					$ul.append('<li>'+message+'</li>')
 				$ul.parent().removeClass('alert-danger').removeClass('alert-success').addClass(newClass)
 				$ul.parent().show()
-				$('html, body').animate({
-			        scrollTop: $ul.offset().top
-			    }, 500)
+				$ul.scrollintoview({offset:200})
 
 			$profileForm = $('#profile-form')
 			
@@ -114,10 +112,18 @@ class Users extends Controller
 				$searchButton.html('<img src="/img/loading.gif"/>')
 				$searchButton.prop('disabled',true)
 
+				$summonerResults = $('#summoner-results')
+				$summonerResults.hide()
+
+				data = {}
+				data[$summonerNameField.attr('name')] = $summonerNameField.val()
+				data[$summonerRegionField.attr('name')] = $summonerRegionField.val()
+
 				$.ajax({
 					type: 'get',
-					url: '/clients/league/summoner/'+$summonerNameField.val()+'/'+$summonerRegionField.val(),
-					dataType: 'json'
+					url: '/clients/league/summoner',
+					dataType: 'json',
+					data: data
 				})
 				.done((data,textStatus,jqXHR) ->
 					$streamingSubmitButton.prop('disabled',false)
@@ -131,9 +137,22 @@ class Users extends Controller
 					$summonerIdField.val(data.summoner.id)
 				).fail((jqXHR, textStatus, errorThrown) ->
 					if jqXHR.responseJSON?
-						console.log(jqXHR.responseJSON.error, jqXHR.status)
-					else
-						console.log(jqXHR.responseText,jqXHR.status)
+						if jqXHR.status == 422
+							errors = []
+							for error,values of jqXHR.responseJSON
+								errors = errors.concat(values)
+							return showMessages($summonerResults.children().first(),errors,true)
+						else if jqXHR.responseJSON.error?
+							if jqXHR.responseJSON.reason == 'summoner'
+								return showMessages($summonerResults.children().first(),['Summoner not found.'],true)
+							else if jqXHR.responseJSON.reason == 'matches'
+								return showMessages($summonerResults.children().first(),['No recent matches found.'],true)
+							else if jqXHR.responseJSON.reason?
+								return showMessages($summonerResults.children().first(),[jqXHR.responseJSON.reason],true)
+							else
+								return showMessages($summonerResults.children().first(),[jqXHR.responseJSON.error],true)
+					
+					return showMessages($summonerResults.children().first(),['An error occurred. Let us know if this keeps happening.'],true)
 				).always(() ->
 					searching = false
 					$searchButton.html(buttonValue)

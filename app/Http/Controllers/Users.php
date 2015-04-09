@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateUser;
 use Illuminate\Contracts\View\Factory as View;
 use Illuminate\Routing\Redirector as Redirect;
 use Illuminate\Contracts\Routing\ResponseFactory as Response;
+use App\Contracts\Service\Gurus\Region as RegionGuru;
 
 class Users extends Controller {
 
@@ -67,16 +68,18 @@ class Users extends Controller {
 	/**
 	 * Show the form for editing the specified resource.
 	 *
-	 * @param  int  $id
+	 * @param RegionGuru $guru
+	 * @param int $id
+	 *
 	 * @return Response
 	 */
-	public function edit($id)
+	public function edit(RegionGuru $guru, $id)
 	{
 		$user = $this->users->find($id);
 
 		if (!$user) return abort(404);
 
-		return $this->view->make('users.edit')->with(compact('user'));
+		return $this->view->make('users.edit')->with(compact('user','guru'));
 	}
 
 	/**

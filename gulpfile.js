@@ -50,13 +50,18 @@ elixir(function(mix) {
 			'public/css/fonts/'
 		)
 		.copy(
-			'bower_components/flat-ui/dist/css/flat-ui.min.css',
-			'public/css/vendor/flat-ui.min.css'
+			'bower_components/flat-ui/dist/css/flat-ui.css',
+			'public/css/vendor/flat-ui.css'
 		)
 		.copy(
-			'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.min.css',
-			'public/css/vendor/bootstrap.datepicker.min.css'
-		);
+			'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.css',
+			'public/css/vendor/bootstrap.datepicker.css'
+		)
+		.styles([
+			'public/css/vendor/bootstrap.css',
+			'public/css/vendor/flat-ui.css',
+			'public/css/vendor/bootstrap.datepicker.css'
+		], 'public/css/vendor/all.vendor.css', 'public/css')
 });
 
 /**
@@ -69,25 +74,32 @@ elixir(function(mix) {
 elixir(function(mix) {
 	mix.coffee('resources/assets/coffee/**/*.coffee','public/js',{bare:true})
 		.copy(
-			'bower_components/jquery/dist/',
-			'public/js/vendor/'
+			'bower_components/jquery/dist/jquery.js',
+			'public/js/vendor/jquery.js'
 		)
 		.copy(
-			'bower_components/flat-ui/dist/js/flat-ui.min.js',
-			'public/js/vendor/flat-ui.min.js'
+			'bower_components/flat-ui/dist/js/flat-ui.js',
+			'public/js/vendor/flat-ui.js'
 		)
 		.copy(
 			'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js',
 			'public/js/vendor/bootstrap.modal.js'
 		)
 		.copy(
-			'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+			'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
 			'public/js/vendor/bootstrap.datepicker.min.js'
 		)
+		.copy(
+			'resources/assets/js/vendor/jquery.scrollintoview.js',
+			'public/js/vendor/jquery.scrollintoview.js'
+		)
 		.scripts([
+			'public/js/vendor/jquery.js',
+			'public/js/vendor/flat-ui.js',
 			'public/js/vendor/bootstrap.modal.js',
-			'public/js/vendor/bootstrap.datepicker.min.js'	
-		], 'public/js/vendor/bootstrap.js', 'public/js')
+			'public/js/vendor/bootstrap.datepicker.min.js',
+			'public/js/vendor/jquery.scrollintoview.js'
+		], 'public/js/vendor/all.vendor.js', 'public/js')
 		.scripts([
 			'app.js',
 			'app/Controllers/*',

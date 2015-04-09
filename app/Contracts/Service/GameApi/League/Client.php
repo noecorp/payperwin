@@ -9,7 +9,13 @@ interface Client {
 	 * @param string $name
 	 * @param string $region
 	 *
-	 * @throws \App\Exceptions\Api\League\...
+	 * @throws \App\Exceptions\Services\GameApi\PlayerNotFound
+	 * @throws \App\Exceptions\Services\GameApi\RateLimitExceeded
+	 * @throws \App\Exceptions\Services\GameApi\AccessUnauthorized
+	 * @throws \App\Exceptions\Services\GameApi\InternalServerError
+	 * @throws \App\Exceptions\Services\GameApi\ServiceUnavailable
+	 * @throws \App\Exceptions\Services\GameApi\UnknownError
+	 * @throws \App\Exceptions\Services\GameApi\BadRequest
 	 *
 	 * @return array
 	 */
@@ -21,7 +27,13 @@ interface Client {
 	 * @param string $summoner
 	 * @param string $region
 	 *
-	 * @throws \App\Exceptions\Api\League\...
+	 * @throws \App\Exceptions\Services\GameApi\MatchesNotFound
+	 * @throws \App\Exceptions\Services\GameApi\RateLimitExceeded
+	 * @throws \App\Exceptions\Services\GameApi\AccessUnauthorized
+	 * @throws \App\Exceptions\Services\GameApi\InternalServerError
+	 * @throws \App\Exceptions\Services\GameApi\ServiceUnavailable
+	 * @throws \App\Exceptions\Services\GameApi\UnknownError
+	 * @throws \App\Exceptions\Services\GameApi\BadRequest
 	 *
 	 * @return array
 	 */

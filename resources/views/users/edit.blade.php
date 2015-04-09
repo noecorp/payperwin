@@ -101,6 +101,12 @@
 
 					@if (!$user->summoner_id)
 						<div class="form-group">
+							<div class="alert" style="display:none;" id="summoner-results">
+								<ul>
+								</ul>
+							</div>
+						</div>
+						<div class="form-group">
 							<div class="row">
 								<div class="col-xs-6">
 									<input type="hidden" name="summoner_id" id="streaming-summoner-id" value="{{ $user->summoner_id }}">
@@ -109,16 +115,9 @@
 								<div class="col-xs-3">
 									<select data-toggle="select" class="form-control select select-default" name="region" id="streaming-region">
 										<optgroup label="Region">
-											<option value="na">NA</option>
-											<option value="euw">EUW</option>
-											<option value="eune">EUNE</option>
-											<option value="oce">OCE</option>
-											<option value="br">BR</option>
-											<option value="kr">KR</option>
-											<option value="lan">LAN</option>
-											<option value="las">LAS</option>
-											<option value="tr">TR</option>
-											<option value="ru">RU</option>
+											@foreach ($guru->regions() as $region)
+												<option value="{{ $region }}">{{ strtoupper($region) }}</option>
+											@endforeach
 										</optgroup>
 									</select>
 								</div>
@@ -151,9 +150,9 @@
 				<h2>Your Link</h2>
 				<p>Share this URL on your stream:</p>
 				@if (!$user->short_url)
-					<p class="help-block"><small>We'll set up a shortened URL (on the ppw.gg domain) within a few hours!</small></p>
 					<div class="alert alert-info">
-						<a href="{{ url('streamers',$user->id) }}">{{ url('streamers',$user->id) }}</a>
+						<a href="{{ url('streamers',$user->id) }}">{{ url('streamers',$user->id) }}</a> 
+						<p><small>We'll set up a shortened URL (on the ppw.gg domain) within a few hours!</small></p>
 					</div>
 				@else
 					<div class="alert alert-info">

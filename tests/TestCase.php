@@ -1,9 +1,44 @@
 <?php namespace AppTests;
 
 use App\Models\User;
+
 use PHPUnit_Framework_Assert as PHPUnit;
+use Mockery as m;
+
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Subscriber\Mock;
+use GuzzleHttp\Message\Response;
+use GuzzleHttp\Stream\Stream;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase {
+
+	protected function getGuzzleMock($status = 200, $headers = [], $content = '', $howMany = 1)
+	{
+		$client = new GuzzleClient();
+
+		$responses = [];
+
+		if (is_array($status))
+		{
+			for ($i = 0; $i < count($status); $i++)
+			{
+				$responses[] = new Response($status[$i], $headers[$i], Stream::factory($content[$i]));
+			}
+		}
+		else
+		{
+			for ($i = 1; $i <= $howMany; $i++)
+			{
+				$responses[] = new Response($status, $headers, Stream::factory($content));
+			}
+		}
+
+		$mock = new Mock($responses);
+
+		$client->getEmitter()->attach($mock);
+
+        return $client;
+	}
 
 	public function become($id)
 	{
@@ -40,9 +75,9 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		return PHPUnit::assertTrue(is_object($response) && isset($response->original) && $response->original instanceof \Illuminate\View\View);
 	}
 
-	public function responseJson()
+	public function responseJson($array = false)
 	{
-		return json_decode($this->response->getContent());
+		return json_decode($this->response->getContent(),$array);
 	}
 
 	public function setUp()
@@ -60,6 +95,16 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		$this->flushSession();
 
 		parent::tearDown();
+	}
+
+	protected function clearLog()
+	{
+		exec('echo "" > '.storage_path().'/logs/laravel.log');
+	}
+
+	protected function getMockOf($className)
+	{
+		return m::mock($className);
 	}
 
 	/**

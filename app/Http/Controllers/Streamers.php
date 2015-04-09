@@ -73,10 +73,16 @@ class Streamers extends Controller {
 		$feed = $pledges->withOwner()->forStreamer($id)->latest()->limit(10)->all();
 
 		$average = round($pledges->forStreamer($id)->average('amount'),2);
+		
 		$highestPledge = $pledges->withOwner()->forStreamer($id)->orderingByAmount()->find();
-		$topPledger = null;
+		
+		$topPledger = $pledges->withOwner()->forStreamer($id)->mostSpent()->find();
 
-		$stats = compact('average','highestPledge','topPledger');
+		$activePledges = $pledges->forStreamer($id)->isRunning()->count();
+
+		$totalPledges = $pledges->forStreamer($id)->count();
+
+		$stats = compact('average','highestPledge','topPledger','activePledges','totalPledges');
 		
 		return $this->view->make('streamers.show')->with(compact('streamer','feed', 'stats', 'guru'));
 	}

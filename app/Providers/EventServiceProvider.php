@@ -3,6 +3,9 @@
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
+use App\Handlers\Events\Repositories\Users;
+use App\Handlers\Events\Services\GameApi;
+
 class EventServiceProvider extends ServiceProvider {
 
 	/**
@@ -26,7 +29,9 @@ class EventServiceProvider extends ServiceProvider {
 	{
 		parent::boot($events);
 
-		$events->subscribe('App\Handlers\Events\Repositories\Users');
+		$events->subscribe(Users::class);
+
+		$events->subscribe(GameApi::class);
 	}
 
 }

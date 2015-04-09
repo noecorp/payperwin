@@ -5,6 +5,10 @@ use App\Contracts\Service\GameApi\League\Client;
 use Illuminate\Contracts\Routing\ResponseFactory as Response;
 use App\Contracts\Service\Gurus\Champion as ChampionGuru;
 use Carbon\Carbon;
+use App\Exceptions\Services\GameApi\PlayerNotFound;
+use App\Exceptions\Services\GameApi\MatchesNotFound;
+use App\Exceptions\Services\GameApi\ClientError;
+use App\Exceptions\Services\GameApi\ServerError;
 
 class League extends Controller {
 
@@ -40,6 +44,7 @@ class League extends Controller {
 	 */
 	public function __construct(Client $client, Response $response, ChampionGuru $guru)
 	{
+		$this->middleware('json');
 		$this->middleware('auth');
 		$this->middleware('ajax');
 
@@ -48,29 +53,70 @@ class League extends Controller {
 		$this->guru = $guru;
 	}
 
-	public function getSummoner($name, $region)
+	/**
+	 * Return summoner info from the Riot API.
+	 *
+	 * @param string $name
+	 * @param string $region
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function getSummoner(\App\Http\Requests\SearchForSummoner $request)
 	{
-		$summoner = $this->client->summonerForNameInRegion($name,$region);
-
-		if (!$summoner)
+		try
 		{
-
+			$summoner = $this->client->summonerForNameInRegion($request->get('summoner_name'),$request->get('region'));
 		}
-		else
+		catch (PlayerNotFound $e)
 		{
-			$matches = $this->client->matchHistoryForSummonerIdInRegion($summoner->id(),$region);
-
-			if (!$matches)
-			{
-
-			}
-			else
-			{
-				$match = $matches->last();
-
-				return $this->response->json(['summoner'=>['id'=>$summoner->id()],'match'=>['win'=>$match->win(),'champion'=>$this->guru->name($match->champion()),'ago'=> Carbon::createFromTimestamp($match->timestamp())->diffForHumans()]]);
-			}
+			return abort(404, 'summoner');
 		}
+		catch (ClientError $e)
+		{
+			return abort(400);
+		}
+		catch (ServerError $e)
+		{
+			return abort(500, 'API Access Error');
+		}
+		catch (\Exception $e)
+		{
+			return abort(500, 'Unknown Error');
+		}
+		
+		try
+		{
+			$matches = $this->client->matchHistoryForSummonerIdInRegion($summoner->id(),$request->get('region'));
+		}
+		catch (MatchesNotFound $e)
+		{
+			return abort(404, 'matches');
+		}
+		catch (ClientError $e)
+		{
+			return abort(400);
+		}
+		catch (ServerError $e)
+		{
+			return abort(500, 'API Access Error');
+		}
+		catch (\Exception $e)
+		{
+			return abort(500, 'Unknown Error');
+		}
+
+		$match = $matches->last();
+
+		return $this->response->json([
+			'summoner' => [
+				'id' => $summoner->id()
+			],
+			'match' => [
+				'win' => $match->win(),
+				'champion' => $this->guru->name($match->champion()),
+				'ago' => Carbon::createFromTimestamp($match->timestamp())->diffForHumans()
+			]
+		]);
 	}
 
 }

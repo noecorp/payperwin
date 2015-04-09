@@ -13,12 +13,10 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 
 	/**
 	 * {@inheritdoc}
-	 *
-	 * @return Pledge
 	 */
 	protected function model()
 	{
-		return new Pledge;
+		return Pledge::class;
 	}
 
 	/**
@@ -116,6 +114,13 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 		{
 			$this->query()->orderBy('amount','asc');	
 		}
+
+		return $this;
+	}
+
+	public function mostSpent()
+	{
+		$this->query()->select('*',$this->container->make('db')->raw('sum(`amount` * `times_donated`) as spent'))->groupBy('user_id');
 
 		return $this;
 	}

@@ -6,15 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>@yield('title') - PayPerWin</title>
 
-	<link href="{{ asset('css/vendor/bootstrap.css') }}" rel="stylesheet">
-	<link href="{{ asset('css/vendor/flat-ui.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('css/vendor/all.vendor.css') }}" rel="stylesheet">
 	
 	@yield('styles')
 
 	<link href="{{ elixir("css/app.css") }}" rel="stylesheet">
 
-	<script src="{{ asset('js/vendor/jquery.min.js') }}"></script>
-	<script src="{{ asset('js/vendor/flat-ui.min.js') }}"></script>
+	<script src="{{ asset('js/vendor/all.vendor.js') }}"></script>
 
 	@yield('scripts')
 

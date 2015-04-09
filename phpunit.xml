@@ -30,6 +30,8 @@
         <env name="APP_URL" value="http://payperwin.app"/>
         <env name="APP_DEBUG" value="false"/>
 
+        <env name="LOG_TYPE" value="single"/>
+
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
