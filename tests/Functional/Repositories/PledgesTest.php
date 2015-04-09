@@ -10,7 +10,7 @@ class PledgesTest extends \AppTests\TestCase {
 		return new Pledges($this->app);
 	}
 
-	public function testCreate()
+	public function testCreateSuccessful()
 	{
 		$repo = $this->getRepo();
 

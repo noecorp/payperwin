@@ -150,9 +150,9 @@
 				<h2>Your Link</h2>
 				<p>Share this URL on your stream:</p>
 				@if (!$user->short_url)
-					<p class="help-block"><small>We'll set up a shortened URL (on the ppw.gg domain) within a few hours!</small></p>
 					<div class="alert alert-info">
-						<a href="{{ url('streamers',$user->id) }}">{{ url('streamers',$user->id) }}</a>
+						<a href="{{ url('streamers',$user->id) }}">{{ url('streamers',$user->id) }}</a> 
+						<p><small>We'll set up a shortened URL (on the ppw.gg domain) within a few hours!</small></p>
 					</div>
 				@else
 					<div class="alert alert-info">
