@@ -14,8 +14,20 @@
 								<a href="/streamers/{{ $streamer->id }}"><img class="avatar tile-image" src="{{ $streamer->avatar }}"/></a>
 								<h3 class="tile-title"><a href="/streamers/{{ $streamer->id }}">{{ $streamer->username }}</a></h3>
 								<ul>
-									<li>Active pledges: #</li>
-									<li>Average pledge: $</li>
+									<li>Active pledges:
+										@if ($streamer->activePledges)
+											{{ $streamer->activePledges }}
+										@else
+											-
+										@endif
+									</li>
+									<li>Average pledge: 
+										@if ($streamer->averagePledge)
+											${{ sprintf('%0.2f',$streamer->averagePledge) }}
+										@else
+											-
+										@endif
+									</li>
 								</ul>
 							</div>
 						</div>

@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory as View;
 use App\Contracts\Repository\Users;
 use App\Contracts\Repository\Pledges;
+use App\Contracts\Repository\Matches;
 use App\Contracts\Service\Gurus\Pledge as PledgeGuru;
 
 class Streamers extends Controller {
@@ -39,11 +40,21 @@ class Streamers extends Controller {
 	/**
 	 * Display a listing of the resource.
 	 *
+	 * @param Pledges $pledges
+	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Pledges $pledges)
 	{
 		$streamers = $this->users->isStreamer()->hasTwitchId()->hasSummonerId()->all();
+
+		// Temporary until more efficient solution
+		foreach ($streamers as $streamer)
+		{
+			$streamer->averagePledge = round($pledges->forStreamer($streamer->id)->average('amount'),2);
+
+			$streamer->activePledges = $pledges->forStreamer($streamer->id)->isRunning()->count();
+		}
 
 		$live = $streamers->filter(function($streamer)
 		{
@@ -59,12 +70,13 @@ class Streamers extends Controller {
 	 * Display the specified resource.
 	 *
 	 * @param Pledges $pledges
+	 * @param Matches $matches
 	 * @param PledgeGuru $guru
 	 * @param  int  $id
 	 *
 	 * @return Response
 	 */
-	public function show(Pledges $pledges, PledgeGuru $guru, $id)
+	public function show(Pledges $pledges, Matches $matches, PledgeGuru $guru, $id)
 	{
 		$streamer = $this->users->isStreamer()->hasTwitchId()->hasSummonerId()->find($id);
 
@@ -72,17 +84,40 @@ class Streamers extends Controller {
 
 		$feed = $pledges->withOwner()->forStreamer($id)->latest()->limit(10)->all();
 
-		$average = round($pledges->forStreamer($id)->average('amount'),2);
+		$average = ($feed->count()) ? round($pledges->forStreamer($id)->average('amount'),2) : null;
 		
-		$highestPledge = $pledges->withOwner()->forStreamer($id)->orderingByAmount()->find();
+		$highestPledge = ($feed->count()) ? $pledges->withOwner()->forStreamer($id)->orderingByAmount()->find() : null;
 		
-		$topPledger = $pledges->withOwner()->forStreamer($id)->mostSpent()->find();
+		$topPledger = ($feed->count()) ? $pledges->withOwner()->forStreamer($id)->mostSpent()->find() : null;
 
-		$activePledges = $pledges->forStreamer($id)->isRunning()->count();
+		$activePledges = ($feed->count()) ? $pledges->forStreamer($id)->isRunning()->count() : null;
 
-		$totalPledges = $pledges->forStreamer($id)->count();
+		$totalPledges = ($feed->count()) ? $pledges->forStreamer($id)->count() : null;
 
-		$stats = compact('average','highestPledge','topPledger','activePledges','totalPledges');
+		$matches =  $matches->latest()->limit(10)->forStreamer($id)->all();
+
+		$wins = $matches->reduce(function($carry, $match)
+		{
+			return ($match->win) ? ++$carry : $carry;
+		},0);
+
+		$losses = $matches->count() - $wins;
+
+		$winLoss = 100 * round($wins / $matches->count(), 2);
+		
+		$killsAssists = $matches->reduce(function($carry, $match)
+		{
+			return $carry + $match->kills + $match->assists;
+		},0);
+
+		$deaths = $matches->reduce(function($carry, $match)
+		{
+			return $carry + $match->deaths;
+		},0);
+
+		$kda = ($deaths) ? round($killsAssists / $deaths,2) : $killsAssists;
+
+		$stats = compact('average','highestPledge','topPledger','activePledges','totalPledges','kda','winLoss');
 		
 		return $this->view->make('streamers.show')->with(compact('streamer','feed', 'stats', 'guru'));
 	}

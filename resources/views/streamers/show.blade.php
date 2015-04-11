@@ -63,23 +63,102 @@
 		<div class="col-xs-12 col-md-6">
 			<h2>Stats</h2>
 
-			@if (!$feed->isEmpty())
-				<ul>
-					<li>Top pledger: <a href="/users/{{ $stats['topPledger']->owner->id }}">{{ $stats['topPledger']->owner->username }}</a> with ${{ sprintf("%0.2f",$stats['topPledger']->spent) }} total</li>
-					<li>Average pledge: ${{ sprintf("%0.2f",$stats['average']) }}</li>
-					<li>Highest pledge: ${{ sprintf("%0.2f",$stats['highestPledge']->amount) }}, <a href="/users/{{ $stats['highestPledge']->owner->id }}">{{ $stats['highestPledge']->owner->username }}</a></li>
-				</ul>
-				<ul>
-					<li>Active pledges: {{ $stats['activePledges'] }}</li>
-					<li>Total pledges: {{ $stats['totalPledges'] }}</li>
-				</ul>
-				<ul>
-					<li>Recent wins: %</li>
-					<li>Recent KDA: #</li>
-				</ul>
-			@else
-				<p>No stats yet!</p>
-			@endif
+			<table class="table table-hover">
+				<tbody>
+					<tr class="success">
+						<th>
+							Top pledger
+						</th>
+						<td>
+							@if ($stats['topPledger'])
+								<a href="/users/{{ $stats['topPledger']->owner->id }}">{{ $stats['topPledger']->owner->username }}</a> with ${{ sprintf("%0.2f",$stats['topPledger']->spent) }} total
+							@else
+								-
+							@endif
+						</td>
+					</tr>
+					<tr class="warning">
+						<th>
+							Highest pledge
+						</th>
+						<td>
+							@if ($stats['highestPledge'])
+								${{ sprintf("%0.2f",$stats['highestPledge']->amount) }}, <a href="/users/{{ $stats['highestPledge']->owner->id }}">{{ $stats['highestPledge']->owner->username }}</a>
+							@else
+								-
+							@endif
+						</td>
+					</tr>
+					<tr>
+						<th>
+							Average pledge
+						</th>
+						<td>
+							@if ($stats['average'])
+								${{ sprintf("%0.2f",$stats['average']) }}
+							@else
+								-
+							@endif
+						</td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<th>
+							Active pledges
+						</th>
+						<td>
+							@if ($stats['activePledges'])
+								{{ $stats['activePledges'] }}
+							@else
+								-
+							@endif
+						</td>
+					</tr>
+					<tr>
+						<th>
+							Total pledges
+						</th>
+						<td>
+							@if ($stats['totalPledges'])
+								{{ $stats['totalPledges'] }}
+							@else
+								-
+							@endif
+						</td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<th>
+							Recent wins
+						</th>
+						<td>
+							@if ($stats['winLoss'])
+								{{ $stats['winLoss'] }}%
+							@else
+								-
+							@endif
+						</td>
+					</tr>
+					<tr>
+						<th>
+							Recent KDA
+						</th>
+						<td>
+							@if ($stats['kda'])
+								{{ sprintf("%0.2f",$stats['kda']) }}
+							@else
+								-
+							@endif
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<div class="row">
