@@ -1,6 +1,6 @@
 class Welcome extends Controller
 	actions: {
-		start: (parameters) ->
+		start: (parameters) =>
 			$('.todo').each((index, element) ->
 				$todo = $(this)
 				$todo.find('li').click((event) ->

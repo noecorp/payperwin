@@ -1,8 +1,8 @@
 class Users extends Controller
 	actions: {
-		show: (parameters) ->
+		show: (parameters) =>
 
-		edit: (parameters) ->
+		edit: (parameters) =>
 
 			showMessages = ($ul,messages,error) ->
 				newClass = if error == true then 'alert-danger' else 'alert-success'

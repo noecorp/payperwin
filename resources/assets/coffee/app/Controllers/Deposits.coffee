@@ -1,6 +1,6 @@
 class Deposits extends Controller
 	actions: {
-		create: (parameters) ->
+		create: (parameters) =>
 
 	}
 

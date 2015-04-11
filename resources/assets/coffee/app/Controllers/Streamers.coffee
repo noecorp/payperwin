@@ -1,6 +1,6 @@
 class Streamers extends Controller
 	actions: {
-		show: (parameters) ->
+		show: (parameters) =>
 			model = $('[data-model]').first().data()
 			update = () ->
 				$heading = $('#loading')
