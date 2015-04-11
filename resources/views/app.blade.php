@@ -106,7 +106,7 @@
 	</footer>
 
 	<div id="helpful">
-		<a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on" class="btn btn-info">Help &amp; Feedback</a>
+		<a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on" data-helpful-title="What's up?" class="btn btn-info">Help &amp; Suggestions</a>
 	</div>
 
 	@if ($auth->user())
