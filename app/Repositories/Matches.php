@@ -43,7 +43,7 @@ class Matches extends AbstractRepository implements MatchesRepository {
 	 *
 	 * @return MatchWasUpdated
 	 */
-	protected function eventForModelUpdated(ModelModel$model)
+	protected function eventForModelUpdated(Model $model)
 	{
 		return new MatchWasUpdated($model);
 	}
