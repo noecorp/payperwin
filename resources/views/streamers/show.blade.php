@@ -166,7 +166,7 @@
 			<h2>Stream</h2>
 			@if ($streamer->twitch_username)
 			
-			<p><a href="javascript:;" id="streamer-hide">Hide</a></p>
+			<p><a class="btn btn-xs btn-default" href="javascript:;" id="streamer-hide" data-toggle="Show">Hide</a></p>
 			
 			<div class="row" id="streamer-stream">
 				<div class="col-xs-12 col-sm-8">

@@ -31,6 +31,7 @@ class Streamers extends Controller
 				, 10000)
 			queueUpdate()
 
+
 			$streamerChat = $('#streamer-chat')
 			$streamerChat.html('
 				<iframe frameborder="0" scrolling="no" src="https://twitch.tv/'+$streamerChat.attr('data-username')+'/chat" height="400" width="100%"></iframe>
@@ -61,9 +62,29 @@ class Streamers extends Controller
 
 			resize()
 
-			$('#streamer-hide').click(() ->
-				$('#streamer-stream').toggle()
+			$streamerHide = $('#streamer-hide')
+			$streamerStream = $('#streamer-stream')
+			$streamerHide.click(() ->
+				toggle = $streamerHide.attr('data-toggle')
+				previous = $streamerHide.text()
+				$streamerHide.text(toggle)
+				$streamerHide.attr('data-toggle',previous)
+
+				if $streamerStream.is(':hidden')
+					$streamerHide.removeClass('btn-info')
+					$streamerHide.addClass('btn-default')
+					$.cookie('hide-stream',0,{expires:90,path:'/'})
+				else
+					$streamerHide.removeClass('btn-default')
+					$streamerHide.addClass('btn-info')
+					$.cookie('hide-stream',1,{expires:90,path:'/'})
+
+				$streamerStream.toggle()
 			)
+
+			showStreamDefault = $.cookie('hide-stream',Number);
+			if showStreamDefault
+				$streamerHide.click()
 
 			$streamerPledge = $('#streamer-pledge')
 			if $streamerPledge.length
