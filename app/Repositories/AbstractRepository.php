@@ -284,7 +284,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function count()
 	{
-		$hash = $this->getQueryHash();
+		$hash = $this->getQueryHash('count');
 
 		$tags = $this->getCacheTags();
 
@@ -316,7 +316,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	protected function calculate($type, $column)
 	{
-		$hash = $this->getQueryHash();
+		$hash = $this->getQueryHash($type, $column);
 
 		$tags = $this->getCacheTags();
 
@@ -412,11 +412,14 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * Get a unique hash representation for the current query.
 	 *
+	 * @param mixed $data, ...
 	 * @return string
 	 */
-	protected function getQueryHash()
+	protected function getQueryHash($data = null)
 	{
-		$hash = $this->query()->getQuery()->toSql() . ' ' . implode(',', $this->query()->getBindings());
+		$data = ($data) ? func_get_args() : [];
+
+		$hash = $this->query()->getQuery()->toSql() . ' ' . implode(',', $data) . ' ' . implode(',', $this->query()->getBindings());
 
 		$relations = array_keys($this->query()->getEagerLoads());
 
