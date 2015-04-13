@@ -55,7 +55,7 @@
 				<li><a href="/auth/register" >Register</a></li>
 			@else
 				@if ($auth->user()->streamer)
-					<li><a href="/earnings/{{ $auth->user()->id }}">Earnings: ${{ sprintf("%0.2f",$auth->user()->earnings) }}</a></li>
+					<li><a href="/transactions/{{ $auth->user()->id }}">Earnings: ${{ sprintf("%0.2f",$auth->user()->earnings) }}</a></li>
 				@else
 					<li><a href="/transactions/{{ $auth->user()->id }}">Funds: ${{ sprintf("%0.2f",$auth->user()->funds) }}</a></li>
 					<li><button id="nav-deposit" class="btn btn-sm btn-primary navbar-btn" type="button" data-href="{{ url('deposits/create') }}">Deposit</button></li>
