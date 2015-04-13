@@ -2,7 +2,7 @@
 
 use App\Contracts\Repository\Deposits;
 use App\Contracts\Repository\Users;
-use App\Contracts\Service\Acidifier;
+use App\Contracts\Service\Acidifier as AcidifierInterface;
 use App\Events\Paypal\Ipn\DuplicateMessage;
 use App\Events\Paypal\Ipn\ErrorProcessing;
 use App\Events\Paypal\Ipn\FundsChanged;
@@ -28,7 +28,7 @@ class PaypalPaymentController extends Controller
         $this->middleware('paypal.verify.ipn');
     }
 
-    public function index($userId, Request $request, Deposits $deposits, Users $users, Acidifier $acid)
+    public function index($userId, Request $request, Deposits $deposits, Users $users, AcidifierInterface $acid)
     {
         //TODO instead of issuing error 500 and relying on paypal to resend message we can reschedule this request ourself
 

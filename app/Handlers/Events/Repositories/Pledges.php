@@ -8,7 +8,7 @@ use App\Events\Repositories\PledgesWereUpdated;
 use App\Contracts\Events\Model;
 use App\Contracts\Events\Models;
 use App\Contracts\Repository\Users as UsersRepository;
-use App\Contracts\Service\Acidifier;
+use App\Contracts\Service\Acidifier as AcidifierInterface;
 
 use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;
@@ -34,7 +34,7 @@ class Pledges {
 	/**
 	 * Acidifier implementation.
 	 *
-	 * @var Acidifier
+	 * @var AcidifierInterface
 	 */
 	protected $acid;
 
@@ -46,7 +46,7 @@ class Pledges {
 	 *
 	 * @return void
 	 */
-	public function __construct(Dispatcher $dispatcher, UsersRepository $users, Acidifier $acid)
+	public function __construct(Dispatcher $dispatcher, UsersRepository $users, AcidifierInterface $acid)
 	{
 		$this->dispatcher = $dispatcher;
 		$this->users = $users;
