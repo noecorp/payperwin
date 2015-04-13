@@ -25,8 +25,6 @@ class IPNListenerTest extends TestCase
     {
         parent::setUp();
 
-        $this->artisan('migrate:refresh');
-
         $deposits = $this->getDepositRepo();
         $users = $this->getUsersRepo();
         $acidifier = $this->getAcidifier();

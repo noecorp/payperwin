@@ -1,5 +1,7 @@
 <?php namespace AppTests\Functional\Controllers;
 
+use App\Models\User;
+
 class WelcomeTest extends \AppTests\TestCase {
 
 	public function testIndexOkWhenGuest()
@@ -12,7 +14,13 @@ class WelcomeTest extends \AppTests\TestCase {
 
 	public function testIndexRedirectsIfLoggedIn()
 	{
-		$this->become(1);
+		$user = User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+
+		$this->be($user);
 
 		$response = $this->call('GET','/');
 
@@ -22,7 +30,13 @@ class WelcomeTest extends \AppTests\TestCase {
 
 	public function testStartOkWhenLoggedIn()
 	{
-		$this->become(1);
+		$user = User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+		
+		$this->be($user);
 		
 		$response = $this->call('GET','start');
 
