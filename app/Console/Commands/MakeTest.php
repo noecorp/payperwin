@@ -1,6 +1,7 @@
 <?php namespace App\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use RuntimeException;
 
 class MakeTest extends GeneratorCommand {
 

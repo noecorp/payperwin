@@ -7,7 +7,7 @@ use App\Contracts\Repository\Pledges;
 use App\Contracts\Repository\Transactions;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use App\Contracts\Service\Acidifier;
+use App\Contracts\Service\Acidifier as AcidifierInterface;
 use App\Contracts\Service\Gurus\Transaction as TransactionGuru;
 use App\Models\User;
 
@@ -44,7 +44,7 @@ class Distribution implements DistributionInterface {
 	/**
 	 * Acidifier service instance.
 	 *
-	 * @var Acidifier
+	 * @var AcidifierInterface
 	 */
 	protected $acidifier;
 
@@ -61,10 +61,10 @@ class Distribution implements DistributionInterface {
 	 * @param Users $users
 	 * @param Matches $matches
 	 * @param Pledges $pledges
-	 * @param Acidifier $acidifier
+	 * @param AcidifierInterface $acidifier
 	 * @param Transactions $transactions
 	 */
-	public function __construct(Users $users, Matches $matches, Pledges $pledges, Transactions $transactions, Acidifier $acidifier, TransactionGuru $transactionGuru)
+	public function __construct(Users $users, Matches $matches, Pledges $pledges, Transactions $transactions, AcidifierInterface $acidifier, TransactionGuru $transactionGuru)
 	{
 		$this->users = $users;
 		$this->matches = $matches;

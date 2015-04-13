@@ -33,9 +33,9 @@ class Users extends AbstractRepository implements UsersRepository {
 	 *
 	 * @return UsersWereCreated
 	 */
-	protected function eventForModelsCreated(array $models)
+	protected function eventForModelsCreated()
 	{
-		return new UsersWereCreated($models);
+		return new UsersWereCreated();
 	}
 
 	/**
@@ -53,9 +53,9 @@ class Users extends AbstractRepository implements UsersRepository {
 	 *
 	 * @return UsersWereUpdated
 	 */
-	protected function eventForModelsUpdated(array $models)
+	protected function eventForModelsUpdated()
 	{
-		return new UsersWereUpdated($models);
+		return new UsersWereUpdated();
 	}
 
 	/**

@@ -79,9 +79,9 @@ class Deposits extends AbstractRepository implements DepositsRepository
 	 *
 	 * @return DepositsWereCreated
 	 */
-	protected function eventForModelsCreated(array $models)
+	protected function eventForModelsCreated()
 	{
-		return new DepositsWereCreated($models);
+		return new DepositsWereCreated();
 	}
 
 	/**
@@ -99,8 +99,8 @@ class Deposits extends AbstractRepository implements DepositsRepository
 	 *
 	 * @return DepositsWereUpdated
 	 */
-	protected function eventForModelsUpdated(array $models)
+	protected function eventForModelsUpdated()
 	{
-		return new DepositsWereUpdated($models);
+		return new DepositsWereUpdated();
 	}
 }

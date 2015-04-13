@@ -93,12 +93,17 @@ elixir(function(mix) {
 			'resources/assets/js/vendor/jquery.scrollintoview.js',
 			'public/js/vendor/jquery.scrollintoview.js'
 		)
+		.copy(
+			'bower_components/jquery-cookie/jquery.cookie.js',
+			'public/js/vendor/jquery.cookie.js'
+		)
 		.scripts([
 			'public/js/vendor/jquery.js',
 			'public/js/vendor/flat-ui.js',
 			'public/js/vendor/bootstrap.modal.js',
 			'public/js/vendor/bootstrap.datepicker.min.js',
-			'public/js/vendor/jquery.scrollintoview.js'
+			'public/js/vendor/jquery.scrollintoview.js',
+			'public/js/vendor/jquery.cookie.js'
 		], 'public/js/vendor/all.vendor.js', 'public/js')
 		.scripts([
 			'app.js',

@@ -20,6 +20,12 @@ class UsersTest extends \AppTests\TestCase {
 
 	public function testShowOkWhenFound()
 	{
+		User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+
 		$response = $this->call('GET', 'users/1');
 
 		$this->assertResponseOk();
@@ -28,7 +34,18 @@ class UsersTest extends \AppTests\TestCase {
 
 	public function testEditAbortsWhenNotAuthorized()
 	{
-		$this->become(2);
+		User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+
+		$user = User::create([
+			'email' => 'bar@foo.com',
+			'username' => 'bar',
+		]);
+
+		$this->be($user);
 
 		$response = $this->call('GET', 'users/1/edit');
 
@@ -45,7 +62,13 @@ class UsersTest extends \AppTests\TestCase {
 
 	public function testEditOk()
 	{
-		$user = $this->become(1);
+		$user = User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+
+		$user = $this->be($user);
 
 		$response = $this->call('GET', 'users/1/edit');
 
@@ -55,8 +78,20 @@ class UsersTest extends \AppTests\TestCase {
 
 	public function testUpdateAbortsWhenNotAuthorized()
 	{
+		User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+
+		$user = User::create([
+			'email' => 'bar@foo.com',
+			'username' => 'bar',
+		]);
+
 		$this->session(['_token'=>'foo']);
-		$this->become(2);
+
+		$this->be($user);
 
 		$response = $this->call('PUT', 'users/1',['_token'=>'foo']);
 
@@ -75,8 +110,14 @@ class UsersTest extends \AppTests\TestCase {
 
 	public function testUpdateAbortsWithoutToken()
 	{
+		$user = User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+
 		$this->session(['_token'=>'foo']);
-		$this->become(1);
+		$this->be($user);
 
 		$response = $this->call('PUT', 'users/1', ['foo'=>'bar']);
 
@@ -96,10 +137,16 @@ class UsersTest extends \AppTests\TestCase {
 
 	public function testUpdateRedirectsWithErrorsWhenNotValid()
 	{
+		$user = User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+
 		$this->session(['_token'=>'foo']);
 		$url = url('users/1/edit');
 		$this->session(['_previous.url'=>$url]);
-		$this->become(1);
+		$this->be($user);
 
 		$response = $this->call('PUT', 'users/1',['_token'=>'foo','email'=>'baz']);
 		
@@ -110,10 +157,16 @@ class UsersTest extends \AppTests\TestCase {
 
 	public function testUpdateOk()
 	{
+		$user = User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+
 		$this->session(['_token'=>'foo']);
 		$url = url('users/1/edit');
 		$this->session(['_previous.url'=>$url]);
-		$this->become(1);
+		$this->be($user);
 
 		$response = $this->call('PUT', 'users/1',['_token'=>'foo','username'=>'baz']);
 		
@@ -126,10 +179,16 @@ class UsersTest extends \AppTests\TestCase {
 
 	public function testUpdateOkAsAjax()
 	{
+		$user = User::create(
+		[
+			'email' => 'foo@bar.com',
+			'username' => 'foo',
+		]);
+
 		$this->session(['_token'=>'foo']);
 		$url = url('users/1/edit');
 		$this->session(['_previous.url'=>$url]);
-		$this->become(1);
+		$this->be($user);
 
 		$response = $this->call('PUT', 'users/1',['_token'=>'foo','username'=>'baz'],[],[],['HTTP_X-Requested-With'=>'XMLHttpRequest']);
 

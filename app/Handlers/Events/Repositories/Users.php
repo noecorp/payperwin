@@ -7,8 +7,10 @@ use App\Events\Repositories\UsersWereUpdated;
 
 use App\Contracts\Events\Model;
 use App\Contracts\Events\Models;
+use App\Contracts\Repository\Users as UsersRepository;
+use Illuminate\Session\SessionManager as Session;
 
-use Illuminate\Events\Dispatcher as Events;
+use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;
 use App\Models\User;
 use App\Commands\NotifyAboutNewStreamer;
@@ -16,15 +18,40 @@ use App\Commands\NotifyAboutNewStreamer;
 class Users {
 
 	/**
+	 * Command dispatcher implementation.
+	 *
+	 * @var Dispatcher
+	 */
+	protected $dispatcher;
+
+	/**
+	 * Users repository implementation.
+	 *
+	 * @var UsersRepository
+	 */
+	protected $users;
+
+	/**
+	 * Session manager implementation.
+	 *
+	 * @var Session
+	 */
+	protected $session;
+
+	/**
 	 * Create the event handler.
 	 *
 	 * @param Dispatcher $dispatcher
+	 * @param UsersRepository $users
+	 * @param Session $session
 	 *
 	 * @return void
 	 */
-	public function __construct(Dispatcher $dispatcher)
+	public function __construct(Dispatcher $dispatcher, UsersRepository $users, Session $session)
 	{
 		$this->dispatcher = $dispatcher;
+		$this->users = $users;
+		$this->session = $session;
 	}
 
 	/**
@@ -34,7 +61,17 @@ class Users {
 	 */
 	public function onUserWasCreated(Model $event)
 	{
+		$user = $event->model();
 
+		if ($this->session->has('auid'))
+		{
+			$referrer = $this->users->find($this->session->get('auid'));
+
+			if ($referrer)
+			{
+				$this->users->update($user, ['referred_by' => $referrer->id]);
+			}
+		}
 	}
 
 	/**
@@ -46,8 +83,10 @@ class Users {
 	{
 		$user = $event->model();
 
-		if ($user->streamer && $user->twitch_id && $user->summoner_id && !$user->short_url)
+		if ($user->streamer && $user->twitch_id && $user->summoner_id && !$user->streamer_completed)
 		{
+			$this->users->update($user, ['streamer_completed' => true]);
+
 			$this->dispatcher->dispatchToQueue(new NotifyAboutNewStreamer($user->id));
 		}
 	}

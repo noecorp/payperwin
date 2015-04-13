@@ -40,7 +40,7 @@
 	        <div class="form-group">
 	            <label class="checkbox" for="register-agree">
 		            <input type="checkbox" {{ (old('terms') || !old('email')) ? 'checked' : '' }} data-toggle="checkbox" value="1" name="terms" id="register-agree">
-		            I agree to the <a href="/terms">Terms &amp; Conditions</a>
+		            I agree to the <a href="/terms">Terms &amp; Conditions</a> and <a href="/privacy">Privacy Policy</a>
 				</label>
 	        </div>
 	        <div class="form-group">

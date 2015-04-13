@@ -5,8 +5,12 @@ use App\Models\Pledge;
 use App\Repositories\Pledges;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Connection;
+use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Events\Dispatcher as Events;
 
 class PledgesTest extends \AppTests\TestCase {
+
+	protected $migrate = false;
 
 	private function getRepo()
 	{
@@ -28,12 +32,33 @@ class PledgesTest extends \AppTests\TestCase {
 		return m::mock(Connection::class);
 	}
 
+	private function getCacheMock()
+	{
+		return m::mock(Cache::class);
+	}
+
+	private function getDispatcherMock()
+	{
+		return m::mock(Events::class);
+	}
+
 	public function testCreate()
 	{
 		$model = $this->getModelMock()->makePartial();
 		$model->shouldReceive('save');
 
 		$this->app->instance(Pledge::class,$model);
+
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$cache->shouldReceive('tags')->times(2)->with($model->getTable())->andReturn($cache);
+		$cache->shouldReceive('flush')->times(2);
+
+		$events->shouldReceive('fire')->times(2)->with(m::any());
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
 
 		$repo = $this->getRepo();
 

@@ -7,7 +7,7 @@ use Illuminate\Routing\Redirector as Redirect;
 use Illuminate\Contracts\View\Factory as View;
 use App\Http\Requests\CreateDeposit;
 use Illuminate\Contracts\Auth\Guard;
-use App\Contracts\Service\Acidifier;
+use App\Contracts\Service\Acidifier as AcidifierInterface;
 
 class Deposits extends Controller {
 
@@ -38,14 +38,14 @@ class Deposits extends Controller {
 	 *
 	 * @param CreateDeposit $request
 	 * @param Guard $auth
-	 * @param  Acidifier  $acid
+	 * @param  AcidifierInterface  $acid
 	 * @param  Users  $users
 	 * @param  DepositsRepository  $deposits
 	 * @param Redirect $redirect
 	 *
 	 * @return Response
 	 */
-	public function store(CreateDeposit $request, Guard $auth, Acidifier $acid, Users $users, DepositsRepository $deposits, Redirect $redirect)
+	public function store(CreateDeposit $request, Guard $auth, AcidifierInterface $acid, Users $users, DepositsRepository $deposits, Redirect $redirect)
 	{
 		$acid->transaction(function() use ($request, $auth, $users, $deposits)
 		{

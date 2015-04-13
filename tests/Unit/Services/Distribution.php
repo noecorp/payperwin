@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 class Distribution extends \AppTests\TestCase {
 
-	public function testFoo()
+	public function _testFoo()
 	{
 		$users = $this->getUsersMock();
 		$matches = $this->getMatchesMock();

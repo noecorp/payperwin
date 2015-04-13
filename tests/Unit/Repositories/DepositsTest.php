@@ -1,7 +1,7 @@
 <?php
 
 
-namespace AppTests\Unit\Services;
+namespace AppTests\Unit\Repositories;
 
 use AppTests\Functional\Controllers\IPNListenerTest;
 use App\Contracts\Service\Acidifier;
@@ -17,7 +17,7 @@ use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
 use Mockery as m;
 
-class DepositsRepositoryTest extends TestCase
+class DepositsTest extends TestCase
 {
 
     public function setUp()

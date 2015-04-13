@@ -12,6 +12,8 @@ use GuzzleHttp\Stream\Stream;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
+	protected $migrate = true;
+
 	protected function getGuzzleMock($status = 200, $headers = [], $content = '', $howMany = 1)
 	{
 		$client = new GuzzleClient();
@@ -70,9 +72,21 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		return PHPUnit::assertNotNull(json_decode($this->response->getContent()));
 	}
 
-	public function assertResponseIsView($response)
+	public function assertResponseIsView()
 	{
-		return PHPUnit::assertTrue(is_object($response) && isset($response->original) && $response->original instanceof \Illuminate\View\View);
+		return PHPUnit::assertTrue(is_object($this->response) && isset($this->response->original) && $this->response->original instanceof \Illuminate\View\View);
+	}
+
+	public function viewData($key = null)
+	{
+		if (is_object($this->response) && isset($this->response->original) && $this->response->original instanceof \Illuminate\View\View)
+		{
+			return ($key) ? $this->response->original->getData()[$key] : $this->response->original->getData();
+		}
+		else
+		{
+			return PHPUnit::assertTrue(false, 'The response was not a view.');
+		}
 	}
 
 	public function responseJson($array = false)
@@ -84,15 +98,24 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 	{
 		parent::setUp();
 
-		$this->artisan('migrate');
-		$this->seed();
+		if ($this->migrate)
+		{
+			$this->artisan('migrate');
+			$this->seed();
+		}
 	}
 
 	public function tearDown()
 	{
-		$this->artisan('migrate:rollback');
+		if ($this->migrate)
+		{
+			$this->artisan('migrate:rollback');
+		}
+		
 		$this->artisan('cache:clear');
 		$this->flushSession();
+
+		$this->artisan('clear:apc');
 
 		parent::tearDown();
 	}

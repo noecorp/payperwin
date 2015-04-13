@@ -6,6 +6,7 @@ use App\Events\Services\GameApi\RateLimitWasExceeded;
 use App\Events\Services\GameApi\RequestWasInvalid;
 use App\Events\Services\GameApi\ServerHadAnError;
 use App\Events\Services\GameApi\ServiceWasUnavailable;
+use App\Events\Services\GameApi\UnknownErrorOccurred;
 
 use Illuminate\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;

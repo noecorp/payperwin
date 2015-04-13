@@ -12,7 +12,7 @@ class AlterMessagesNullPledgesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('pledges',function($table)
+		Schema::table('pledges',function(Blueprint $table)
 		{
 			$table->string('message',256)->nullable()->change();
 		});
@@ -25,9 +25,9 @@ class AlterMessagesNullPledgesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('pledges',function($table)
+		Schema::table('pledges',function(Blueprint $table)
 		{
-			$table->string('message',256)->change();
+			$table->string('message',256)->nullable(false)->change();
 		});
 	}
 

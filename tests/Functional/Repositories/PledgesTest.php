@@ -2,6 +2,7 @@
 
 use Mockery as m;
 use App\Repositories\Pledges;
+use App\Models\User;
 
 class PledgesTest extends \AppTests\TestCase {
 
@@ -12,15 +13,32 @@ class PledgesTest extends \AppTests\TestCase {
 
 	public function testCreateSuccessful()
 	{
+		$user = User::create([
+			'email' => 'foo',
+			'username' => 'bar'
+		]);
+
+		$streamer = User::create([
+			'email' => 'bar',
+			'username' => 'foo',
+			'streamer' => 1,
+			'streamer_completed' => 1,
+			'twitch_id' => 1,
+			'twitch_username' => 'foo',
+			'summoner_id' => 1,
+			'summoner_name' => 'foo'
+		]);
+
 		$repo = $this->getRepo();
 
 		// First we check that the pledge ended up in the database successfully
 
 		$pledge = $repo->create([
-			'user_id' => 1,
+			'user_id' => $user->id,
 			'amount' => 1,
 			'type' => 1,
-			'streamer_id' => 1,
+			'streamer_id' => $streamer->id,
+			'message' => 'foo',
 		]);
 
 		$this->assertTrue($pledge->exists);

@@ -8,15 +8,9 @@ Game Result Monetization for eSports Streamers.
 
 [![Coverage Status](https://coveralls.io/repos/asm-products/payperwin/badge.svg?branch=master)](https://coveralls.io/r/asm-products/payperwin?branch=master)
 
-<a href="https://assembly.com/payperwin/bounties?utm_campaign=assemblage&utm_source=payperwin&utm_medium=repo_badge"><img src="https://asm-badger.herokuapp.com/payperwin/badges/tasks.svg" height="24px" alt="Open Tasks" /></a>
-
-## Development
-
-Before you jump in and start hacking away at Pull Requests, first read our [Dev Contributing Guide](https://github.com/asm-products/payperwin/blob/master/CONTRIBUTING.md)!
-
 ## An Assembly Project
 
-This is a product being built by the Assembly community. You can help push this idea forward by visiting [https://assembly.com/payperwin](https://assembly.com/payperwin).
+This is a product being built by the Assembly community. Find out more at [https://assembly.com/payperwin](https://assembly.com/payperwin).
 
 ### How Assembly Works
 

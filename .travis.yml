@@ -20,8 +20,8 @@ before_script:
     - gulp
 
 script:
-    - phpunit --testsuite=Unit --coverage-clover tests/clover-unit.xml
-    - phpunit --testsuite=Functional --coverage-clover tests/logs/clover-functional.xml
+    - phpunit --verbose --testsuite=Unit --coverage-clover tests/clover-unit.xml
+    - phpunit --verbose --testsuite=Functional --coverage-clover tests/logs/clover-functional.xml
 
 after_script:
     - php vendor/bin/coveralls -v

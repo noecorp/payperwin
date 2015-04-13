@@ -28,11 +28,9 @@ class CreateUsersTable extends Migration {
 			$table->string('short_url',32)->nullable();
 			$table->boolean('live')->default(0);
 
-			//Again, email can be missing when logging in through a social provider.
-			//It would have be set in the profile and the account would be locked without it.
 			$table->string('email', 254)->nullable()->unique();
 
-			//Again, if logging in through a social provider, there's no password. It
+			//If logging in through a social provider, there's no password. It
 			//can be set after.
 			$table->string('password', 60)->nullable();
 

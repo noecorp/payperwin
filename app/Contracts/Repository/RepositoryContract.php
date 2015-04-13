@@ -1,6 +1,7 @@
 <?php namespace App\Contracts\Repository;
 
 use App\Models\Model;
+use \DateTime;
 
 interface RepositoryContract {
 
@@ -41,6 +42,17 @@ interface RepositoryContract {
 	 * @return void
 	 */
 	public function updateAll(array $ids, array $data);
+
+	/**
+	 * Increment by 1 the specified property for the given model id.
+	 *
+	 * @param Model $model
+	 * @param string $column
+	 * @param float $amount
+	 *
+	 * @return void
+	 */
+	public function increment(Model $model, $column, $amount = 1.0);
 
 	/**
 	 * Increment by 1 the specified property for the given ids.
@@ -102,20 +114,20 @@ interface RepositoryContract {
 	/**
 	 * Constrain query to results created after a certain date.
 	 *
-	 * @param Carbon|DateTime|string $date
+	 * @param Carbon|DateTime $date
 	 *
 	 * @return static
 	 */
-	public function after($date);
+	public function after(DateTime $date);
 
 	/**
 	 * Constrain query to results created before a certain date.
 	 *
-	 * @param Carbon|DateTime|string $date
+	 * @param Carbon|DateTime $date
 	 *
 	 * @return static
 	 */
-	public function before($date);
+	public function before(DateTime $date);
 
 	/**
 	 * Add limit and offset to the query.

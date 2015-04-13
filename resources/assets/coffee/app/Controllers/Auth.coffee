@@ -1,6 +1,6 @@
 class Auth extends Controller
 	actions: {
-		login: (parameters) ->
+		login: (parameters) =>
 			twitchClicked = false
 
 			$twitch = $('#login-twitch')
@@ -15,7 +15,7 @@ class Auth extends Controller
 				$twitch.after('&nbsp;<img src="/img/loading.gif"/>');
 			)
 
-		register: (parameters) ->
+		register: (parameters) =>
 			twitchClicked = false
 
 			$twitch = $('#register-twitch')

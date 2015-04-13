@@ -91,7 +91,7 @@ class Auth extends Controller {
 	{
 		$this->auth->login($this->users->create($request->all()),true);
 
-		return $this->redirect->to('/auth/register');
+		return $this->redirect->to('/start');
 	}
 
 	/**
@@ -243,7 +243,11 @@ class Auth extends Controller {
 		if ($uri)
 			return $this->redirect->to($uri);
 
-		if ($this->auth->user()->streamer)
+		if ($this->auth->user()->streamer && !$this->auth->user()->twitch_id || !$this->auth->user()->summoner_id)
+		{
+			return $this->redirect->to('/users/'.$user->id.'/edit');
+		}
+		else if ($this->auth->user()->streamer)
 		{
 			return $this->redirect->to('/streamers/'.$user->id);
 		}

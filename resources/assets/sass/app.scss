@@ -180,8 +180,21 @@ footer
 #helpful
 {
 	position: fixed;
-	right: 30px;
 	bottom: 30px;
+	right: 30px;
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+@media screen and (min-width: 768px)
+{
+	#helpful
+	{
+		.btn
+		{
+			font-size: 90%;
+		}
+	}
 }
 
 h1, .h1
@@ -237,4 +250,11 @@ img
 .form-control[disabled]
 {
 	color: #555;
+}
+
+// Firefox responsive fieldset fix
+// http://stackoverflow.com/questions/17408815/fieldset-resizes-wrong-appears-to-have-unremovable-min-width-min-content/17863685#17863685
+@-moz-document url-prefix()
+{
+	fieldset { display: table-cell; }
 }

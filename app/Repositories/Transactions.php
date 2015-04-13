@@ -33,9 +33,9 @@ class Transactions extends AbstractRepository implements TransactionsRepository 
 	 *
 	 * @return TransactionsWereCreated
 	 */
-	protected function eventForModelsCreated(array $models)
+	protected function eventForModelsCreated()
 	{
-		return new TransactionsWereCreated($models);
+		return new TransactionsWereCreated();
 	}
 
 	/**
@@ -53,9 +53,9 @@ class Transactions extends AbstractRepository implements TransactionsRepository 
 	 *
 	 * @return TransactionsWereUpdated
 	 */
-	protected function eventForModelsUpdated(array $models)
+	protected function eventForModelsUpdated()
 	{
-		return new TransactionsWereUpdated($models);
+		return new TransactionsWereUpdated();
 	}
 
 }

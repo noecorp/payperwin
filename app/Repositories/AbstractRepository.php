@@ -7,6 +7,8 @@ use Illuminate\Contracts\Container\Container;
 use Carbon\Carbon;
 use App\Models\Model;
 use App\Exceptions\Repositories\ModelClassMismatch;
+use App\Exceptions\Repositories\ModelDoesntExist;
+use DateTime;
 
 abstract class AbstractRepository implements RepositoryContract {
 
@@ -55,8 +57,8 @@ abstract class AbstractRepository implements RepositoryContract {
 	public function __construct(Container $container)
 	{
 		$this->model = $container->make($this->model());
-		$this->cache = $container->make('Illuminate\Contracts\Cache\Repository');
-		$this->events = $container->make('Illuminate\Contracts\Events\Dispatcher');
+		$this->cache = $container->make(Cache::class);
+		$this->events = $container->make(Events::class);
 		$this->container = $container;
 	}
 
@@ -77,13 +79,11 @@ abstract class AbstractRepository implements RepositoryContract {
 	abstract protected function eventForModelCreated(Model $model);
 
 	/**
-	 * Get a model created event instance specific to this repository.
-	 *
-	 * @param array $models
+	 * Get a mass model created event instance specific to this repository.
 	 *
 	 * @return \App\Events\Event
 	 */
-	abstract protected function eventForModelsCreated(array $models);
+	abstract protected function eventForModelsCreated();
 
 	/**
 	 * Get a model updated event instance specific to this repository.
@@ -95,13 +95,11 @@ abstract class AbstractRepository implements RepositoryContract {
 	abstract protected function eventForModelUpdated(Model $model);
 
 	/**
-	 * Get a model updated event instance specific to this repository.
-	 *
-	 * @param array $models
+	 * Get a mass model updated event instance specific to this repository.
 	 *
 	 * @return \App\Events\Event
 	 */
-	abstract protected function eventForModelsUpdated(array $models);
+	abstract protected function eventForModelsUpdated();
 
 	/**
 	 * Get the current query or create a new one.
@@ -169,7 +167,7 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$this->cache->tags($this->model->getTable())->flush();
 
-		// $this->events->fire($this->eventForModelsCreated([]));
+		$this->events->fire($this->eventForModelsCreated());
 
 		$this->reset();
 	}
@@ -178,13 +176,16 @@ abstract class AbstractRepository implements RepositoryContract {
 	 * {@inheritdoc}
 	 *
 	 * @throws ModelClassMismatch
+	 * @throws ModelDoesntExist
 	 */
 	public function update(Model $model, array $data)
 	{
 		if (!is_a($model, get_class($this->model))) throw new ModelClassMismatch;
 
+		if (!$model->exists) throw new ModelDoesntExist;
+
 		$model->fill($data);
-		
+
 		if ($model->isDirty())
 		{
 			$model->save(); 
@@ -204,7 +205,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function updateAll(array $ids, array $data)
 	{
-		if (empty($ids)) return;
+		if (empty($ids) || empty($data)) return;
 
 		$data['updated_at'] = Carbon::now();
 
@@ -212,9 +213,17 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$this->cache->tags($this->model->getTable())->flush();
 
-		$this->events->fire($this->eventForModelsUpdated($ids));
+		$this->events->fire($this->eventForModelsUpdated());
 
 		$this->reset();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function increment(Model $model, $column, $amount = 1.0)
+	{
+		return $this->update($model, [$column => $model->$column + $amount]);
 	}
 
 	/**
@@ -224,8 +233,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	{
 		if (empty($ids)) return;
 
-//		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now(), $column => $this->container->make('db')->raw('`'.$column.'` + 1')]);
-		$this->query()->whereIn('id',$ids)->increment($column, $amount,['updated_at' => Carbon::now()]);
+		$this->query()->whereIn('id', $ids)->increment($column, $amount, ['updated_at' => Carbon::now()]);
 
 		$this->cache->tags($this->model->getTable())->flush();
 
@@ -284,7 +292,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function count()
 	{
-		$hash = $this->getQueryHash();
+		$hash = $this->getQueryHash('count');
 
 		$tags = $this->getCacheTags();
 
@@ -316,7 +324,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	protected function calculate($type, $column)
 	{
-		$hash = $this->getQueryHash();
+		$hash = $this->getQueryHash($type, $column);
 
 		$tags = $this->getCacheTags();
 
@@ -353,9 +361,9 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function after($date)
+	public function after(DateTime $date)
 	{
-		$this->query()->where('created_at','>',new Carbon($date));
+		$this->query()->where('created_at','>',$date);
 		
 		return $this;
 	}
@@ -363,9 +371,9 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function before($date)
+	public function before(DateTime $date)
 	{
-		$this->query()->where('created_at','<',new Carbon($date));
+		$this->query()->where('created_at','<',$date);
 		
 		return $this;
 	}
@@ -375,10 +383,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function limit($take, $page = null)
 	{
-		if ($take > 0)
-		{
-			$this->query()->limit($take);
-		}
+		$this->query()->limit($take);
 		
 		if ($page > 1)
 		{
@@ -412,11 +417,14 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * Get a unique hash representation for the current query.
 	 *
+	 * @param mixed $data, ...
 	 * @return string
 	 */
-	protected function getQueryHash()
+	protected function getQueryHash($data = null)
 	{
-		$hash = $this->query()->getQuery()->toSql() . ' ' . implode(',', $this->query()->getBindings());
+		$data = ($data) ? func_get_args() : [];
+
+		$hash = $this->query()->getQuery()->toSql() . ' ' . implode(',', $data) . ' ' . implode(',', $this->query()->getBindings());
 
 		$relations = array_keys($this->query()->getEagerLoads());
 
