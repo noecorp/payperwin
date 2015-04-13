@@ -34,9 +34,9 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 	 *
 	 * @return PledgesWereCreated
 	 */
-	protected function eventForModelsCreated(array $models)
+	protected function eventForModelsCreated()
 	{
-		return new PledgesWereCreated($models);
+		return new PledgesWereCreated();
 	}
 
 	/**
@@ -54,9 +54,9 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 	 *
 	 * @return PledgesWereUpdated
 	 */
-	protected function eventForModelsUpdated(array $models)
+	protected function eventForModelsUpdated()
 	{
-		return new PledgesWereUpdated($models);
+		return new PledgesWereUpdated();
 	}
 
 	/**

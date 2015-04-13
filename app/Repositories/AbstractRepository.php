@@ -77,13 +77,11 @@ abstract class AbstractRepository implements RepositoryContract {
 	abstract protected function eventForModelCreated(Model $model);
 
 	/**
-	 * Get a model created event instance specific to this repository.
-	 *
-	 * @param array $models
+	 * Get a mass model created event instance specific to this repository.
 	 *
 	 * @return \App\Events\Event
 	 */
-	abstract protected function eventForModelsCreated(array $models);
+	abstract protected function eventForModelsCreated();
 
 	/**
 	 * Get a model updated event instance specific to this repository.
@@ -95,13 +93,11 @@ abstract class AbstractRepository implements RepositoryContract {
 	abstract protected function eventForModelUpdated(Model $model);
 
 	/**
-	 * Get a model updated event instance specific to this repository.
-	 *
-	 * @param array $models
+	 * Get a mass model updated event instance specific to this repository.
 	 *
 	 * @return \App\Events\Event
 	 */
-	abstract protected function eventForModelsUpdated(array $models);
+	abstract protected function eventForModelsUpdated();
 
 	/**
 	 * Get the current query or create a new one.
@@ -169,7 +165,7 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$this->cache->tags($this->model->getTable())->flush();
 
-		// $this->events->fire($this->eventForModelsCreated([]));
+		$this->events->fire($this->eventForModelsCreated());
 
 		$this->reset();
 	}
@@ -212,7 +208,7 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$this->cache->tags($this->model->getTable())->flush();
 
-		$this->events->fire($this->eventForModelsUpdated($ids));
+		$this->events->fire($this->eventForModelsUpdated());
 
 		$this->reset();
 	}

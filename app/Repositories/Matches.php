@@ -33,9 +33,9 @@ class Matches extends AbstractRepository implements MatchesRepository {
 	 *
 	 * @return MatchesWereCreated
 	 */
-	protected function eventForModelsCreated(array $models)
+	protected function eventForModelsCreated()
 	{
-		return new MatchesWereCreated($models);
+		return new MatchesWereCreated();
 	}
 
 	/**
@@ -53,9 +53,9 @@ class Matches extends AbstractRepository implements MatchesRepository {
 	 *
 	 * @return MatchesWereUpdated
 	 */
-	protected function eventForModelsUpdated(array $models)
+	protected function eventForModelsUpdated()
 	{
-		return new MatchesWereUpdated($models);
+		return new MatchesWereUpdated();
 	}
 
 	/**
