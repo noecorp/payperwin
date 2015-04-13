@@ -232,7 +232,7 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$query = $this->getQueryMock();
 		$query->shouldReceive('whereIn')->once()->with('id',$ids)->andReturn($query);
-		$query->shouldReceive('update')->once()->with($data);
+		$query->shouldReceive('update')->once()->with(m::any());
 
 		unset($data['updated_at']);
 
