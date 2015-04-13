@@ -12,6 +12,8 @@ use GuzzleHttp\Stream\Stream;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
+	protected $migrate = true;
+
 	protected function getGuzzleMock($status = 200, $headers = [], $content = '', $howMany = 1)
 	{
 		$client = new GuzzleClient();
@@ -84,13 +86,20 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 	{
 		parent::setUp();
 
-		$this->artisan('migrate');
-		$this->seed();
+		if ($this->migrate)
+		{
+			$this->artisan('migrate');
+			$this->seed();
+		}
 	}
 
 	public function tearDown()
 	{
-		$this->artisan('migrate:rollback');
+		if ($this->migrate)
+		{
+			$this->artisan('migrate:rollback');
+		}
+		
 		$this->artisan('cache:clear');
 		$this->flushSession();
 
