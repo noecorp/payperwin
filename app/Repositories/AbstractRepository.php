@@ -7,6 +7,8 @@ use Illuminate\Contracts\Container\Container;
 use Carbon\Carbon;
 use App\Models\Model;
 use App\Exceptions\Repositories\ModelClassMismatch;
+use App\Exceptions\Repositories\ModelDoesntExist;
+use DateTime;
 
 abstract class AbstractRepository implements RepositoryContract {
 
@@ -55,8 +57,8 @@ abstract class AbstractRepository implements RepositoryContract {
 	public function __construct(Container $container)
 	{
 		$this->model = $container->make($this->model());
-		$this->cache = $container->make('Illuminate\Contracts\Cache\Repository');
-		$this->events = $container->make('Illuminate\Contracts\Events\Dispatcher');
+		$this->cache = $container->make(Cache::class);
+		$this->events = $container->make(Events::class);
 		$this->container = $container;
 	}
 
@@ -174,13 +176,16 @@ abstract class AbstractRepository implements RepositoryContract {
 	 * {@inheritdoc}
 	 *
 	 * @throws ModelClassMismatch
+	 * @throws ModelDoesntExist
 	 */
 	public function update(Model $model, array $data)
 	{
 		if (!is_a($model, get_class($this->model))) throw new ModelClassMismatch;
 
+		if (!$model->exists) throw new ModelDoesntExist;
+
 		$model->fill($data);
-		
+
 		if ($model->isDirty())
 		{
 			$model->save(); 
@@ -200,7 +205,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function updateAll(array $ids, array $data)
 	{
-		if (empty($ids)) return;
+		if (empty($ids) || empty($data)) return;
 
 		$data['updated_at'] = Carbon::now();
 
@@ -216,12 +221,19 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
+	public function increment(Model $model, $column, $amount = 1.0)
+	{
+		return $this->update($model, [$column => $model->$column + $amount]);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function incrementAll(array $ids, $column, $amount=1)
 	{
 		if (empty($ids)) return;
 
-//		$this->query()->whereIn('id',$ids)->update(['updated_at' => Carbon::now(), $column => $this->container->make('db')->raw('`'.$column.'` + 1')]);
-		$this->query()->whereIn('id',$ids)->increment($column, $amount,['updated_at' => Carbon::now()]);
+		$this->query()->whereIn('id', $ids)->increment($column, $amount, ['updated_at' => Carbon::now()]);
 
 		$this->cache->tags($this->model->getTable())->flush();
 
@@ -349,9 +361,9 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function after($date)
+	public function after(DateTime $date)
 	{
-		$this->query()->where('created_at','>',new Carbon($date));
+		$this->query()->where('created_at','>',$date);
 		
 		return $this;
 	}
@@ -359,9 +371,9 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function before($date)
+	public function before(DateTime $date)
 	{
-		$this->query()->where('created_at','<',new Carbon($date));
+		$this->query()->where('created_at','<',$date);
 		
 		return $this;
 	}
@@ -371,10 +383,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function limit($take, $page = null)
 	{
-		if ($take > 0)
-		{
-			$this->query()->limit($take);
-		}
+		$this->query()->limit($take);
 		
 		if ($page > 1)
 		{
