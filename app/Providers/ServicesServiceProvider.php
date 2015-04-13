@@ -78,11 +78,6 @@ class ServicesServiceProvider extends ServiceProvider {
 		);
 
 		$this->app->singleton(
-			'App\Contracts\Service\Payments',
-			'App\Services\Payments'
-		);
-
-		$this->app->singleton(
 			'App\Contracts\Service\Distribution',
 			'App\Services\Distribution'
 		);
