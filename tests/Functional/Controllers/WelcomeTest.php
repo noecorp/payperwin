@@ -9,7 +9,7 @@ class WelcomeTest extends \AppTests\TestCase {
 		$response = $this->call('GET','/');
 
 		$this->assertResponseOk();
-		$this->assertResponseIsView($response);
+		$this->assertResponseIsView();
 	}
 
 	public function testIndexRedirectsIfLoggedIn()
@@ -41,7 +41,7 @@ class WelcomeTest extends \AppTests\TestCase {
 		$response = $this->call('GET','start');
 
 		$this->assertResponseOk();
-		$this->assertResponseIsView($response);
+		$this->assertResponseIsView();
 	}
 
 	public function testStartRedirectsIfGuest()
