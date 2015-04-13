@@ -27,7 +27,7 @@ class AlterMessagesNullPledgesTable extends Migration {
 	{
 		Schema::table('pledges',function(Blueprint $table)
 		{
-			$table->string('message',256)->change();
+			$table->string('message',256)->nullable(false)->change();
 		});
 	}
 
