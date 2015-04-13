@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use App\Models\Pledge;
+use Illuminate\Database\Eloquent\Collection;
+
 class UsersPledgesTest extends \AppTests\TestCase {
 
 	public function testIndexOkWithNoPledges()
@@ -15,7 +17,11 @@ class UsersPledgesTest extends \AppTests\TestCase {
 		$response = $this->call('GET','users/1/pledges');
 
 		$this->assertResponseOk();
-		$this->assertViewHas('pledges');
+
+		$pledges = $this->viewData('pledges');
+
+		$this->assertTrue($pledges instanceof Collection);
+		$this->assertTrue($pledges->isEmpty());
 	}
 
 	public function testIndexOkWithPledges()
@@ -42,7 +48,11 @@ class UsersPledgesTest extends \AppTests\TestCase {
 		$response = $this->call('GET','users/2/pledges');
 
 		$this->assertResponseOk();
-		$this->assertViewHas('pledges');
+
+		$pledges = $this->viewData('pledges');
+
+		$this->assertTrue($pledges instanceof Collection);
+		$this->assertFalse($pledges->isEmpty());
 	}
 
 	public function testIndexAbortsWhenNotFound()

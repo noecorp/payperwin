@@ -76,6 +76,17 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 	{
 		return PHPUnit::assertTrue(is_object($this->response) && isset($this->response->original) && $this->response->original instanceof \Illuminate\View\View);
 	}
+
+	public function viewData($key = null)
+	{
+		if (is_object($this->response) && isset($this->response->original) && $this->response->original instanceof \Illuminate\View\View)
+		{
+			return ($key) ? $this->response->original->getData()[$key] : $this->response->original->getData();
+		}
+		else
+		{
+			return PHPUnit::assertTrue(false, 'The response was not a view.');
+		}
 	}
 
 	public function responseJson($array = false)
