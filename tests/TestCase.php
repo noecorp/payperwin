@@ -115,6 +115,8 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		$this->artisan('cache:clear');
 		$this->flushSession();
 
+		$this->artisan('clear:apc');
+
 		parent::tearDown();
 	}
 

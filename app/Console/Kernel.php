@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel {
 		'App\Console\Commands\Impress',
 		'App\Console\Commands\Spy',
 		'App\Console\Commands\MakeTest',
+		'App\Console\Commands\ClearApc',
 	];
 
 	/**
