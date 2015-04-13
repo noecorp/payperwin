@@ -38,6 +38,7 @@ class PledgesTest extends \AppTests\TestCase {
 			'amount' => 1,
 			'type' => 1,
 			'streamer_id' => $streamer->id,
+			'message' => 'foo',
 		]);
 
 		$this->assertTrue($pledge->exists);

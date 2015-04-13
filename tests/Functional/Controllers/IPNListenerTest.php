@@ -57,7 +57,7 @@ class IPNListenerTest extends TestCase
     {
         $users=$this->app->make(Users::class);
         //create dummy user to add funds to
-        $user=$users->create([]);
+        $user = $users->create(['email'=>'foo']);
         $this->assertNotNull($user);
 
         $gross=20;
@@ -73,12 +73,12 @@ class IPNListenerTest extends TestCase
     {
         $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'foo']);
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'bar']);
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
@@ -98,12 +98,12 @@ class IPNListenerTest extends TestCase
     {
         $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'foo']);
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'bar']);
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
@@ -132,12 +132,12 @@ class IPNListenerTest extends TestCase
     {
         $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'foo']);
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'bar']);
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
@@ -166,12 +166,12 @@ class IPNListenerTest extends TestCase
     {
         $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'foo']);
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'bar']);
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
@@ -199,12 +199,12 @@ class IPNListenerTest extends TestCase
     {
         $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'foo']);
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create([]);
+        $user = $users->create(['email'=>'bar']);
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
