@@ -164,6 +164,9 @@
 				<div class="alert alert-info">
 					<a href="{{ url('/?auid='.$user->id) }}">{{ url('/?auid='.$user->id) }}</a>
 				</div>
+
+				<h2>Commission Tiers</h2>
+				<p><strong>Coming soon:</strong> Get a lower payout commission based on how many fans are making pledges. This feature will be automatically enabled for your account once implemented.</p>
 			@endif
 		</div>
 	</div>
