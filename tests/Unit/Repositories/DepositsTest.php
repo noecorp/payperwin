@@ -22,6 +22,10 @@ use Mockery as m;
  */
 class DepositsTest extends TestCase
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected $migrate = true;
 
     /**
      * @small

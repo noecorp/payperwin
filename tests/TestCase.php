@@ -12,6 +12,13 @@ use GuzzleHttp\Stream\Stream;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
+	/**
+	 * Whether or not to run table database migrations to set up tables.
+	 *
+	 * This shouldn't be needed in unit tests, but necessary in other test types.
+	 *
+	 * @var boolean
+	 */
 	protected $migrate = true;
 
 	protected function getGuzzleMock($status = 200, $headers = [], $content = '', $howMany = 1)

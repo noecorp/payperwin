@@ -23,6 +23,10 @@ use Mockery;
  */
 class IPNListenerTest extends TestCase
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected $migrate = true;
 
     public function setUp()
     {

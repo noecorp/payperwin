@@ -11,6 +11,11 @@ use App\Models\User;
 class LeagueTest extends \AppTests\TestCase {
 
 	/**
+     * {@inheritdoc}
+     */
+    protected $migrate = true;
+
+	/**
 	 * @small
 	 *
 	 * @group controllers

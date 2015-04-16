@@ -9,6 +9,11 @@ use App\Models\User;
  */
 class PledgesTest extends \AppTests\TestCase {
 
+	/**
+     * {@inheritdoc}
+     */
+    protected $migrate = true;
+
 	private function getRepo()
 	{
 		return new Pledges($this->app);

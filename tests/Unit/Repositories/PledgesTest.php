@@ -13,7 +13,10 @@ use Illuminate\Contracts\Events\Dispatcher as Events;
  */
 class PledgesTest extends \AppTests\TestCase {
 
-	protected $migrate = false;
+	/**
+     * {@inheritdoc}
+     */
+    protected $migrate = false;
 
 	private function getRepo()
 	{

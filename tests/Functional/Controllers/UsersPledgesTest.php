@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\Collection;
 class UsersPledgesTest extends \AppTests\TestCase {
 
 	/**
+     * {@inheritdoc}
+     */
+    protected $migrate = true;
+
+	/**
 	 * @small
 	 *
 	 * @group controllers

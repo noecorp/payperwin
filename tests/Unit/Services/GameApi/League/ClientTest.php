@@ -31,6 +31,11 @@ use App\Events\Services\GameApi\UnknownErrorOccurred;
  */
 class ClientTest extends \AppTests\TestCase {
 
+	/**
+     * {@inheritdoc}
+     */
+    protected $migrate = false;
+
 	private function getClient()
 	{
 		return new Client($this->app);

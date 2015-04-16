@@ -8,6 +8,11 @@ use App\Models\User;
 class WelcomeTest extends \AppTests\TestCase {
 
 	/**
+     * {@inheritdoc}
+     */
+    protected $migrate = true;
+
+	/**
 	 * @small
 	 *
 	 * @group controllers
