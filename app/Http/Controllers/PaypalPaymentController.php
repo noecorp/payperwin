@@ -43,7 +43,7 @@ class PaypalPaymentController extends Controller
         event(new ValidIPNReceived($request));
 
         //lock this section in order to keep a consistent transaction state (a lock is created per user, so that ipns for different users can be processed in parallel)
-        @mkdir(storage_path() . "/app/locks/ipn/", 755, true);
+        @mkdir(storage_path() . "/app/locks/ipn/", 0755, true);
         touch(storage_path() . '/app/locks/ipn/' . $user->id . '.lock');
         $fp = fopen(storage_path() . '/app/locks/ipn/' . $user->id . '.lock', 'r+');
 
