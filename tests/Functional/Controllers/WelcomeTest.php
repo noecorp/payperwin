@@ -2,8 +2,19 @@
 
 use App\Models\User;
 
+/**
+ * @coversDefaultClass \App\Http\Controllers\Welcome
+ */
 class WelcomeTest extends \AppTests\TestCase {
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::index
+	 */
 	public function testIndexOkWhenGuest()
 	{
 		$response = $this->call('GET','/');
@@ -12,6 +23,14 @@ class WelcomeTest extends \AppTests\TestCase {
 		$this->assertResponseIsView();
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::index
+	 */
 	public function testIndexRedirectsIfLoggedIn()
 	{
 		$user = User::create(
@@ -28,6 +47,14 @@ class WelcomeTest extends \AppTests\TestCase {
 		$this->assertResponseHeaderIs('Location',url('start'));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::start
+	 */
 	public function testStartOkWhenLoggedIn()
 	{
 		$user = User::create(
@@ -44,6 +71,14 @@ class WelcomeTest extends \AppTests\TestCase {
 		$this->assertResponseIsView();
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::start
+	 */
 	public function testStartRedirectsIfGuest()
 	{
 		$response = $this->call('GET','start');

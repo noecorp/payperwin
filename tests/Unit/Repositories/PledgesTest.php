@@ -8,6 +8,9 @@ use Illuminate\Database\Connection;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Events\Dispatcher as Events;
 
+/**
+ * @coversDefaultClass \App\Repositories\Pledges
+ */
 class PledgesTest extends \AppTests\TestCase {
 
 	protected $migrate = false;
@@ -42,6 +45,16 @@ class PledgesTest extends \AppTests\TestCase {
 		return m::mock(Events::class);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group repositories
+	 *
+	 * @covers ::__construct
+	 * @covers ::create
+	 * @covers ::model
+	 * @covers ::eventForModelCreated
+	 */
 	public function testCreate()
 	{
 		$model = $this->getModelMock()->makePartial();
@@ -101,6 +114,15 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertNull($pledge);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group repositories
+	 *
+	 * @covers ::__construct
+	 * @covers ::withStreamer
+	 * @covers ::query
+	 */
 	public function testWithStreamer()
 	{
 		$model = $this->getModelMock();
@@ -120,6 +142,15 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertSame($repo,$return);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group repositories
+	 *
+	 * @covers ::__construct
+	 * @covers ::withOwner
+	 * @covers ::query
+	 */
 	public function testWithOwner()
 	{
 		$model = $this->getModelMock();
@@ -139,6 +170,15 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertSame($repo,$return);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group repositories
+	 *
+	 * @covers ::__construct
+	 * @covers ::forStreamer
+	 * @covers ::query
+	 */
 	public function testForStreamer()
 	{
 		$model = $this->getModelMock();
@@ -158,6 +198,15 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertSame($repo,$return);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group repositories
+	 *
+	 * @covers ::__construct
+	 * @covers ::fromUser
+	 * @covers ::query
+	 */
 	public function testFromUser()
 	{
 		$model = $this->getModelMock();
@@ -177,6 +226,15 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertSame($repo,$return);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group repositories
+	 *
+	 * @covers ::__construct
+	 * @covers ::isRunning
+	 * @covers ::query
+	 */
 	public function testIsRunning()
 	{
 		$model = $this->getModelMock();
@@ -196,6 +254,15 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertSame($repo,$return);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group repositories
+	 *
+	 * @covers ::__construct
+	 * @covers ::orderingByAmount
+	 * @covers ::query
+	 */
 	public function testOrderingByAmount()
 	{
 		// no value
@@ -253,6 +320,15 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertSame($repo,$return);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group repositories
+	 *
+	 * @covers ::__construct
+	 * @covers ::mostSpent
+	 * @covers ::query
+	 */
 	public function testMostSpent()
 	{
 		// for later

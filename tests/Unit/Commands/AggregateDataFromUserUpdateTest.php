@@ -10,6 +10,9 @@ use App\Contracts\Service\Gurus\Aggregation as Guru;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 
+/**
+ * @coversDefaultClass \App\Commands\AggregateDataFromUserUpdate
+ */
 class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 
 	/**
@@ -18,8 +21,13 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	protected $migrate = false;
 
 	/**
-     * @group commands
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 */
 	public function test_handle_with_no_user()
 	{
 		$users = $this->getUsersMock();
@@ -41,8 +49,15 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::getUserAggregations
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_no_existing_aggregations_for_funds()
 	{
 		$changed = [

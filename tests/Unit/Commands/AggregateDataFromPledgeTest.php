@@ -11,6 +11,9 @@ use App\Contracts\Service\Gurus\Aggregation as Guru;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 
+/**
+ * @coversDefaultClass \App\Commands\AggregateDataFromPledge
+ */
 class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 
 	/**
@@ -19,8 +22,13 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	protected $migrate = false;
 
 	/**
-     * @group commands
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 */
 	public function test_handle_with_no_pledge()
 	{
 
@@ -43,8 +51,14 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_no_aggregations()
 	{
 		$pledge = $this->getPledgeMock();

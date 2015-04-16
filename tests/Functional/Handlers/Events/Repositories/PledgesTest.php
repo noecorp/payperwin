@@ -9,6 +9,9 @@ use App\Models\User;
 use App\Commands\AggregateDataFromPledge;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @coversDefaultClass \App\Handlers\Events\Repositories\Pledges
+ */
 class PledgesTest extends \AppTests\TestCase {
 
 	/**
@@ -28,6 +31,15 @@ class PledgesTest extends \AppTests\TestCase {
 		});
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onPledgeWasCreated
+	 * @covers ::subscribe
+	 */
 	public function test_on_Pledge_Was_Created_Without_Referred_By()
 	{
 		$user = User::create([
@@ -77,6 +89,15 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertEquals(AggregateDataFromPledge::class, get_class($command));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onPledgeWasCreated
+	 * @covers ::subscribe
+	 */
 	public function test_on_Pledge_Was_Created_With_Referral_Completed()
 	{
 		$user = User::create([
@@ -124,6 +145,15 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertEquals(AggregateDataFromPledge::class, get_class($command));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onPledgeWasCreated
+	 * @covers ::subscribe
+	 */
 	public function test_on_Pledge_Was_Created()
 	{
 		$user = User::create([

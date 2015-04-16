@@ -5,6 +5,9 @@ use \Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Contracts\Service\Gurus\Aggregation as Guru;
 
+/**
+ * @coversDefaultClass \App\Commands\AggregateDataFromUserUpdate
+ */
 class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 
 	/**
@@ -13,9 +16,13 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	protected $migrate = true;
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 */
 	public function test_handle_with_no_pledge()
 	{
 		$this->runCommand(999, [], []);
@@ -24,9 +31,15 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::getUserAggregations
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_no_aggregations_for_funds()
 	{
 		$user = $this->fixtureUser(0);
@@ -48,9 +61,15 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::getStreamerAggregations
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_no_aggregations_for_earnings()
 	{
 		$user = $this->fixtureUser(0, 10);
@@ -73,9 +92,15 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::getUserAggregations
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_some_aggregations_for_funds()
 	{
 		$user = $this->fixtureUser(0);
@@ -129,9 +154,15 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::getStreamerAggregations
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_some_aggregations_for_earnings()
 	{
 		$user = $this->fixtureUser(0, 10);
@@ -185,9 +216,16 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::getUserAggregations
+	 * @covers ::getStreamerAggregations
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_some_of_both()
 	{
 		$user = $this->fixtureUser(0,10);
@@ -275,9 +313,16 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::getUserAggregations
+	 * @covers ::getStreamerAggregations
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_all_available()
 	{
 		$user = $this->fixtureUser(0,10);

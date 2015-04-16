@@ -10,8 +10,14 @@ use App\Exceptions\Repositories\ModelDoesntExist;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
+/**
+ * @coversDefaultClass \App\Repositories\AbstractRepository
+ */
 class AbstractTest extends \AppTests\TestCase {
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected $migrate = false;
 
 	private function getCacheMock()
@@ -39,11 +45,32 @@ class AbstractTest extends \AppTests\TestCase {
 		return new AbstractRepositorySubclass($this->app);
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::model
+     * @covers ::create
+     * @covers ::eventForModelCreated
+     */
 	public function testCreate()
 	{
 		$this->create(false);
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::model
+     * @covers ::create
+     * @covers ::quietly
+     * @covers ::eventForModelCreated
+     */
 	public function test_create_quietly()
 	{
 		$this->create(true);
@@ -81,6 +108,14 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::createAll
+     */
 	public function testCreateAllDoesNothingWhenEmpty()
 	{
 		$cache = $this->getCacheMock();
@@ -100,11 +135,32 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::createAll
+     * @covers ::query
+     * @covers ::eventForModelsCreated
+     */
 	public function testCreateAll()
 	{
 		$this->createAll(false);
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::createAll
+     * @covers ::query
+     * @covers ::quietly
+     * @covers ::eventForModelsCreated
+     */
 	public function test_create_all_quietly()
 	{
 		$this->createAll(true);
@@ -151,6 +207,14 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::update
+     */
 	public function testUpdateThrowsMismatch()
 	{
 		$cache = $this->getCacheMock();
@@ -168,7 +232,14 @@ class AbstractTest extends \AppTests\TestCase {
 		$repo->update($model, ['foo'=>'bar']);
 	}
 
-
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::update
+     */
 	public function testUpdateThrowsDoesntExist()
 	{
 		$cache = $this->getCacheMock();
@@ -186,6 +257,14 @@ class AbstractTest extends \AppTests\TestCase {
 		$repo->update($model, ['foo'=>'bar']);
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::update
+     */
 	public function testUpdateDoesntSaveWhenClean()
 	{
 		$cache = $this->getCacheMock();
@@ -210,11 +289,30 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::update
+     * @covers ::eventForModelUpdated
+     */
 	public function testUpdate()
 	{
 		$this->update(false);
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::update
+     * @covers ::quietly
+     * @covers ::eventForModelUpdated
+     */
 	public function test_update_quietly()
 	{
 		$this->update(true);
@@ -255,6 +353,14 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::updateAll
+     */
 	public function testUpdateAllDoesNothingWhenEmpty()
 	{
 		$cache = $this->getCacheMock();
@@ -281,11 +387,32 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::updateAll
+     * @covers ::query
+     * @covers ::eventForModelsUpdated
+     */
 	public function testUpdateAll()
 	{
 		$this->updateAll(false);
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::updateAll
+     * @covers ::query
+     * @covers ::quietly
+     * @covers ::eventForModelsUpdated
+     */
 	public function test_update_all_quietly()
 	{
 		$this->updateAll(true);
@@ -330,11 +457,30 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::increment
+     * @covers ::update
+     */
 	public function testIncrement()
 	{
 		$this->increment(false);
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::increment
+     * @covers ::quietly
+     * @covers ::update
+     */
 	public function test_increment_quietly()
 	{
 		$this->increment(true);
@@ -378,6 +524,15 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::increment
+     * @covers ::update
+     */
 	public function testIncrementThrowsMismatch()
 	{
 		$cache = $this->getCacheMock();
@@ -395,7 +550,15 @@ class AbstractTest extends \AppTests\TestCase {
 		$repo->increment($model, 'foo', 1);
 	}
 
-
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::increment
+     * @covers ::update
+     */
 	public function testIncrementThrowsDoesntExist()
 	{
 		$cache = $this->getCacheMock();
@@ -413,11 +576,32 @@ class AbstractTest extends \AppTests\TestCase {
 		$repo->increment($model, 'foo', 1);
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::incrementAll
+     * @covers ::query
+     * @covers ::eventForModelsUpdated
+     */
 	public function test_increment_all()
 	{
 		$this->incrementAll(false);
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::incrementAll
+     * @covers ::query
+     * @covers ::quietly
+     * @covers ::eventForModelsUpdated
+     */
 	public function test_increment_all_quietly()
 	{
 		$this->incrementAll(true);
@@ -466,6 +650,14 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::incrementAll
+     */
 	public function test_increment_all_does_nothing_with_no_ids()
 	{
 		$model = $this->getModelMock();
@@ -481,6 +673,18 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertNull($repo->incrementAll([], 'foo', 1));
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::find
+     * @covers ::query
+     * @covers ::getQueryHash
+     * @covers ::getCacheTags
+     * @covers ::reset
+     */
 	public function testFindWithoutId()
 	{
 		$query = $this->getQueryMock()->makePartial();
@@ -512,6 +716,18 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::find
+     * @covers ::query
+     * @covers ::getQueryHash
+     * @covers ::getCacheTags
+     * @covers ::reset
+     */
 	public function testFindWithId()
 	{
 		$id = 1;
@@ -546,6 +762,17 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::find
+     * @covers ::query
+     * @covers ::freshly
+     * @covers ::reset
+     */
 	public function test_find_freshly()
 	{
 		$query = $this->getQueryMock()->makePartial();
@@ -572,6 +799,18 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::all
+     * @covers ::query
+     * @covers ::getQueryHash
+     * @covers ::getCacheTags
+     * @covers ::reset
+     */
 	public function testAll()
 	{
 		$query = $this->getQueryMock()->makePartial();
@@ -603,6 +842,17 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::find
+     * @covers ::query
+     * @covers ::freshly
+     * @covers ::reset
+     */
 	public function test_all_freshly()
 	{
 		$query = $this->getQueryMock()->makePartial();
@@ -628,6 +878,18 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::count
+     * @covers ::query
+     * @covers ::getQueryHash
+     * @covers ::getCacheTags
+     * @covers ::reset
+     */
 	public function testCount()
 	{
 		$query = $this->getQueryMock()->makePartial();
@@ -659,6 +921,17 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::count
+     * @covers ::query
+     * @covers ::freshly
+     * @covers ::reset
+     */
 	public function test_count_freshly()
 	{
 		$query = $this->getQueryMock()->makePartial();
@@ -684,6 +957,19 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::average
+     * @covers ::calculate
+     * @covers ::query
+     * @covers ::getQueryHash
+     * @covers ::getCacheTags
+     * @covers ::reset
+     */
 	public function testAverage()
 	{
 		$column = 'foo';
@@ -717,6 +1003,18 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::average
+     * @covers ::calculate
+     * @covers ::query
+     * @covers ::freshly
+     * @covers ::reset
+     */
 	public function test_average_freshly()
 	{
 		$column = 'foo';
@@ -744,6 +1042,15 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::latest
+     * @covers ::query
+     */
 	public function testLatest()
 	{
 		$query = $this->getQueryMock();
@@ -769,6 +1076,15 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::earliest
+     * @covers ::query
+     */
 	public function testEarliest()
 	{
 		$query = $this->getQueryMock();
@@ -794,6 +1110,15 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::after
+     * @covers ::query
+     */
 	public function testAfter()
 	{
 		$date = Carbon::now();
@@ -821,6 +1146,15 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::before
+     * @covers ::query
+     */
 	public function testBefore()
 	{
 		$date = Carbon::now();
@@ -848,6 +1182,15 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::limit
+     * @covers ::query
+     */
 	public function testLimitNoPage()
 	{
 		$take = 5;
@@ -875,6 +1218,15 @@ class AbstractTest extends \AppTests\TestCase {
 		$this->assertTrue($repo->getSendEvents());
 	}
 
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::limit
+     * @covers ::query
+     */
 	public function testLimitWithPage()
 	{
 		$take = 5;

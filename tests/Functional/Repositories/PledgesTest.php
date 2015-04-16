@@ -4,6 +4,9 @@ use Mockery as m;
 use App\Repositories\Pledges;
 use App\Models\User;
 
+/**
+ * @coversDefaultClass \App\Repositories\Pledges
+ */
 class PledgesTest extends \AppTests\TestCase {
 
 	private function getRepo()
@@ -11,6 +14,16 @@ class PledgesTest extends \AppTests\TestCase {
 		return new Pledges($this->app);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group repositories
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::create
+	 * @covers ::model
+	 * @covers ::eventForModelCreated
+	 */
 	public function testCreateSuccessful()
 	{
 		$user = User::create([

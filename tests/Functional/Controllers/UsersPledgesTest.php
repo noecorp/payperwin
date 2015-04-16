@@ -4,8 +4,18 @@ use App\Models\User;
 use App\Models\Pledge;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @coversDefaultClass \App\Http\Controllers\UsersPledges
+ */
 class UsersPledgesTest extends \AppTests\TestCase {
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::index
+	 */
 	public function testIndexOkWithNoPledges()
 	{
 		$user = User::create(
@@ -24,6 +34,13 @@ class UsersPledgesTest extends \AppTests\TestCase {
 		$this->assertTrue($pledges->isEmpty());
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::index
+	 */
 	public function testIndexOkWithPledges()
 	{
 		$streamer = User::create(
@@ -55,6 +72,13 @@ class UsersPledgesTest extends \AppTests\TestCase {
 		$this->assertFalse($pledges->isEmpty());
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::index
+	 */
 	public function testIndexAbortsWhenNotFound()
 	{
 		$response = $this->call('GET','users/foo/pledges');

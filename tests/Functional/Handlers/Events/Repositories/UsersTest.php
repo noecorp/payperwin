@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\DB;
 use App\Commands\AggregateDataFromUserUpdate;
 use App\Commands\NotifyAboutNewStreamer;
 
+/**
+ * @coversDefaultClass \App\Handlers\Events\Repositories\Users
+ */
 class UsersTest extends \AppTests\TestCase {
 
 	/**
@@ -31,6 +34,15 @@ class UsersTest extends \AppTests\TestCase {
 		});
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onUserWasCreated
+	 * @covers ::subscribe
+	 */
 	public function test_on_User_Was_Created_Without_Auid()
 	{
 		$session = $this->app->make(Session::class);
@@ -60,6 +72,15 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(0,count($jobs));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onUserWasCreated
+	 * @covers ::subscribe
+	 */
 	public function test_on_User_Was_Created_With_Auid_Without_Referrer()
 	{
 		$session = $this->app->make(Session::class);
@@ -88,6 +109,15 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(0,count($jobs));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onUserWasCreated
+	 * @covers ::subscribe
+	 */
 	public function test_on_User_Was_Created()
 	{
 		$session = $this->app->make(Session::class);
@@ -122,6 +152,15 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(0,count($jobs));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onUserWasUpdated
+	 * @covers ::subscribe
+	 */
 	public function test_on_User_Was_Updated_without_streamer()
 	{
 		$user = User::create([
@@ -150,6 +189,15 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(0,count($jobs));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onUserWasUpdated
+	 * @covers ::subscribe
+	 */
 	public function test_on_User_Was_Updated_without_twitch_id()
 	{
 		$user = User::create([
@@ -178,6 +226,15 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(0,count($jobs));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onUserWasUpdated
+	 * @covers ::subscribe
+	 */
 	public function test_on_User_Was_Updated_without_summoner_id()
 	{
 		$user = User::create([
@@ -206,6 +263,15 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(0,count($jobs));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onUserWasUpdated
+	 * @covers ::subscribe
+	 */
 	public function test_on_User_Was_Updated_with_streamer_completed()
 	{
 		$user = User::create([
@@ -234,6 +300,15 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(0,count($jobs));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onUserWasUpdated
+	 * @covers ::subscribe
+	 */
 	public function test_on_User_Was_Updated_completing_streamer()
 	{
 		$user = User::create([
@@ -267,6 +342,15 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(NotifyAboutNewStreamer::class, get_class($command));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onUserWasUpdated
+	 * @covers ::subscribe
+	 */
 	public function test_on_User_Was_Updated_changing_earnings()
 	{
 		$date = new Carbon('2011-11-11 11:11:11');

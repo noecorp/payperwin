@@ -5,6 +5,9 @@ use \Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Contracts\Service\Gurus\Aggregation as Guru;
 
+/**
+ * @coversDefaultClass \App\Commands\AggregateDataFromPledge
+ */
 class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 
 	/**
@@ -13,9 +16,13 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	protected $migrate = true;
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 */
 	public function test_handle_with_no_pledge()
 	{
 		$this->runCommand(999);
@@ -24,9 +31,14 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_no_aggregations()
 	{
 		$user = $this->fixtureUser();
@@ -43,9 +55,14 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_some_user_aggregations()
 	{
 		$user = $this->fixtureUser();
@@ -100,9 +117,14 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_some_streamer_aggregations()
 	{
 		$user = $this->fixtureUser();
@@ -157,9 +179,14 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_some_of_both()
 	{
 		$user = $this->fixtureUser();
@@ -248,9 +275,14 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	}
 
 	/**
-     * @group commands
-     * @small
-     */
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::updateOrCreate
+	 */
 	public function test_handle_with_all_available()
 	{
 		$user = $this->fixtureUser();

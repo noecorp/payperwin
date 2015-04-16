@@ -5,8 +5,19 @@ use Carbon\Carbon;
 use GuzzleHttp\Client as GuzzleClient;
 use App\Models\User;
 
+/**
+ * @coversDefaultClass \App\Http\Controllers\Clients\League
+ */
 class LeagueTest extends \AppTests\TestCase {
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::getSummoner
+	 */
 	public function testGetSummonerAbortsWithMissingArgument()
 	{
 		$user = User::create(
@@ -24,6 +35,14 @@ class LeagueTest extends \AppTests\TestCase {
 		$this->assertEquals($this->responseJson()->region[0],'The region field is required.');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::getSummoner
+	 */
 	public function testGetSummonerRedirectsWhenNotLoggedIn()
 	{
 		$response = $this->call('GET','clients/league/summoner/',['summoner_name'=>'foo','region'=>'bar'],[],[],['HTTP_X-Requested-With'=>'XMLHttpRequest']);
@@ -34,6 +53,14 @@ class LeagueTest extends \AppTests\TestCase {
 		$this->assertEquals($this->responseJson()->redirect,url('auth/login'));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::getSummoner
+	 */
 	public function testGetSummonerAbortsWhenNotAjax()
 	{
 		$user = User::create(
@@ -51,6 +78,14 @@ class LeagueTest extends \AppTests\TestCase {
 		$this->assertEquals($this->responseJson()->error,'Bad Request');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::getSummoner
+	 */
 	public function testGetSummonerOKWithValidData()
 	{
 		$user = User::create(
@@ -82,6 +117,14 @@ class LeagueTest extends \AppTests\TestCase {
 		$this->assertEquals($this->responseJson(true)['match'],['win'=>false,'champion'=>'Kalista','ago'=>Carbon::createFromTimestamp(round(1428526298662/1000))->diffForHumans()]);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::getSummoner
+	 */
 	public function testGetSummonerNameNotFound()
 	{
 		$user = User::create(
@@ -104,6 +147,14 @@ class LeagueTest extends \AppTests\TestCase {
 		$this->assertEquals($this->responseJson()->reason,'summoner');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::getSummoner
+	 */
 	public function testGetSummonerMatchesNotFound()
 	{
 		$user = User::create(
@@ -148,6 +199,14 @@ class LeagueTest extends \AppTests\TestCase {
 		$this->assertEquals($this->responseJson()->reason,'matches');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::getSummoner
+	 */
 	public function testGetSummonerNameErrors()
 	{
 		$user = User::create(
