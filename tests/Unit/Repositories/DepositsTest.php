@@ -23,12 +23,6 @@ use Mockery as m;
 class DepositsTest extends TestCase
 {
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->artisan('migrate:refresh');
-    }
-
     /**
      * @small
      *

@@ -101,7 +101,6 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		if ($this->migrate)
 		{
 			$this->artisan('migrate');
-			$this->seed();
 		}
 	}
 
