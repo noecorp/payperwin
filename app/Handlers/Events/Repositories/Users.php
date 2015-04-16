@@ -14,6 +14,7 @@ use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;
 use App\Models\User;
 use App\Commands\NotifyAboutNewStreamer;
+use App\Commands\AggregateDataFromUserUpdate;
 
 class Users {
 
@@ -82,6 +83,13 @@ class Users {
 	public function onUserWasUpdated(Model $event)
 	{
 		$user = $event->model();
+
+		$changed = $event->changed();
+
+		if (isset($changed['earnings']) || isset($changed['funds']))
+		{
+			$this->dispatcher->dispatchToQueue(new AggregateDataFromUserUpdate($user->id, $changed, $user->getOriginal()));
+		}
 
 		if ($user->streamer && $user->twitch_id && $user->summoner_id && !$user->streamer_completed)
 		{

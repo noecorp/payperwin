@@ -12,8 +12,7 @@ use App\Contracts\Service\Acidifier as AcidifierInterface;
 
 use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;
-use App\Models\User;
-use App\Commands\NotifyAboutNewStreamer;
+use App\Commands\AggregateDataFromPledge;
 
 class Pledges {
 
@@ -63,6 +62,8 @@ class Pledges {
 		$pledge = $event->model();
 
 		$streamer = $this->users->find($pledge->streamer_id);
+
+		$this->dispatcher->dispatchToQueue(new AggregateDataFromPledge($pledge->id));
 
 		if ($streamer->referred_by && !$streamer->referral_completed)
 		{

@@ -2,6 +2,9 @@
 
 use Illuminate\Support\ServiceProvider;
 
+use App\Contracts\Service\Gurus\Aggregation as AggregationGuruInterface;
+use App\Services\Gurus\Aggregation as AggregationGuru;
+
 class ServicesServiceProvider extends ServiceProvider {
 
 	/**
@@ -49,6 +52,11 @@ class ServicesServiceProvider extends ServiceProvider {
 		$this->app->singleton(
 			'App\Contracts\Service\Gurus\Region',
 			'App\Services\Gurus\Region'
+		);
+
+		$this->app->singleton(
+			AggregationGuruInterface::class,
+			AggregationGuru::class
 		);
 	}
 

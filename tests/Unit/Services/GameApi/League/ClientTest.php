@@ -26,13 +26,29 @@ use App\Events\Services\GameApi\RequestWasInvalid;
 use App\Events\Services\GameApi\ServerHadAnError;
 use App\Events\Services\GameApi\UnknownErrorOccurred;
 
+/**
+ * @coversDefaultClass \App\Services\GameApi\League\Client
+ */
 class ClientTest extends \AppTests\TestCase {
+
+	/**
+     * {@inheritdoc}
+     */
+    protected $migrate = false;
 
 	private function getClient()
 	{
 		return new Client($this->app);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group services
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 */
 	public function testSummonerForNameInRegionWithNoArguments()
 	{
 		$player = $this->getMockOf(Player::class);
@@ -51,6 +67,14 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion();
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 */
 	public function testSummonerForNameInRegionWithNullParameters()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -69,6 +93,15 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion(null,null);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 */
 	public function testSummonerForNameInRegionWithOKResponse()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -89,6 +122,15 @@ class ClientTest extends \AppTests\TestCase {
 		$this->assertTrue(is_a($result, get_class($player)));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 */
 	public function testSummonerForNameInRegionWithNotFoundResponse()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -107,6 +149,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion('foo Foo', 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testSummonerForNameInRegionWithBadRequest()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -130,6 +182,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion('foo Foo', 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testSummonerForNameInRegionWithRateLimited()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -153,6 +215,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion('foo Foo', 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testSummonerForNameInRegionWithUnauthorized()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -176,6 +248,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion('foo Foo', 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testSummonerForNameInRegionWithServiceUnavailable()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -199,6 +281,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion('foo Foo', 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testSummonerForNameInRegionWithInternalServerError()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -222,6 +314,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion('foo Foo', 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testSummonerForNameInRegionWithUnknownResponseError()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -245,6 +347,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion('foo Foo', 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testSummonerForNameInRegionWithBadJson()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -268,6 +380,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion('foo Foo', 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::summonerForNameInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testSummonerForNameInRegionWithTooManyRedirects()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -291,8 +413,14 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->summonerForNameInRegion('foo Foo', 'na');
 	}
 
-	/////
-
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithNoArguments()
 	{
 		$player = $this->getMockOf(Player::class);
@@ -311,6 +439,14 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion();
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithNullParameters()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -329,6 +465,15 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion(null,null);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithOKResponse()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -354,6 +499,16 @@ class ClientTest extends \AppTests\TestCase {
 		$this->assertTrue(is_a($result->first(),get_class($match)));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithNotFoundResponse()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -376,6 +531,16 @@ class ClientTest extends \AppTests\TestCase {
 		$client = $this->getClient();
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithNotFoundResponse2()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -394,6 +559,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion(1, 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithBadRequest()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -417,6 +592,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion(1, 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithRateLimited()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -440,6 +625,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion(1, 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithUnauthorized()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -463,6 +658,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion(1, 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithServiceUnavailable()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -486,6 +691,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion(1, 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithInternalServerError()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -509,6 +724,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion(1, 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithUnknownResponseError()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -532,6 +757,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion(1, 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithBadJson()
 	{
 		$match = $this->getMockOf(Match::class);
@@ -555,6 +790,16 @@ class ClientTest extends \AppTests\TestCase {
 		$result = $client->matchHistoryForSummonerIdInRegion(1, 'na');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::matchHistoryForSummonerIdInRegion
+	 * @covers ::url
+	 * @covers ::handle
+	 */
 	public function testMatchHistoryForSummonerIdInRegionWithTooManyRedirects()
 	{
 		$match = $this->getMockOf(Match::class);

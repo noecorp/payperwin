@@ -2,8 +2,23 @@
 
 use App\Models\User;
 
+/**
+ * @coversDefaultClass \App\Http\Controllers\Users
+ */
 class UsersTest extends \AppTests\TestCase {
 
+	/**
+     * {@inheritdoc}
+     */
+    protected $migrate = true;
+
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 */
 	public function testIndexPredictablyAborts()
 	{
 		$response = $this->call('GET','users');
@@ -11,6 +26,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertResponseStatus(404);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::show
+	 */
 	public function testShowAbortsWhenNotFound()
 	{
 		$response = $this->call('GET', 'users/foo');
@@ -18,6 +41,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertResponseStatus(404);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::show
+	 */
 	public function testShowOkWhenFound()
 	{
 		User::create(
@@ -32,6 +63,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertViewHasAll(['user','feed','stats']);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::edit
+	 */
 	public function testEditAbortsWhenNotAuthorized()
 	{
 		User::create(
@@ -52,6 +91,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertResponseStatus(401);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::edit
+	 */
 	public function testEditRedirectsWhenNotLoggedIn()
 	{
 		$response = $this->call('GET', 'users/1/edit');
@@ -60,6 +107,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertResponseHeaderIs('Location',url('auth/login'));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::edit
+	 */
 	public function testEditOk()
 	{
 		$user = User::create(
@@ -76,6 +131,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertViewHas('user',$user);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::update
+	 */
 	public function testUpdateAbortsWhenNotAuthorized()
 	{
 		User::create(
@@ -98,6 +161,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertResponseStatus(401);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::update
+	 */
 	public function testUpdateRedirectsWhenNotLoggedIn()
 	{
 		$this->session(['_token'=>'foo']);
@@ -108,6 +179,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertResponseHeaderIs('Location',url('auth/login'));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::update
+	 */
 	public function testUpdateAbortsWithoutToken()
 	{
 		$user = User::create(
@@ -124,6 +203,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertResponseStatus(418);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::update
+	 */
 	public function testUpdateAbortsWhenNotLoggedInAsAjax()
 	{
 		$this->session(['_token'=>'foo']);
@@ -135,6 +222,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(url('auth/login'),$this->responseJson()->redirect);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::update
+	 */
 	public function testUpdateRedirectsWithErrorsWhenNotValid()
 	{
 		$user = User::create(
@@ -155,6 +250,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertSessionHasErrors(['email']);
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::update
+	 */
 	public function testUpdateOk()
 	{
 		$user = User::create(
@@ -177,6 +280,14 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(User::find(1)->username,'baz');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 * @covers ::update
+	 */
 	public function testUpdateOkAsAjax()
 	{
 		$user = User::create(
@@ -198,6 +309,13 @@ class UsersTest extends \AppTests\TestCase {
 		$this->assertEquals(User::find(1)->username,'baz');
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group controllers
+	 *
+	 * @covers ::__construct
+	 */
 	public function testPredictablyAbortingWithWrongMethod()
 	{
 		$this->session(['_token'=>'foo']);

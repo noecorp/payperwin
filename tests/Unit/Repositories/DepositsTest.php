@@ -17,15 +17,28 @@ use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
 use Mockery as m;
 
+/**
+ * @coversDefaultClass \App\Repositories\Deposits
+ */
 class DepositsTest extends TestCase
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected $migrate = true;
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->artisan('migrate:refresh');
-    }
-
+    /**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::create
+     * @covers ::find
+     * @covers ::all
+     * @covers ::eventForModelCreated
+     * @covers ::query
+     */
     public function testCreateAndDeleteAndAll()
     {
         $deposits = $this->getDepositRepo();
@@ -49,6 +62,18 @@ class DepositsTest extends TestCase
         $this->assertEquals(1, $deposits->all()->count());
     }
 
+    /**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::create
+     * @covers ::findByTransactionId
+     * @covers ::all
+     * @covers ::eventForModelCreated
+     * @covers ::query
+     */
     public function testFindByTransactionId()
     {
         $deposits = $this->getDepositRepo();
@@ -65,6 +90,18 @@ class DepositsTest extends TestCase
         $this->assertEquals(1, $deposits->findByTransactionId($d1->transaction_id, true, false)->count());
     }
 
+    /**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::create
+     * @covers ::getStateGivingDeposit
+     * @covers ::all
+     * @covers ::eventForModelCreated
+     * @covers ::query
+     */
     public function testGetStateGivingTransaction()
     {
         $deposits = $this->getDepositRepo();

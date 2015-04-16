@@ -1,10 +1,30 @@
 <?php namespace {{namespace}};
 
 use Mockery as m;
+use Illuminate\Support\Facades\DB;
 
+/**
+ * @coversDefaultClass {{appclass}}
+ */
 class {{class}}Test extends \{{rootNamespace}}TestCase {
 
-	public function testFoo()
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $migrate = false;
+
+	/**
+	 * @small
+	 *
+	 * @group <repositories/handlers/controllers/services/etc>
+	 *
+	 * @covers ::__construct
+	 * @covers ::fooMethod
+	 * @covers ::someProtectedBarMethod
+	 *
+	 * @uses \Some\Unintentionally\Covered\Class
+	 */
+	public function test_foo_method()
 	{
 		//
 	}

@@ -18,8 +18,15 @@ use Illuminate\Cache\Repository;
 use Mockery as m;
 use Mockery;
 
+/**
+ * @coversDefaultClass \App\Http\Controllers\PaypalPaymentController
+ */
 class IPNListenerTest extends TestCase
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected $migrate = true;
 
     public function setUp()
     {
@@ -53,6 +60,14 @@ class IPNListenerTest extends TestCase
 
     }
 
+    /**
+     * @small
+     *
+     * @group controllers
+     *
+     * @covers ::__construct
+     * @covers ::index
+     */
     public function testSimpleFundsAdded()
     {
         $users=$this->app->make(Users::class);
@@ -69,6 +84,14 @@ class IPNListenerTest extends TestCase
         $this->assertEquals($gross-$this::calculateFee($gross), $user->funds);
     }
 
+    /**
+     * @small
+     *
+     * @group controllers
+     *
+     * @covers ::__construct
+     * @covers ::index
+     */
     public function testFundsAddedAndRefunded()
     {
         $users = $this->app->make(Users::class);
@@ -94,6 +117,14 @@ class IPNListenerTest extends TestCase
         $this->assertEquals(0, $user->funds);
     }
 
+    /**
+     * @small
+     *
+     * @group controllers
+     *
+     * @covers ::__construct
+     * @covers ::index
+     */
     public function testFundsAddedAndReversedAndReverseCanceled()
     {
         $users = $this->app->make(Users::class);
@@ -127,7 +158,14 @@ class IPNListenerTest extends TestCase
         $this->assertEquals($gross-$this->calculateFee($gross), $user->funds);
     }
 
-
+    /**
+     * @small
+     *
+     * @group controllers
+     *
+     * @covers ::__construct
+     * @covers ::index
+     */
     public function testFundsAddedAndReversedAndRefunded()
     {
         $users = $this->app->make(Users::class);
@@ -162,6 +200,14 @@ class IPNListenerTest extends TestCase
         $this->assertEquals(0, $user->funds);
     }
 
+    /**
+     * @small
+     *
+     * @group controllers
+     *
+     * @covers ::__construct
+     * @covers ::index
+     */
     public function testFundsAddedAndRefundedBeforeReversed()
     {
         $users = $this->app->make(Users::class);
@@ -194,7 +240,14 @@ class IPNListenerTest extends TestCase
         $this->assertEquals(0, $user->funds);
     }
 
-
+    /**
+     * @small
+     *
+     * @group controllers
+     *
+     * @covers ::__construct
+     * @covers ::index
+     */
     public function testFundsAddedAndReverseCanceledWithoutReverse()
     {
         $users = $this->app->make(Users::class);

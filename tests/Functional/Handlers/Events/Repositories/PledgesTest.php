@@ -6,9 +6,40 @@ use Illuminate\Contracts\Events\Dispatcher as Events;
 use App\Events\Repositories\PledgeWasCreated;
 use App\Models\Pledge;
 use App\Models\User;
+use App\Commands\AggregateDataFromPledge;
+use Illuminate\Support\Facades\DB;
 
+/**
+ * @coversDefaultClass \App\Handlers\Events\Repositories\Pledges
+ */
 class PledgesTest extends \AppTests\TestCase {
 
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $migrate = true;
+
+	public function setUp()
+	{
+		parent::setUp();
+
+		config(['queue.default'=>'database']);
+
+		$this->app->singleton('queue.connection', function($app)
+		{
+			return $app['queue']->connection();
+		});
+	}
+
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onPledgeWasCreated
+	 * @covers ::subscribe
+	 */
 	public function test_on_Pledge_Was_Created_Without_Referred_By()
 	{
 		$user = User::create([
@@ -47,8 +78,26 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertEquals($timestamp1,$streamer->updated_at->timestamp);
 		$this->assertEquals(0,$user->referrals);
 		$this->assertEquals($timestamp2,$user->updated_at->timestamp);
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(1,count($jobs));
+
+		$job = json_decode($jobs[0]->payload);
+		$command = unserialize($job->data->command);
+
+		$this->assertEquals(AggregateDataFromPledge::class, get_class($command));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onPledgeWasCreated
+	 * @covers ::subscribe
+	 */
 	public function test_on_Pledge_Was_Created_With_Referral_Completed()
 	{
 		$user = User::create([
@@ -85,8 +134,26 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertEquals($timestamp1,$streamer->updated_at->timestamp);
 		$this->assertEquals(0,$user->referrals);
 		$this->assertEquals($timestamp2,$user->updated_at->timestamp);
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(1,count($jobs));
+
+		$job = json_decode($jobs[0]->payload);
+		$command = unserialize($job->data->command);
+
+		$this->assertEquals(AggregateDataFromPledge::class, get_class($command));
 	}
 
+	/**
+	 * @small
+	 *
+	 * @group handlers
+	 *
+	 * @covers ::__construct
+	 * @covers ::onPledgeWasCreated
+	 * @covers ::subscribe
+	 */
 	public function test_on_Pledge_Was_Created()
 	{
 		$user = User::create([
@@ -122,6 +189,25 @@ class PledgesTest extends \AppTests\TestCase {
 
 		$this->assertEquals(1,$streamer->referral_completed);
 		$this->assertEquals(1,$user->referrals);
+
+		$jobs = DB::table('jobs')->get();
+
+		$this->assertTrue(count($jobs) > 0);
+
+		$job = json_decode($jobs[0]->payload);
+		$command = unserialize($job->data->command);
+
+		$this->assertEquals(AggregateDataFromPledge::class, get_class($command));
+
+		// Now make sure the aggregation from pledge command isn't repeated for some reason!
+		
+		for ($i = 1; $i < count($jobs)-1; $i++)
+		{
+			$job = json_decode($jobs[$i]->payload);
+			$command = unserialize($job->data->command);
+
+			$this->assertNotEquals(AggregateDataFromPledge::class, get_class($command));
+		}
 	}
 
 }
