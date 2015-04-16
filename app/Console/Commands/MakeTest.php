@@ -64,4 +64,34 @@ class MakeTest extends GeneratorCommand {
 		return $rootNamespace;
 	}
 
+	/**
+	 * Replace the class under test for the given stub.
+	 *
+	 * @param  string  $stub
+	 * @param  string  $name
+	 * @return $this
+	 */
+	protected function replaceUnderTestClass(&$stub, $name)
+	{
+		$name = str_replace($this->getAppNamespace().'Unit\\', '', $name);
+		$name = str_replace($this->getAppNamespace().'Functional\\', '', $name);
+		$name = str_replace($this->getAppNamespace().'Integration\\', '', $name);
+		
+		$stub = str_replace(
+			'{{appclass}}', '\App\\'.$name, $stub
+		);
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function buildClass($name)
+	{
+		$stub = $this->files->get($this->getStub());
+
+		return $this->replaceNamespace($stub, $name)->replaceUnderTestClass($stub, $name)->replaceClass($stub, $name);
+	}
+
 }
