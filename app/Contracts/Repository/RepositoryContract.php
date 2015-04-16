@@ -6,6 +6,20 @@ use \DateTime;
 interface RepositoryContract {
 
 	/**
+	 * Run the query without generating any model events.
+	 *
+	 * @return static
+	 */
+	public function quietly();
+
+	/**
+	 * Get results directly from the database, without using the cache.
+	 *
+	 * @return static
+	 */
+	public function freshly();
+
+	/**
 	 * Create and store an instance of the repository's model.
 	 *
 	 * @param array $data

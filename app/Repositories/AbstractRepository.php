@@ -50,6 +50,20 @@ abstract class AbstractRepository implements RepositoryContract {
 	protected $container;
 
 	/**
+	 * Switch controlling whether or not model events will be generated.
+	 *
+	 * @var boolean
+	 */
+	protected $sendEvents = true;
+
+	/**
+	 * Switch controlling whether or not cached data will be used when available.
+	 *
+	 * @var boolean
+	 */
+	protected $useCache = true;
+
+	/**
 	 * Create a new instance of the repository.
 	 *
 	 * @param Container $container
@@ -74,14 +88,14 @@ abstract class AbstractRepository implements RepositoryContract {
 	 *
 	 * @param Model $model
 	 *
-	 * @return \App\Events\Event
+	 * @return \App\Events\ModelEvent
 	 */
 	abstract protected function eventForModelCreated(Model $model);
 
 	/**
 	 * Get a mass model created event instance specific to this repository.
 	 *
-	 * @return \App\Events\Event
+	 * @return \App\Events\ModelsEvent
 	 */
 	abstract protected function eventForModelsCreated();
 
@@ -89,15 +103,16 @@ abstract class AbstractRepository implements RepositoryContract {
 	 * Get a model updated event instance specific to this repository.
 	 *
 	 * @param Model $model
+	 * @param array $changed
 	 *
-	 * @return \App\Events\Event
+	 * @return \App\Events\ModelUpdated
 	 */
-	abstract protected function eventForModelUpdated(Model $model);
+	abstract protected function eventForModelUpdated(Model $model, array $changed);
 
 	/**
 	 * Get a mass model updated event instance specific to this repository.
 	 *
-	 * @return \App\Events\Event
+	 * @return \App\Events\ModelsEvent
 	 */
 	abstract protected function eventForModelsUpdated();
 
@@ -119,6 +134,30 @@ abstract class AbstractRepository implements RepositoryContract {
 	protected function reset()
 	{
 		$this->query = null;
+
+		$this->sendEvents = true;
+
+		$this->useCache = true;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function quietly()
+	{
+		$this->sendEvents = false;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function freshly()
+	{
+		$this->useCache = false;
+
+		return $this;
 	}
 
 	/**
@@ -134,9 +173,14 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$this->cache->tags($this->model->getTable())->flush();
 
+		$sendEvents = $this->sendEvents;
+
 		$this->reset();
 
-		$this->events->fire($this->eventForModelCreated($model));
+		if ($sendEvents)
+		{
+			$this->events->fire($this->eventForModelCreated($model));
+		}
 
 		return $model;
 	}
@@ -167,9 +211,14 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$this->cache->tags($this->model->getTable())->flush();
 
-		$this->events->fire($this->eventForModelsCreated());
+		$sendEvents = $this->sendEvents;
 
 		$this->reset();
+
+		if ($sendEvents)
+		{
+			$this->events->fire($this->eventForModelsCreated());
+		}
 	}
 
 	/**
@@ -188,14 +237,26 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		if ($model->isDirty())
 		{
+			$changed = array_diff_assoc($model->getOriginal(), $model->getDirty());
+			$changed['updated_at'] = (string)$model->updated_at;
+
 			$model->save(); 
 
 			$this->cache->tags($this->model->getTable())->flush();
 			
-			$this->events->fire($this->eventForModelUpdated($model));
-		}
+			$sendEvents = $this->sendEvents;
 
-		$this->reset();
+			$this->reset();
+
+			if ($sendEvents)
+			{
+				$this->events->fire($this->eventForModelUpdated($model, $changed));
+			}
+		}
+		else
+		{
+			$this->reset();
+		}
 
 		return $model;
 	}
@@ -213,9 +274,14 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$this->cache->tags($this->model->getTable())->flush();
 
-		$this->events->fire($this->eventForModelsUpdated());
+		$sendEvents = $this->sendEvents;
 
 		$this->reset();
+
+		if ($sendEvents)
+		{
+			$this->events->fire($this->eventForModelsUpdated());
+		}
 	}
 
 	/**
@@ -237,7 +303,14 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$this->cache->tags($this->model->getTable())->flush();
 
+		$sendEvents = $this->sendEvents;
+
 		$this->reset();
+
+		if ($sendEvents)
+		{
+			$this->events->fire($this->eventForModelsUpdated());
+		}
 	}
 
 	/**
@@ -254,15 +327,24 @@ abstract class AbstractRepository implements RepositoryContract {
 			$this->query()->limit(1);
 		}
 
-		$hash = $this->getQueryHash();
-
-		$tags = $this->getCacheTags();
-
-		$model = $this->cache->tags($tags)->rememberForever($hash, function()
+		$closure = function()
 		{
-		    return $this->query()->first();
-		});
-	
+			return $this->query()->first();
+		};
+
+		if ($this->useCache)
+		{
+			$hash = $this->getQueryHash();
+
+			$tags = $this->getCacheTags();
+
+			$model = $this->cache->tags($tags)->rememberForever($hash, $closure);
+		}
+		else
+		{
+			$model = $closure();
+		}
+
 		$this->reset();
 
 		return $model;
@@ -273,14 +355,23 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function all()
 	{
-		$hash = $this->getQueryHash();
-
-		$tags = $this->getCacheTags();
-
-		$results = $this->cache->tags($tags)->rememberForever($hash, function()
+		$closure = function()
 		{
-		    return $this->query()->get();
-		});
+			return $this->query()->get();
+		};
+
+		if ($this->useCache)
+		{
+			$hash = $this->getQueryHash();
+
+			$tags = $this->getCacheTags();
+
+			$results = $this->cache->tags($tags)->rememberForever($hash, $closure);
+		}
+		else
+		{
+			$results = $closure();
+		}
 
 		$this->reset();
 
@@ -292,14 +383,23 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	public function count()
 	{
-		$hash = $this->getQueryHash('count');
-
-		$tags = $this->getCacheTags();
-
-		$results = $this->cache->tags($tags)->rememberForever($hash, function()
+		$closure = function()
 		{
-		    return $this->query()->count('id');
-		});
+			return $this->query()->count('id');
+		};
+
+		if ($this->useCache)
+		{
+			$hash = $this->getQueryHash('count');
+
+			$tags = $this->getCacheTags();
+
+			$results = $this->cache->tags($tags)->rememberForever($hash, $closure);
+		}
+		else
+		{
+			$results = $closure();
+		}
 
 		$this->reset();
 
@@ -324,14 +424,23 @@ abstract class AbstractRepository implements RepositoryContract {
 	 */
 	protected function calculate($type, $column)
 	{
-		$hash = $this->getQueryHash($type, $column);
-
-		$tags = $this->getCacheTags();
-
-		$results = $this->cache->tags($tags)->rememberForever($hash, function() use ($type, $column)
+		$closure = function() use ($type, $column)
 		{
 			return call_user_func([$this->query(),$type],$column);
-		});
+		};
+
+		if ($this->useCache)
+		{
+			$hash = $this->getQueryHash($type, $column);
+
+			$tags = $this->getCacheTags();
+
+			$results = $this->cache->tags($tags)->rememberForever($hash, $closure);
+		}
+		else
+		{
+			$results = $closure();
+		}
 
 		$this->reset();
 

@@ -43,9 +43,9 @@ class Transactions extends AbstractRepository implements TransactionsRepository 
 	 *
 	 * @return TransactionWasUpdated
 	 */
-	protected function eventForModelUpdated(Model $model)
+	protected function eventForModelUpdated(Model $model, array $changed)
 	{
-		return new TransactionWasUpdated($model);
+		return new TransactionWasUpdated($model, $changed);
 	}
 
 	/**

@@ -89,9 +89,9 @@ class Deposits extends AbstractRepository implements DepositsRepository
 	 *
 	 * @return DepositWasUpdated
 	 */
-	protected function eventForModelUpdated(Model $model)
+	protected function eventForModelUpdated(Model $model, array $changed)
 	{
-		return new DepositWasUpdated($model);
+		return new DepositWasUpdated($model, $changed);
 	}
 
 	/**

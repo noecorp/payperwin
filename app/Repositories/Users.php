@@ -43,9 +43,9 @@ class Users extends AbstractRepository implements UsersRepository {
 	 *
 	 * @return UserWasUpdated
 	 */
-	protected function eventForModelUpdated(Model $model)
+	protected function eventForModelUpdated(Model $model, array $changed)
 	{
-		return new UserWasUpdated($model);
+		return new UserWasUpdated($model, $changed);
 	}
 
 	/**

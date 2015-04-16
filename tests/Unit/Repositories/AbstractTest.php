@@ -41,6 +41,16 @@ class AbstractTest extends \AppTests\TestCase {
 
 	public function testCreate()
 	{
+		$this->create(false);
+	}
+
+	public function test_create_quietly()
+	{
+		$this->create(true);
+	}
+
+	private function create($quietly)
+	{
 		$data = ['foo'=>'bar'];
 
 		$model = new FooModel;
@@ -51,19 +61,24 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache->shouldReceive('tags')->once()->with($model->getTable())->andReturn($cache);
 		$cache->shouldReceive('flush')->once();
 
-		$events->shouldReceive('fire')->once()->with(FooCreated::class);
+		if (!$quietly)
+		{
+			$events->shouldReceive('fire')->once()->with(FooCreated::class);
+		}
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
 
 		$repo = $this->getRepo();
 
-		$result = $repo->create($data);
+		$result = (!$quietly) ? $repo->create($data) : $repo->quietly()->create($data);
 
 		$this->assertEquals(get_class($result),FooModel::class);
 		$this->assertEquals($result->foo,$data['foo']);
 		$this->assertTrue($result->exists);
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testCreateAllDoesNothingWhenEmpty()
@@ -81,9 +96,21 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->assertNull($return);
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testCreateAll()
+	{
+		$this->createAll(false);
+	}
+
+	public function test_create_all_quietly()
+	{
+		$this->createAll(true);
+	}
+
+	private function createAll($quietly)
 	{
 		$data = [
 			[
@@ -105,7 +132,10 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache->shouldReceive('tags')->once()->with($model->getTable())->andReturn($cache);
 		$cache->shouldReceive('flush')->once();
 
-		$events->shouldReceive('fire')->once()->with(FoosCreated::class);
+		if (!$quietly)
+		{
+			$events->shouldReceive('fire')->once()->with(FoosCreated::class);
+		}
 
 		$this->app->instance(FooModel::class,$model);
 		$this->app->instance(Events::class,$events);
@@ -113,10 +143,12 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$repo = $this->getRepo();
 
-		$return = $repo->createAll($data);
+		$return = (!$quietly) ? $repo->createAll($data) : $repo->quietly()->createAll($data);
 
 		$this->assertNull($return);
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testUpdateThrowsMismatch()
@@ -174,9 +206,21 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->assertSame($model,$return);
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testUpdate()
+	{
+		$this->update(false);
+	}
+
+	public function test_update_quietly()
+	{
+		$this->update(true);
+	}
+
+	private function update($quietly)
 	{
 		$model = new FooModel;
 
@@ -186,7 +230,12 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache->shouldReceive('tags')->once()->with($model->getTable())->andReturn($cache);
 		$cache->shouldReceive('flush')->once();
 
-		$events->shouldReceive('fire')->once()->with(FooUpdated::class);
+		$date = Carbon::now();
+
+		if (!$quietly)
+		{
+			$events->shouldReceive('fire')->once();
+		}
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
@@ -194,13 +243,16 @@ class AbstractTest extends \AppTests\TestCase {
 		$repo = $this->getRepo();
 
 		$model->foo = 'bar';
+		$model->updated_at = $date;
 		$model->syncOriginal();
 		$model->exists = true;
 
-		$return = $repo->update($model, ['foo'=>'baz']);
+		$return = (!$quietly) ? $repo->update($model, ['foo'=>'baz']) : $repo->quietly()->update($model, ['foo'=>'baz']);
 
 		$this->assertSame($model,$return);
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testUpdateAllDoesNothingWhenEmpty()
@@ -218,14 +270,28 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->assertNull($return);
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 
 		$return = $repo->updateAll([1],[]);
 
 		$this->assertNull($return);
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testUpdateAll()
+	{
+		$this->updateAll(false);
+	}
+
+	public function test_update_all_quietly()
+	{
+		$this->updateAll(true);
+	}
+
+	private function updateAll($quietly)
 	{
 		$ids = [1,2,3];
 		$data = ['foo'=>'bar','updated_at'=>Carbon::now()];
@@ -245,7 +311,10 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache->shouldReceive('tags')->once()->with($model->getTable())->andReturn($cache);
 		$cache->shouldReceive('flush')->once();
 
-		$events->shouldReceive('fire')->once()->with(FoosUpdated::class);
+		if (!$quietly)
+		{
+			$events->shouldReceive('fire')->once()->with(FoosUpdated::class);
+		}
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
@@ -253,13 +322,25 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$repo = $this->getRepo();
 
-		$return = $repo->updateAll($ids, $data);
+		$return = (!$quietly) ? $repo->updateAll($ids, $data) : $repo->quietly()->updateAll($ids, $data);
 
 		$this->assertNull($return);
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testIncrement()
+	{
+		$this->increment(false);
+	}
+
+	public function test_increment_quietly()
+	{
+		$this->increment(true);
+	}
+
+	private function increment($quietly)
 	{
 		$column = 'foo';
 
@@ -271,7 +352,12 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache->shouldReceive('tags')->once()->with($model->getTable())->andReturn($cache);
 		$cache->shouldReceive('flush')->once();
 
-		$events->shouldReceive('fire')->once()->with(FooUpdated::class);
+		$date = Carbon::now();
+
+		if (!$quietly)
+		{
+			$events->shouldReceive('fire')->once();
+		}
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
@@ -279,14 +365,17 @@ class AbstractTest extends \AppTests\TestCase {
 		$repo = $this->getRepo();
 
 		$model->$column = 1;
+		$model->updated_at = $date;
 		$model->syncOriginal();
 		$model->exists = true;
 
-		$return = $repo->increment($model, $column, 3);
+		$return = (!$quietly) ? $repo->increment($model, $column, 3) : $repo->quietly()->increment($model, $column, 3);
 
 		$this->assertSame($model,$return);
 		$this->assertEquals($model->$column,4);
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testIncrementThrowsMismatch()
@@ -324,6 +413,74 @@ class AbstractTest extends \AppTests\TestCase {
 		$repo->increment($model, 'foo', 1);
 	}
 
+	public function test_increment_all()
+	{
+		$this->incrementAll(false);
+	}
+
+	public function test_increment_all_quietly()
+	{
+		$this->incrementAll(true);
+	}
+
+	private function incrementAll($quietly)
+	{
+		$column = 'foo';
+		$ids = [1,2];
+
+		$query = $this->getQueryMock();
+		$query->shouldReceive('whereIn')->once()->with('id',$ids)->andReturn($query);
+		$query->shouldReceive('increment')->once()->with($column, 3, m::any());
+
+		$model = $this->getModelMock()->makePartial();
+		$model->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$cache->shouldReceive('tags')->once()->with($model->getTable())->andReturn($cache);
+		$cache->shouldReceive('flush')->once();
+
+		if (!$quietly)
+		{
+			$events->shouldReceive('fire')->once()->with(FoosUpdated::class);
+		}
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
+		$this->app->instance(FooModel::class,$model);
+
+		$repo = $this->getRepo();
+
+		if (!$quietly)
+		{
+			$repo->incrementAll($ids, $column, 3);
+		}
+		else
+		{
+			$repo->quietly()->incrementAll($ids, $column, 3);
+		}
+
+		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
+	}
+
+	public function test_increment_all_does_nothing_with_no_ids()
+	{
+		$model = $this->getModelMock();
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
+		$this->app->instance(FooModel::class,$model);
+
+		$repo = $this->getRepo();
+
+		$this->assertNull($repo->incrementAll([], 'foo', 1));
+	}
+
 	public function testFindWithoutId()
 	{
 		$query = $this->getQueryMock()->makePartial();
@@ -339,8 +496,7 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache = $this->getCacheMock();
 		$events = $this->getDispatcherMock();
 
-		$cache->shouldReceive('tags')->with([$model->getTable()])->andReturn($cache);
-		$cache->shouldReceive('rememberForever')->once()->with(md5('query  bar'),m::any())->andReturn('baz');
+		$cache->shouldReceive('tags->rememberForever')->andReturn('baz');
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
@@ -352,6 +508,8 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->assertEquals($return, 'baz');
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testFindWithId()
@@ -384,6 +542,34 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->assertEquals($return, 'baz');
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
+	}
+
+	public function test_find_freshly()
+	{
+		$query = $this->getQueryMock()->makePartial();
+		$query->shouldReceive('limit')->once()->with(1);
+		$query->shouldReceive('first')->once()->andReturn('baz');
+
+		$model = $this->getModelMock()->makePartial();
+		$model->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
+		$this->app->instance(FooModel::class,$model);
+
+		$repo = $this->getRepo();
+
+		$return = $repo->freshly()->find();
+
+		$this->assertEquals($return, 'baz');
+		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testAll()
@@ -413,6 +599,33 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->assertEquals($return, 'baz');
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
+	}
+
+	public function test_all_freshly()
+	{
+		$query = $this->getQueryMock()->makePartial();
+		$query->shouldReceive('get')->once()->andReturn('baz');
+
+		$model = $this->getModelMock()->makePartial();
+		$model->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
+		$this->app->instance(FooModel::class,$model);
+
+		$repo = $this->getRepo();
+
+		$return = $repo->freshly()->all();
+
+		$this->assertEquals($return, 'baz');
+		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testCount()
@@ -442,13 +655,40 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->assertEquals($return, 'baz');
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
+	}
+
+	public function test_count_freshly()
+	{
+		$query = $this->getQueryMock()->makePartial();
+		$query->shouldReceive('count')->once()->with('id')->andReturn('baz');
+
+		$model = $this->getModelMock()->makePartial();
+		$model->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
+		$this->app->instance(FooModel::class,$model);
+
+		$repo = $this->getRepo();
+
+		$return = $repo->freshly()->count();
+
+		$this->assertEquals($return, 'baz');
+		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testAverage()
 	{
 		$column = 'foo';
 
-		$query = $this->getQueryMock()->makePartial();
+		$query = $this->getQueryMock();
 		$query->shouldReceive('getQuery')->once()->andReturn($query);
 		$query->shouldReceive('toSql')->once()->andReturn('query');
 		$query->shouldReceive('getBindings')->once()->andReturn(['bar']);
@@ -473,6 +713,35 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->assertEquals($return, 'baz');
 		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
+	}
+
+	public function test_average_freshly()
+	{
+		$column = 'foo';
+
+		$query = $this->getQueryMock();
+		$query->shouldReceive('avg')->once()->with($column)->andReturn('baz');
+
+		$model = $this->getModelMock()->makePartial();
+		$model->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
+		$this->app->instance(FooModel::class,$model);
+
+		$repo = $this->getRepo();
+
+		$return = $repo->freshly()->average($column);
+
+		$this->assertEquals($return, 'baz');
+		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testLatest()
@@ -495,6 +764,9 @@ class AbstractTest extends \AppTests\TestCase {
 		$return = $repo->latest();
 
 		$this->assertSame($return, $repo);
+		$this->assertNotNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testEarliest()
@@ -517,6 +789,9 @@ class AbstractTest extends \AppTests\TestCase {
 		$return = $repo->earliest();
 
 		$this->assertSame($return, $repo);
+		$this->assertNotNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testAfter()
@@ -541,6 +816,9 @@ class AbstractTest extends \AppTests\TestCase {
 		$return = $repo->after($date);
 
 		$this->assertSame($return, $repo);
+		$this->assertNotNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testBefore()
@@ -565,6 +843,9 @@ class AbstractTest extends \AppTests\TestCase {
 		$return = $repo->before($date);
 
 		$this->assertSame($return, $repo);
+		$this->assertNotNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testLimitNoPage()
@@ -589,6 +870,9 @@ class AbstractTest extends \AppTests\TestCase {
 		$return = $repo->limit($take);
 
 		$this->assertSame($return, $repo);
+		$this->assertNotNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 	public function testLimitWithPage()
@@ -615,6 +899,9 @@ class AbstractTest extends \AppTests\TestCase {
 		$return = $repo->limit($take,$page);
 
 		$this->assertSame($return, $repo);
+		$this->assertNotNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
 	}
 
 }
@@ -635,6 +922,16 @@ class AbstractRepositorySubclass extends AbstractRepository {
 	public function getQuery()
 	{
 		return $this->query;
+	}
+
+	public function getUseCache()
+	{
+		return $this->useCache;
+	}
+
+	public function getSendEvents()
+	{
+		return $this->sendEvents;
 	}
 
 	/**
@@ -664,7 +961,7 @@ class AbstractRepositorySubclass extends AbstractRepository {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function eventForModelUpdated(Model $model)
+	protected function eventForModelUpdated(Model $model, array $changed)
 	{
 		return FooUpdated::class;
 	}

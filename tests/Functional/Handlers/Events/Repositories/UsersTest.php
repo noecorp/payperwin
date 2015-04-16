@@ -102,7 +102,7 @@ class UsersTest extends \AppTests\TestCase {
 			'streamer_completed' => 0
 		]);
 
-		$event = new UserWasUpdated($user);
+		$event = new UserWasUpdated($user, ['summoner_id'=>0]);
 
 		//We'll use the service container to also make sure that event subscriptions go through
 		$this->app->make(Events::class)->fire($event);
@@ -126,7 +126,7 @@ class UsersTest extends \AppTests\TestCase {
 			'streamer_completed' => 0
 		]);
 
-		$event = new UserWasUpdated($user);
+		$event = new UserWasUpdated($user, ['summoner_id'=>0]);
 
 		//We'll use the service container to also make sure that event subscriptions go through
 		$this->app->make(Events::class)->fire($event);
@@ -150,7 +150,7 @@ class UsersTest extends \AppTests\TestCase {
 			'streamer_completed' => 0
 		]);
 
-		$event = new UserWasUpdated($user);
+		$event = new UserWasUpdated($user, ['twitch_id'=>0]);
 
 		//We'll use the service container to also make sure that event subscriptions go through
 		$this->app->make(Events::class)->fire($event);
@@ -176,7 +176,7 @@ class UsersTest extends \AppTests\TestCase {
 		$date = new Carbon('2011-11-11 11:11:11');
 		\Illuminate\Support\Facades\DB::table($user->getTable())->whereId($user->id)->update(['updated_at'=>$date]);
 
-		$event = new UserWasUpdated($user);
+		$event = new UserWasUpdated($user, ['streamer_completed'=>0]);
 
 		//We'll use the service container to also make sure that event subscriptions go through
 		$this->app->make(Events::class)->fire($event);
@@ -198,7 +198,7 @@ class UsersTest extends \AppTests\TestCase {
 			'streamer_completed' => 0
 		]);
 
-		$event = new UserWasUpdated($user);
+		$event = new UserWasUpdated($user, ['summoner_id'=>0]);
 
 		//We'll use the service container to also make sure that event subscriptions go through
 		$this->app->make(Events::class)->fire($event);

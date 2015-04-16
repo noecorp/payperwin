@@ -11,7 +11,7 @@ abstract class ModelEvent extends Event implements ModelEventInterface {
 	 *
 	 * @var Model
 	 */
-	protected $model; 
+	protected $model;
 
 	/**
 	 * Create a new event instance.

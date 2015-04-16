@@ -44,9 +44,9 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 	 *
 	 * @return PledgeWasUpdated
 	 */
-	protected function eventForModelUpdated(Model $model)
+	protected function eventForModelUpdated(Model $model, array $changed)
 	{
-		return new PledgeWasUpdated($model);
+		return new PledgeWasUpdated($model, $changed);
 	}
 
 	/**
