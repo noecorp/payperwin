@@ -59,9 +59,13 @@ class Deposits extends AbstractRepository implements DepositsRepository
      */
     public function getStateGivingDeposit($transactionId)
     {
-        return $this->query()->where('processed', true)->where(function ($query) use ($transactionId) {
+        $result = $this->query()->where('processed', true)->where(function ($query) use ($transactionId) {
             $query->where('transaction_id', $transactionId)->orWhere('parent_transaction_id', $transactionId);
         })->orderBy('status_code', 'desc')->orderBy('payment_date', 'desc')->get()->first();
+
+        $this->reset();
+
+        return $result;
     }
 
 	/**
