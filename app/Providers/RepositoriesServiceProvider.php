@@ -2,6 +2,9 @@
 
 use Illuminate\Support\ServiceProvider;
 
+use App\Contracts\Repository\Aggregations as AggregationsInterface;
+use App\Repositories\Aggregations;
+
 class RepositoriesServiceProvider extends ServiceProvider {
 
 	/**
@@ -30,6 +33,8 @@ class RepositoriesServiceProvider extends ServiceProvider {
 		$this->bindMatches();
 
 		$this->bindTransactions();
+
+		$this->bindAggregations();
 	}
 
 	protected function bindUsers()
@@ -70,5 +75,13 @@ class RepositoriesServiceProvider extends ServiceProvider {
 			'App\Contracts\Repository\Transactions',
 			'App\Repositories\Transactions'
 		);
-	}	
+	}
+
+	protected function bindAggregations()
+	{
+		$this->app->singleton(
+			AggregationsInterface::class,
+			Aggregations::class
+		);
+	}
 }

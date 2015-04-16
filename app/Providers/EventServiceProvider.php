@@ -5,6 +5,7 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 
 use App\Handlers\Events\Repositories\Users;
 use App\Handlers\Events\Repositories\Pledges;
+use App\Handlers\Events\Repositories\Aggregations;
 use App\Handlers\Events\Services\GameApi;
 
 class EventServiceProvider extends ServiceProvider {
@@ -33,6 +34,8 @@ class EventServiceProvider extends ServiceProvider {
 		$events->subscribe(Users::class);
 
 		$events->subscribe(Pledges::class);
+
+		$events->subscribe(Aggregations::class);
 
 		$events->subscribe(GameApi::class);
 	}
