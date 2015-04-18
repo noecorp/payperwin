@@ -63,21 +63,21 @@
 						<div class="todo-icon fui-gear"></div>
 						<div class="todo-content">
 							<h4 class="todo-name">Setup</h4>
-							Connect your League of Legends account.
+							Link your League of Legends summoner name.
 						</div>
 					</li>
 					<li>
 						<div class="todo-icon fui-chat"></div>
 						<div class="todo-content">
 							<h4 class="todo-name">Share</h4>
-							Link to your PayPerWin profile on your stream.
+							Tell your viewers about your PayPerWin profile.
 						</div>
 					</li>
 					<li>
 						<div class="todo-icon fui-video"></div>
 						<div class="todo-content">
 							<h4 class="todo-name">Stream</h4>
-							Win and earn!
+							Win games and start earning!
 						</div>
 					</li>
 				</ul>
