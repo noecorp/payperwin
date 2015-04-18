@@ -71,7 +71,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
 	public function assertResponseHeaderIs($key,$value)
 	{
-		return PHPUnit::assertEquals($this->response->headers->get($key),$value);
+		return PHPUnit::assertEquals($value, $this->response->headers->get($key));
 	}
 
 	public function assertResponseIsJson()
