@@ -64,6 +64,15 @@ abstract class AbstractRepository implements RepositoryContract {
 	protected $useCache = true;
 
 	/**
+	 * List of models already requested.
+	 *
+	 * Makes it easier to avoid requests for objects that already exist in memory.
+	 *
+	 * @var array
+	 */
+	protected $models = [];
+
+	/**
 	 * Create a new instance of the repository.
 	 *
 	 * @param Container $container
@@ -320,6 +329,16 @@ abstract class AbstractRepository implements RepositoryContract {
 	{
 		if ($id)
 		{
+			// If the model instance is stored in memory and no eager loads are being called,
+			// just return the available object since any updates will have kept it up to 
+			// date.
+			if (isset($this->models[$this->model->getTable()][$id]) && empty($this->query()->getEagerLoads()))
+			{
+				$this->reset();
+
+				return $this->models[$this->model->getTable()][$id];
+			}
+
 			$this->query()->whereId($id);
 		}
 		else
@@ -343,6 +362,13 @@ abstract class AbstractRepository implements RepositoryContract {
 		else
 		{
 			$model = $closure();
+		}
+
+		// Set the model instance in memory for easy access later, but only if not eager
+		// loads were called when querying.
+		if ($model && empty($this->query()->getEagerLoads()))
+		{
+			$this->models[$this->model->getTable()][$model->id] = $model;
 		}
 
 		$this->reset();

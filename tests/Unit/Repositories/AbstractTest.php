@@ -687,12 +687,14 @@ class AbstractTest extends \AppTests\TestCase {
      */
 	public function testFindWithoutId()
 	{
-		$query = $this->getQueryMock()->makePartial();
+		$id = 777;
+
+		$query = $this->getQueryMock();
 		$query->shouldReceive('limit')->once()->with(1);
 		$query->shouldReceive('getQuery')->once()->andReturn($query);
 		$query->shouldReceive('toSql')->once()->andReturn('query');
 		$query->shouldReceive('getBindings')->once()->andReturn(['bar']);
-		$query->shouldReceive('getEagerLoads')->times(2)->andReturn([]);
+		$query->shouldReceive('getEagerLoads')->times(3)->andReturn([]);
 
 		$model = $this->getModelMock()->makePartial();
 		$model->shouldReceive('newQuery')->once()->andReturn($query);
@@ -700,7 +702,10 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache = $this->getCacheMock();
 		$events = $this->getDispatcherMock();
 
-		$cache->shouldReceive('tags->rememberForever')->andReturn('baz');
+		$returnModel = new FooModel;
+		$returnModel->id = $id;
+
+		$cache->shouldReceive('tags->rememberForever')->andReturn($returnModel);
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
@@ -710,7 +715,8 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$return = $repo->find();
 
-		$this->assertEquals($return, 'baz');
+		$this->assertSame($return, $returnModel);
+		$this->assertEquals($id, $return->id);
 		$this->assertNull($repo->getQuery());
 		$this->assertTrue($repo->getUseCache());
 		$this->assertTrue($repo->getSendEvents());
@@ -730,14 +736,17 @@ class AbstractTest extends \AppTests\TestCase {
      */
 	public function testFindWithId()
 	{
-		$id = 1;
+		$id = 777;
+
+		$returnModel = new FooModel;
+		$returnModel->id = $id;
 
 		$query = $this->getQueryMock()->makePartial();
 		$query->shouldReceive('whereId')->once()->with($id);
 		$query->shouldReceive('getQuery')->once()->andReturn($query);
 		$query->shouldReceive('toSql')->once()->andReturn('query');
 		$query->shouldReceive('getBindings')->once()->andReturn(['bar']);
-		$query->shouldReceive('getEagerLoads')->times(2)->andReturn([]);
+		$query->shouldReceive('getEagerLoads')->times(3)->andReturn([]);
 
 		$model = $this->getModelMock()->makePartial();
 		$model->shouldReceive('newQuery')->once()->andReturn($query);
@@ -745,8 +754,7 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache = $this->getCacheMock();
 		$events = $this->getDispatcherMock();
 
-		$cache->shouldReceive('tags')->with([$model->getTable()])->andReturn($cache);
-		$cache->shouldReceive('rememberForever')->once()->with(md5('query  bar'),m::any())->andReturn('baz');
+		$cache->shouldReceive('tags->rememberForever')->andReturn($returnModel);
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
@@ -756,8 +764,8 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$return = $repo->find($id);
 
-		$this->assertEquals($return, 'baz');
-		$this->assertNull($repo->getQuery());
+		$this->assertSame($return, $returnModel);
+		$this->assertEquals($id, $return->id);
 		$this->assertTrue($repo->getUseCache());
 		$this->assertTrue($repo->getSendEvents());
 	}
@@ -775,9 +783,14 @@ class AbstractTest extends \AppTests\TestCase {
      */
 	public function test_find_freshly()
 	{
+		$id = 777;
+
+		$returnModel = new FooModel;
+		$returnModel->id = $id;
+
 		$query = $this->getQueryMock()->makePartial();
 		$query->shouldReceive('limit')->once()->with(1);
-		$query->shouldReceive('first')->once()->andReturn('baz');
+		$query->shouldReceive('first')->once()->andReturn($returnModel);
 
 		$model = $this->getModelMock()->makePartial();
 		$model->shouldReceive('newQuery')->once()->andReturn($query);
@@ -793,7 +806,102 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$return = $repo->freshly()->find();
 
-		$this->assertEquals($return, 'baz');
+		$this->assertSame($return, $returnModel);
+		$this->assertEquals($id, $return->id);
+		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
+	}
+
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::find
+     * @covers ::query
+     * @covers ::getQueryHash
+     * @covers ::getCacheTags
+     * @covers ::reset
+     */
+	public function test_find_with_id_from_stored_object()
+	{
+		$id = 777;
+
+		$returnModel = new FooModel;
+		$returnModel->id = $id;
+
+		$query = $this->getQueryMock()->makePartial();
+		$query->shouldReceive('whereId')->times(1)->with($id);
+		$query->shouldReceive('getQuery')->times(1)->andReturn($query);
+		$query->shouldReceive('toSql')->times(1)->andReturn('query');
+		$query->shouldReceive('getBindings')->times(1)->andReturn(['bar']);
+		$query->shouldReceive('getEagerLoads')->times(5)->andReturn([]);
+
+		$model = $this->getModelMock()->makePartial();
+		$model->shouldReceive('newQuery')->times(3)->andReturn($query);
+
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$cache->shouldReceive('tags->rememberForever')->once()->andReturn($returnModel);
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
+		$this->app->instance(FooModel::class,$model);
+
+		$repo = $this->getRepo();
+
+		$repo->find($id);
+		$repo->find($id);
+		$return = $repo->find($id);
+
+		$this->assertSame($return, $returnModel);
+		$this->assertEquals($id, $return->id);
+		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());	
+	}
+
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::find
+     * @covers ::query
+     * @covers ::getQueryHash
+     * @covers ::getCacheTags
+     * @covers ::reset
+     */
+	public function test_find_with_id_with_relation_without_stored_object()
+	{
+		$id = 777;
+
+		$returnModel = new FooModel;
+		$returnModel->id = $id;
+
+		$returnModel2 = new FooModel;
+		$returnModel2->id = $id;
+
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$cache->shouldReceive('tags->rememberForever')->once()->andReturn($returnModel);
+		$cache->shouldReceive('tags->rememberForever')->once()->andReturn($returnModel2);
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
+
+		$repo = $this->getRepo();
+
+		$repo->withBar()->find($id);
+		$return = $repo->withBar()->find($id);
+
+		$this->assertNotSame($return, $returnModel);
+		$this->assertEquals($id, $return->id);
 		$this->assertNull($repo->getQuery());
 		$this->assertTrue($repo->getUseCache());
 		$this->assertTrue($repo->getSendEvents());
@@ -1267,6 +1375,22 @@ class FooModel extends Model {
 	{
 		$this->exists = true;
 	}
+
+	public function bar()
+	{
+		return $this->hasMany('\AppTests\Unit\Repositories\Foo2Model');
+	}
+}
+
+class Foo2Model extends Model {
+	protected $table = 'foo2s';
+
+	protected $fillable = ['foo'];
+
+	public function save(array $options = array())
+	{
+		$this->exists = true;
+	}
 }
 
 class AbstractRepositorySubclass extends AbstractRepository {
@@ -1274,6 +1398,13 @@ class AbstractRepositorySubclass extends AbstractRepository {
 	public function getQuery()
 	{
 		return $this->query;
+	}
+
+	public function withBar()
+	{
+		$this->query()->with('bar');
+
+		return $this;
 	}
 
 	public function getUseCache()
