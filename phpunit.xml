@@ -49,9 +49,13 @@
     <filter>
         <blacklist>
               <directory>./vendor</directory>
+              <directory>./bower_components</directory>
+              <directory>./node_modules</directory>
               <directory>./database</directory>
               <directory>./config</directory>
               <directory>./storage</directory>
+              <directory>./resources</directory>
+              <directory>./bootstrap</directory>
         </blacklist>
     </filter>
 </phpunit>
