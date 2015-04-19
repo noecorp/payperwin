@@ -246,7 +246,13 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		if ($model->isDirty())
 		{
-			$changed = array_diff_assoc($model->getOriginal(), $model->getDirty());
+			$dirty = array_keys($model->getDirty());
+
+			foreach ($dirty as $column)
+			{
+				$changed[$column] = $model->getOriginal()[$column];
+			}
+			
 			$changed['updated_at'] = (string)$model->updated_at;
 
 			$model->save(); 
