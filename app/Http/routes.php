@@ -13,8 +13,7 @@
 
 Route::get('/', 'Welcome@index');
 Route::get('start', 'Welcome@start');
-
-Route::get('home', 'Home@index');
+Route::get('dashboard', 'Dashboard@index');
 
 Route::controllers([
 	'auth' => 'Auth\Auth',

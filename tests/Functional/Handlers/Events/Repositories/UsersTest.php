@@ -318,7 +318,8 @@ class UsersTest extends \AppTests\TestCase {
 			'streamer' => 1,
 			'twitch_id' => 1,
 			'summoner_id' => 1,
-			'streamer_completed' => 0
+			'streamer_completed' => 0,
+			'start_completed' => 1
 		]);
 
 		$event = new UserWasUpdated($user, ['summoner_id'=>0]);

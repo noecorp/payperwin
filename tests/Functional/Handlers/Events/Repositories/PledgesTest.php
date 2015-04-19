@@ -46,6 +46,7 @@ class PledgesTest extends \AppTests\TestCase {
 			'email' => 'foo',
 			'username' => 'bar',
 			'referrals' => 0,
+			'start_completed' => 1,
 		]);
 
 		$streamer = User::create([
@@ -78,6 +79,7 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertEquals($timestamp1,$streamer->updated_at->timestamp);
 		$this->assertEquals(0,$user->referrals);
 		$this->assertEquals($timestamp2,$user->updated_at->timestamp);
+		$this->assertEquals(1,$user->start_completed);
 
 		$jobs = DB::table('jobs')->get();
 		
@@ -134,6 +136,7 @@ class PledgesTest extends \AppTests\TestCase {
 		$this->assertEquals($timestamp1,$streamer->updated_at->timestamp);
 		$this->assertEquals(0,$user->referrals);
 		$this->assertEquals($timestamp2,$user->updated_at->timestamp);
+		$this->assertEquals(1,$user->start_completed);
 
 		$jobs = DB::table('jobs')->get();
 		
@@ -189,6 +192,7 @@ class PledgesTest extends \AppTests\TestCase {
 
 		$this->assertEquals(1,$streamer->referral_completed);
 		$this->assertEquals(1,$user->referrals);
+		$this->assertEquals(1,$user->start_completed);
 
 		$jobs = DB::table('jobs')->get();
 

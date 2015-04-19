@@ -42,6 +42,7 @@ class WelcomeTest extends \AppTests\TestCase {
 		[
 			'email' => 'foo@bar.com',
 			'username' => 'foo',
+			'start_completed' => 0
 		]);
 
 		$this->be($user);
@@ -49,7 +50,7 @@ class WelcomeTest extends \AppTests\TestCase {
 		$response = $this->call('GET','/');
 
 		$this->assertResponseStatus(302);
-		$this->assertResponseHeaderIs('Location',url('start'));
+		$this->assertResponseHeaderIs('Location',url('dashboard'));
 	}
 
 	/**
