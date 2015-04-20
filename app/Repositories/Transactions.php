@@ -58,4 +58,14 @@ class Transactions extends AbstractRepository implements TransactionsRepository 
 		return new TransactionsWereUpdated();
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function forUser($userId)
+	{
+		$this->query()->where('user_id',$userId);
+		
+		return $this;
+	}
+
 }

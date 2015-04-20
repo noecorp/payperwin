@@ -171,7 +171,8 @@ class Distribution implements DistributionInterface {
 						'user_id' => $pledge->owner->id,
 						'source' => 0,
 						'reference' => null,
-						'pledge_id' => $pledge->id
+						'pledge_id' => $pledge->id,
+						'username' => $streamer->username
 					];
 
 					// Add a financial transaction for the streamer
@@ -181,7 +182,8 @@ class Distribution implements DistributionInterface {
 						'user_id' => $streamer->id,
 						'source' => 0,
 						'reference' => null,
-						'pledge_id' => $pledge->id
+						'pledge_id' => $pledge->id,
+						'username' => $pledge->owner->username
 					];
 				}
 			}

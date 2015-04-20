@@ -4,16 +4,21 @@ use App\Contracts\Service\Gurus\Transaction as TransactionGuruInterface;
 
 class Transaction implements TransactionGuruInterface {
 
+	const PLEDGE_TAKEN = 1;
+	const PLEDGE_PAID = 2;
+	const FUNDS_DEPOSITED = 3;
+	const STREAMER_PAID_OUT = 4;
+
 	/**
 	 * List of all valid Transaction types.
 	 *
 	 * @var array
 	 */
 	protected $types = [
-		'pledge-taken' => 1,
-		'pledge-paid' => 2,
-		'funds-deposited' => 3,
-		'streamer-paid-out' => 4,
+		self::PLEDGE_TAKEN,
+		self::PLEDGE_PAID,
+		self::FUNDS_DEPOSITED,
+		self::STREAMER_PAID_OUT,
 	];
 
 	/**
@@ -21,7 +26,7 @@ class Transaction implements TransactionGuruInterface {
 	 */
 	public function types()
 	{
-		return array_values($this->types);
+		return $this->types;
 	}
 
 	/**
@@ -29,7 +34,7 @@ class Transaction implements TransactionGuruInterface {
 	 */
 	public function pledgeTaken()
 	{
-		return $this->types['pledge-taken'];
+		return self::PLEDGE_TAKEN;
 	}
 
 	/**
@@ -37,7 +42,7 @@ class Transaction implements TransactionGuruInterface {
 	 */
 	public function pledgePaid()
 	{
-		return $this->types['pledge-paid'];
+		return self::PLEDGE_PAID;
 	}
 
 	/**
@@ -45,7 +50,7 @@ class Transaction implements TransactionGuruInterface {
 	 */
 	public function fundsDeposited()
 	{
-		return $this->types['funds-deposited'];
+		return self::FUNDS_DEPOSITED;
 	}
 
 	/**
@@ -53,7 +58,7 @@ class Transaction implements TransactionGuruInterface {
 	 */
 	public function streamerPaidOut()
 	{
-		return $this->types['streamer-paid-out'];
+		return self::STREAMER_PAID_OUT;
 	}
 
 }
