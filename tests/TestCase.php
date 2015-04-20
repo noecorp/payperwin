@@ -10,6 +10,8 @@ use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 
+use Carbon\Carbon;
+
 class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
 	/**
@@ -20,6 +22,11 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 	 * @var boolean
 	 */
 	protected $migrate = true;
+
+	/**
+	 * Carbon (date) instance to predictable test against.
+	 */
+	protected $carbon;
 
 	protected function getGuzzleMock($status = 200, $headers = [], $content = '', $howMany = 1)
 	{
@@ -109,6 +116,10 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		{
 			$this->artisan('migrate');
 		}
+
+		// Set Carbon (date) instance for testing.
+		$this->carbon = new Carbon('2015-01-02 03:04:05');
+		Carbon::setTestNow($this->carbon);
 	}
 
 	public function tearDown()
@@ -122,6 +133,9 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		$this->flushSession();
 
 		$this->artisan('clear:apc');
+
+		// Revert Carbon to normal behaviour.
+		Carbon::setTestNow(null);
 
 		parent::tearDown();
 	}
