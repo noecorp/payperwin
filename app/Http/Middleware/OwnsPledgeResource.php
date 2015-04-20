@@ -23,8 +23,8 @@ class OwnsPledgeResource {
 	/**
 	 * Create a new filter instance.
 	 *
-	 * @param  Guard  $auth
-	 * @param  Guard  $auth
+	 * @param Guard $auth
+	 * @param Pledges $pledges
 	 * @return void
 	 */
 	public function __construct(Guard $auth, Pledges $pledges)
