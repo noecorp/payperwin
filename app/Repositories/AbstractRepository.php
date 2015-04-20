@@ -203,10 +203,18 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$data = array_map(function($item)
 		{
-			$item['created_at'] = Carbon::now();
-			$item['updated_at'] = Carbon::now();
+			// Rather than pushing attributes directly into DB, we'll fill a blank model
+			// first and get the set attributes back to make sure any model-specific logic
+			// is triggered. Attributes may be changed or omitted altogether.
+			$model = $this->container->make($this->model());
 
-			return $item;
+			$model->fill($item);
+
+			$final = $model->getAttributes();
+			$final['created_at'] = Carbon::now();
+			$final['updated_at'] = Carbon::now();
+
+			return $final;
 		}, $data);
 		
 		$perChunk = 100;

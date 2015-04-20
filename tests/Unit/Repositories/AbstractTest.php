@@ -170,14 +170,17 @@ class AbstractTest extends \AppTests\TestCase {
 	{
 		$data = [
 			[
-				'foo' => 'bar',
+				'foo' => 'bar', 'bar' => 'foo'
 			],
-			[	'foo' => 'baz',
+			[	'foo' => 'baz', 'baz' => 'foo'
 			]
 		];
 
 		$query = $this->getQueryMock();
-		$query->shouldReceive('insert')->once()->with(m::any());
+		$query->shouldReceive('insert')->once()->with([
+			['foo'=>'bar','created_at'=>$this->carbon,'updated_at'=>$this->carbon],
+			['foo'=>'baz','created_at'=>$this->carbon,'updated_at'=>$this->carbon]
+		]);
 
 		$model = $this->getModelMock()->makePartial();
 		$model->shouldReceive('newQuery')->once()->andReturn($query);
