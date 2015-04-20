@@ -36,11 +36,13 @@ elixir.extend('cleanup', function(dir) {
  * Stylesheets-related work.
  *
  * - SASS processing
+ * - LESS processing
  * - Fonts
  * - Vendor css
  */
 elixir(function(mix) {
 	mix.sass()
+		.less()
 		.copy(
 			'bower_components/bootstrap-sass-official/assets/fonts/',
 			'public/css/fonts/'
@@ -48,10 +50,6 @@ elixir(function(mix) {
 		.copy(
 			'bower_components/flat-ui/dist/fonts/',
 			'public/css/fonts/'
-		)
-		.copy(
-			'bower_components/flat-ui/dist/css/flat-ui.css',
-			'public/css/vendor/flat-ui.css'
 		)
 		.copy(
 			'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.css',
