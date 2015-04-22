@@ -71,7 +71,7 @@ class Aggregations {
 	public function subscribe(Events $events)
 	{
 		$events->listen(AggregationWasCreated::class, 'App\Handlers\Events\Repositories\Aggregations@onAggregationWasCreated');
-		$events->listen(AggregationsWereUpdated::class, 'App\Handlers\Events\Repositories\Aggregations@onAggregationsWereCreated');
+		$events->listen(AggregationsWereCreated::class, 'App\Handlers\Events\Repositories\Aggregations@onAggregationsWereCreated');
 		$events->listen(AggregationWasUpdated::class, 'App\Handlers\Events\Repositories\Aggregations@onAggregationWasUpdated');
 		$events->listen(AggregationsWereUpdated::class, 'App\Handlers\Events\Repositories\Aggregations@onAggregationsWereUpdated');
 	}

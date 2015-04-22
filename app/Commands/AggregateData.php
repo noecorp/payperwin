@@ -8,40 +8,34 @@ abstract class AggregateData extends Command {
 
 	protected function getDateData(Carbon $date, AggregationGuru $guru, $type)
 	{
-		$data = [];
-		
+		$data = [
+			'day' => 0,
+			'week' => 0,
+			'month' => 0,
+			'year' => 0,
+		];
+
 		switch ($type) {
 			case $guru->daily():
 				$data['day'] = $date->day;
-				$data['week'] = 0;
 				$data['month'] = $date->month;
 				$data['year'] = (int)$date->format('y');
 				break;
 			case $guru->weekly():
-				$data['day'] = 0;
 				$data['week'] = $date->weekOfYear;
-				$data['month'] = 0;
 				$data['year'] = (int)$date->format('y');
 				break;
 			case $guru->monthly():
-				$data['day'] = 0;
-				$data['week'] = 0;
 				$data['month'] = $date->month;
 				$data['year'] = (int)$date->format('y');
 				break;
 			case $guru->yearly():
-				$data['day'] = 0;
-				$data['week'] = 0;
-				$data['month'] = 0;
 				$data['year'] = (int)$date->format('y');
 				break;
 			case $guru->total():
-				$data['day'] = 0;
-				$data['week'] = 0;
-				$data['month'] = 0;
-				$data['year'] = 0;
 				break;
 			default:
+				$data = [];
 				break;
 		}
 

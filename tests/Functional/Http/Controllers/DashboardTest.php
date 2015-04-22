@@ -97,7 +97,7 @@ class DashboardTest extends \AppTests\TestCase {
 	 * @group controllers
 	 *
 	 * @covers ::__construct
-	 * @covers ::getIndex
+	 * @covers ::index
 	 * @covers ::pledgesCreated
 	 * @covers ::earningsSummary
 	 * @covers ::dailyAmounts
@@ -194,7 +194,7 @@ class DashboardTest extends \AppTests\TestCase {
 	 * @group controllers
 	 *
 	 * @covers ::__construct
-	 * @covers ::getIndex
+	 * @covers ::index
 	 * @covers ::pledgesCreated
 	 * @covers ::earningsSummary
 	 * @covers ::dailyAmounts
@@ -293,7 +293,7 @@ class DashboardTest extends \AppTests\TestCase {
 	 * @group controllers
 	 *
 	 * @covers ::__construct
-	 * @covers ::getIndex
+	 * @covers ::index
 	 * @covers ::pledgesCreated
 	 * @covers ::earningsSummary
 	 * @covers ::dailyAmounts
