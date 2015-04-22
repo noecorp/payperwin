@@ -5,18 +5,11 @@
 	"license": "MIT",
 	"type": "project",
 
-	"repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/nlogachev/socialite"
-        }
-    ],
-
 	"require": {
 		"laravel/framework": "5.0.*",
 		"predis/predis": "~1.0",
-		"laravel/socialite": "dev-feature",
-		"socialiteproviders/twitch": "dev-master",
+		"laravel/socialite": "~2.0",
+		"socialiteproviders/twitch": "1.0.8",
 		"guzzlehttp/guzzle": "~5.2",
 		"nesbot/carbon": "~1.0",
 		"intervention/image": "~2.1",
