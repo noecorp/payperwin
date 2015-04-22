@@ -58,7 +58,7 @@ class Users extends Controller
 
 			$streamerSwitch = $('#streamer-on')
 
-			if $streamerSwitch
+			if $streamerSwitch.length
 				$streamerSwitch.bootstrapSwitch({
 					onSwitchChange: (event,state) ->
 						if state == true
