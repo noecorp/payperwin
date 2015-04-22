@@ -98,9 +98,11 @@ interface RepositoryContract {
 	/**
 	 * Count the number of results for the query.
 	 *
+	 * @param string $column
+	 *
 	 * @return int
 	 */
-	public function count();
+	public function count($column = 'id');
 	
 	/**
 	 * Calculate the average value for a column.

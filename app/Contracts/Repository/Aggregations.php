@@ -4,7 +4,7 @@ use \DateTime;
 
 interface Aggregations extends RepositoryContract {
 
-	public function isDaily(DateTime $date);
+	public function isDaily(DateTime $date = null);
 
 	public function isWeekly(DateTime $date);
 

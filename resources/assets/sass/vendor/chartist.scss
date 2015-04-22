@@ -1,0 +1,43 @@
+$ct-primary: #1abc9c;
+$ct-success: #2ecc71;
+
+// customize chartist variables
+$ct-series-colors: (
+  #d70206,
+  #f05b4f,
+  #f4c63d,
+  #d17905,
+  #453d3f,
+  #59922b,
+  #0544d3,
+  #6b0392,
+  #f05b4f,
+  #dda458,
+  #eacf7d,
+  #86797d,
+  #b2c326,
+  #6188e2,
+  #a748ca
+);
+
+$ct-text-size: 10px;
+
+// then import
+@import "../../../../bower_components/chartist/dist/scss/chartist.scss"; 
+
+@media screen and (max-width: 768px) {
+	.ct-chart > svg
+	{
+		left: -20px !important;
+	}
+}
+
+.ct-primary
+{
+	stroke: $ct-primary;
+}
+
+.ct-success
+{
+	stroke: $ct-success;
+}

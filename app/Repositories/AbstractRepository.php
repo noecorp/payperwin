@@ -64,6 +64,15 @@ abstract class AbstractRepository implements RepositoryContract {
 	protected $useCache = true;
 
 	/**
+	 * List of models already requested.
+	 *
+	 * Makes it easier to avoid requests for objects that already exist in memory.
+	 *
+	 * @var array
+	 */
+	protected $models = [];
+
+	/**
 	 * Create a new instance of the repository.
 	 *
 	 * @param Container $container
@@ -194,10 +203,18 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		$data = array_map(function($item)
 		{
-			$item['created_at'] = Carbon::now();
-			$item['updated_at'] = Carbon::now();
+			// Rather than pushing attributes directly into DB, we'll fill a blank model
+			// first and get the set attributes back to make sure any model-specific logic
+			// is triggered. Attributes may be changed or omitted altogether.
+			$model = $this->container->make($this->model());
 
-			return $item;
+			$model->fill($item);
+
+			$final = $model->getAttributes();
+			$final['created_at'] = Carbon::now();
+			$final['updated_at'] = Carbon::now();
+
+			return $final;
 		}, $data);
 		
 		$perChunk = 100;
@@ -237,7 +254,13 @@ abstract class AbstractRepository implements RepositoryContract {
 
 		if ($model->isDirty())
 		{
-			$changed = array_diff_assoc($model->getOriginal(), $model->getDirty());
+			$dirty = array_keys($model->getDirty());
+
+			foreach ($dirty as $column)
+			{
+				$changed[$column] = $model->getOriginal()[$column];
+			}
+			
 			$changed['updated_at'] = (string)$model->updated_at;
 
 			$model->save(); 
@@ -320,6 +343,16 @@ abstract class AbstractRepository implements RepositoryContract {
 	{
 		if ($id)
 		{
+			// If the model instance is stored in memory and no eager loads are being called,
+			// just return the available object since any updates will have kept it up to 
+			// date.
+			if (isset($this->models[$this->model->getTable()][$id]) && empty($this->query()->getEagerLoads()))
+			{
+				$this->reset();
+
+				return $this->models[$this->model->getTable()][$id];
+			}
+
 			$this->query()->whereId($id);
 		}
 		else
@@ -343,6 +376,13 @@ abstract class AbstractRepository implements RepositoryContract {
 		else
 		{
 			$model = $closure();
+		}
+
+		// Set the model instance in memory for easy access later, but only if not eager
+		// loads were called when querying.
+		if ($model && empty($this->query()->getEagerLoads()))
+		{
+			$this->models[$this->model->getTable()][$model->id] = $model;
 		}
 
 		$this->reset();
@@ -381,16 +421,16 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function count()
+	public function count($column = 'id')
 	{
-		$closure = function()
+		$closure = function() use ($column)
 		{
-			return $this->query()->count('id');
+			return $this->query()->count($column);
 		};
 
 		if ($this->useCache)
 		{
-			$hash = $this->getQueryHash('count');
+			$hash = $this->getQueryHash('count', $column);
 
 			$tags = $this->getCacheTags();
 

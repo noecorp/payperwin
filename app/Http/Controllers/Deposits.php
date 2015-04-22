@@ -1,7 +1,6 @@
 <?php namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Contracts\Repository\Deposits as DepositsRepository;
 use App\Contracts\Repository\Users;
 use Illuminate\Routing\Redirector as Redirect;
 use Illuminate\Contracts\View\Factory as View;
@@ -40,16 +39,14 @@ class Deposits extends Controller {
 	 * @param Guard $auth
 	 * @param  AcidifierInterface  $acid
 	 * @param  Users  $users
-	 * @param  DepositsRepository  $deposits
 	 * @param Redirect $redirect
 	 *
 	 * @return Response
 	 */
-	public function store(CreateDeposit $request, Guard $auth, AcidifierInterface $acid, Users $users, DepositsRepository $deposits, Redirect $redirect)
+	public function store(CreateDeposit $request, Guard $auth, AcidifierInterface $acid, Users $users, Redirect $redirect)
 	{
-		$acid->transaction(function() use ($request, $auth, $users, $deposits)
+		$acid->transaction(function() use ($request, $auth, $users)
 		{
-			// $deposits->create($request->all());
 			$users->update($auth->user(), ['funds'=>$auth->user()->funds + $request->get('amount')]);
 		});
 

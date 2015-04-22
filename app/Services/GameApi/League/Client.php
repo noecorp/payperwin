@@ -9,7 +9,6 @@ use GuzzleHttp\Client as Guzzle;
 
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ParseException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
 
 use App\Exceptions\Services\GameApi\PlayerNotFound;
@@ -28,7 +27,6 @@ use App\Events\Services\GameApi\RequestWasInvalid;
 use App\Events\Services\GameApi\ServerHadAnError;
 use App\Events\Services\GameApi\UnknownErrorOccurred;
 
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Container\Container;
 

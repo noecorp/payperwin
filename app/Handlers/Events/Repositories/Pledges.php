@@ -63,7 +63,14 @@ class Pledges {
 
 		$streamer = $this->users->find($pledge->streamer_id);
 
+		$user = $this->users->find($pledge->user_id);
+
 		$this->dispatcher->dispatchToQueue(new AggregateDataFromPledge($pledge->id));
+
+		if (!$user->start_completed)
+		{
+			$this->users->update($user, ['start_completed' => 1]);
+		}
 
 		if ($streamer->referred_by && !$streamer->referral_completed)
 		{

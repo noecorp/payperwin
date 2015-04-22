@@ -5,7 +5,6 @@ use App\Contracts\Repository\Pledges;
 use App\Contracts\Repository\Users;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Routing\ResponseFactory as Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Factory as Validator;
 

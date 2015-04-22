@@ -83,33 +83,6 @@ class CheckTwitchStream extends Command implements SelfHandling, ShouldBeQueued 
 	{
 		//temp
 		throw $e;
-
-		if ($e instanceof ClientException)
-		{
-			//throw App\Exceptions\Api\League\...
-			
-			echo $e->getRequest();
-			if ($e->hasResponse()) {
-		        echo $e->getResponse();
-		    }
-			// handle
-		}
-		else if ($e instanceof ServerException)
-		{
-			//
-		}
-		else if ($e instanceof TooManyRedirectsException)
-		{
-			//
-		}
-		else if ($e instanceof ParseException)
-		{
-			//
-		}
-		else
-		{
-
-		}
 	}
 
 }

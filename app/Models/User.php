@@ -29,6 +29,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		'funds', 'earnings',
 		'avatar',
 		'referral_completed', 'referred_by', 'referrals', 'commission',
+		'start_completed'
 	];
 
 	/**

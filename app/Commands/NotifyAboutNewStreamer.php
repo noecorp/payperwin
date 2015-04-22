@@ -44,7 +44,7 @@ class NotifyAboutNewStreamer extends Command implements SelfHandling, ShouldBeQu
 	{
 		$streamer = $users->find($this->streamerId);
 
-		$r = $mail->send('emails.admin.streamer-active',compact('streamer'), function($message)
+		$mail->send('emails.admin.streamer-active',compact('streamer'), function($message)
 		{
 			$message->to(config('mail.admin'))->subject('New Streamer Activated')->from(config('mail.from.address'),config('mail.from.name'));
 		});

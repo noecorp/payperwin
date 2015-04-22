@@ -12,7 +12,6 @@ body
 	width: 100% !important;
 	height: 100% !important;
 	position: fixed !important;
-	// z-index: 1030;
 }
 
 .navbar-inverse .navbar-nav>.dropdown>a .caret
@@ -157,6 +156,48 @@ article
 			color: #fff;
 		}
 	}
+
+	ul.pledges
+	{
+		list-style-type: none;
+		padding: 0;
+
+		li
+		{
+			margin-bottom: 10px;
+
+			blockquote
+			{
+				border-left: 3px solid #3498DB;
+			}
+
+			p
+			{
+				&.lead
+				{
+					margin: 0;
+
+					small
+					{
+						font-size: 50%;
+					}
+				}
+			}
+
+			border-bottom: 1px solid #ECF0F1;
+		}
+	}
+
+	#streamer-pledge
+	{
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+
+	td
+	{
+		border-top-color: #ECF0F1 !important;
+	}
 }
 
 footer
@@ -213,6 +254,11 @@ h2, .h2
 	font-weight: normal;
 }
 
+h3, .h3
+{
+	font-size: 20px;
+}
+
 p
 {
 	font-size: 14px;
@@ -250,6 +296,18 @@ img
 .form-control[disabled]
 {
 	color: #555;
+}
+
+.chart-tooltip
+{
+	position: absolute;
+	z-index: 9999;
+	background: #34495e;
+	color: #2ecc71;
+	padding: 10px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 }
 
 // Firefox responsive fieldset fix

@@ -51,9 +51,10 @@ class Streamers extends Controller {
 		// Temporary until more efficient solution
 		foreach ($streamers as $streamer)
 		{
-			$streamer->averagePledge = round($pledges->forStreamer($streamer->id)->average('amount'),2);
+			$streamer->averagePledge = $pledges->forStreamer($streamer->id)->average('amount');
 
-			$streamer->activePledges = $pledges->forStreamer($streamer->id)->isRunning()->count();
+			$biggest = $pledges->forStreamer($streamer->id)->orderingByAmount()->find();
+			$streamer->biggestPledge = ($biggest) ? $biggest->amount : null;
 		}
 
 		$live = $streamers->filter(function($streamer)
@@ -90,18 +91,12 @@ class Streamers extends Controller {
 		
 		$topPledger = ($feed->count()) ? $pledges->withOwner()->forStreamer($id)->mostSpent()->find() : null;
 
-		$activePledges = ($feed->count()) ? $pledges->forStreamer($id)->isRunning()->count() : null;
-
-		$totalPledges = ($feed->count()) ? $pledges->forStreamer($id)->count() : null;
-
-		$matches =  $matches->latest()->limit(10)->forStreamer($id)->all();
+		$matches =  $matches->latest()->limit(20)->forStreamer($id)->all();
 
 		$wins = $matches->reduce(function($carry, $match)
 		{
 			return ($match->win) ? ++$carry : $carry;
 		},0);
-
-		$losses = $matches->count() - $wins;
 
 		$winLoss = 100 * round($wins / $matches->count(), 2);
 		
@@ -117,7 +112,7 @@ class Streamers extends Controller {
 
 		$kda = ($deaths) ? round($killsAssists / $deaths,2) : $killsAssists;
 
-		$stats = compact('average','highestPledge','topPledger','activePledges','totalPledges','kda','winLoss');
+		$stats = compact('average','highestPledge','topPledger','kda','winLoss');
 		
 		return $this->view->make('streamers.show')->with(compact('streamer','feed', 'stats', 'guru'));
 	}

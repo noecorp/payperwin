@@ -1,21 +1,19 @@
 <?php namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Contracts\Repository\Pledges as PledgesRepository;
-use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
 use App\Http\Requests\CreatePledge;
+use App\Http\Requests\UpdatePledge;
 use Illuminate\Routing\Redirector as Redirect;
 use Illuminate\Contracts\Routing\ResponseFactory as Response;
-use Carbon\Carbon;
 
 class Pledges extends Controller {
 
 	/**
 	 * The Pledges Repository implementation.
 	 *
-	 * @var UsersRepository
+	 * @var PledgesRepository
 	 */
 	protected $pledges;
 
@@ -36,7 +34,7 @@ class Pledges extends Controller {
 	/**
 	 * Create a new pledges controller instance.
 	 *
-	 * @param  PledgesRepository  $users
+	 * @param  PledgesRepository  $pledges
 	 * @param  View  $view
 	 * @param Redirect $redirect
 	 *
@@ -114,12 +112,12 @@ class Pledges extends Controller {
 	/**
 	 * Update the specified resource in storage.
 	 *
-	 * @param \App\Requests\UpdatePledge $request
+	 * @param UpdatePledge $request
 	 * @param  int  $id
 	 *
 	 * @return Response
 	 */
-	public function update(\App\Requests\UpdatePledge $request, $id)
+	public function update(UpdatePledge $request, $id)
 	{
 		$pledge = $this->pledges->find($id);
 

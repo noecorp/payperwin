@@ -117,7 +117,7 @@ class Auth extends Controller {
 
 		if ($this->auth->attempt($credentials, $request->has('remember')))
 		{
-			return $this->redirect->intended('/auth/login');
+			return $this->redirect->intended('/dashboard');
 		}
 
 		return $this->redirect->to('/auth/login')
@@ -247,13 +247,9 @@ class Auth extends Controller {
 		{
 			return $this->redirect->to('/users/'.$user->id.'/edit');
 		}
-		else if ($this->auth->user()->streamer)
-		{
-			return $this->redirect->to('/streamers/'.$user->id);
-		}
 		else
 		{
-			return $this->redirect->to('/users/'.$user->id);	
+			return $this->redirect->to('/dashboard');
 		}
 	}
 

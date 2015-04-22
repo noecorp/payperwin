@@ -47,7 +47,16 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="navbar-collapse-7">
 			<ul class="nav navbar-nav">
-				<li><a href="/streamers"><span class="hidden-xs fui-list-numbered"></span> Streamers <small>{{ ($streamersLiveNow) ? '('.$streamersLiveNow.' live)' : '' }}</small></a></li>
+				<li><a href="/streamers"><span class="hidden-xs fui-video"></span> &nbsp; Streamers <small>{{ ($streamersLiveNow) ? '('.$streamersLiveNow.' live)' : '' }}</small></a></li>
+				@if ($auth->user())
+					<li>
+						@if (!$auth->user()->start_completed)
+							<a href="/start"><span class="hidden-xs fui-checkbox-checked"></span> &nbsp; Get Started</a>
+						@else
+							<a href="/dashboard"><span class="hidden-xs fui-list-thumbnailed"></span> &nbsp; Dashboard</a>
+						@endif
+					</li>
+				@endif
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 			@if ($auth->guest())
@@ -55,9 +64,9 @@
 				<li><a href="/auth/register" >Register</a></li>
 			@else
 				@if ($auth->user()->streamer)
-					<li><a href="/transactions/{{ $auth->user()->id }}">Earnings: ${{ sprintf("%0.2f",$auth->user()->earnings) }}</a></li>
+					<li><a href="/transactions">Earnings: ${{ sprintf("%0.2f",$auth->user()->earnings) }}</a></li>
 				@else
-					<li><a href="/transactions/{{ $auth->user()->id }}">Funds: ${{ sprintf("%0.2f",$auth->user()->funds) }}</a></li>
+					<li><a href="/transactions">Funds: ${{ sprintf("%0.2f",$auth->user()->funds) }}</a></li>
 					<li><button id="nav-deposit" class="btn btn-sm btn-primary navbar-btn" type="button" data-href="{{ url('deposits/create') }}">Deposit</button></li>
 				@endif
 				<li class="dropdown">
@@ -67,7 +76,10 @@
 						@endif
 						{{ $auth->user()->username }} <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="{{ ($auth->user()->streamer) ? '/streamers/' : '/users/' }}{{ $auth->user()->id }}">Profile</a></li>
+						<li><a href="/dashboard">Dashboard</a></li>
+						@if ($auth->user()->streamer)
+							<li><a href="/streamers/{{ $auth->user()->id }}">Profile</a></li>
+						@endif
 						<li><a href="/users/{{ $auth->user()->id }}/edit">Settings</a></li>
 						@if ($auth->user()->streamer)
 							<li class="divider"></li>

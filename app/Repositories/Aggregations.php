@@ -23,6 +23,24 @@ class Aggregations extends AbstractRepository implements AggregationsRepository 
 	protected $guru;
 
 	/**
+	 * 'Since' date of the aggregations.
+	 *
+	 * Used to construct range queries.
+	 *
+	 * @var Carbon
+	 */
+	protected $since = null;
+
+	/**
+	 * Type of aggregation.
+	 *
+	 * Used to construct range queries.
+	 *
+	 * @var int
+	 */
+	protected $type = null;
+
+	/**
 	 * {@inheritdoc}
 	 *
 	 * @param 
@@ -85,13 +103,101 @@ class Aggregations extends AbstractRepository implements AggregationsRepository 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function isDaily(DateTime $date)
+	protected function reset()
 	{
-		if (!$date instanceof Carbon) $date = new Carbon($date);
+		parent::reset();
 
-		$date->setTimezone('UTC');
+		$this->type = null;
+		$this->since = null;
+	}
 
-		$this->query()->whereType($this->guru->daily())->where('day', $date->day)->where('week', 0)->where('month', $date->month)->where('year', (int)$date->format('y'));
+	/**
+	 * Add date constraints to the query.
+	 *
+	 * @return void
+	 */
+	protected function applyRangeConstraints()
+	{
+		if ($this->since && $this->type)
+		{
+			switch ($this->type) {
+				case $this->guru->daily():
+					$this->query()->where('day','>=',$this->since->day);
+				case $this->guru->monthly():
+					$this->query()->where('month','>=',$this->since->month);
+				case $this->guru->yearly():
+					$this->query()->where('year','>=',$this->since->format('y'));
+					break;
+				case $this->guru->weekly():
+					$this->query()->where('week','>=',$this->since->weekOfYear)->where('year','>=',$this->since->format('y'));
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function find($id = null)
+	{
+		$this->applyRangeConstraints();
+
+		return parent::find($id);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function all()
+	{
+		$this->applyRangeConstraints();
+
+		return parent::all();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function since(DateTime $date)
+	{
+		if (!($date instanceof Carbon))
+		{
+			$date = new Carbon($date);
+
+			$date->setTimezone('UTC');
+		}
+
+		$this->since = $date;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isDaily(DateTime $date = null)
+	{
+		$type = $this->guru->daily();
+
+		if ($date)
+		{
+			if (!($date instanceof Carbon))
+			{
+				$date = new Carbon($date);
+
+				$date->setTimezone('UTC');
+
+				$this->query()->where('day', $date->day)->where('week', 0)->where('month', $date->month)->where('year', (int)$date->format('y'));
+			}
+		}
+		else
+		{
+			$this->type = $type;
+		}
+
+		$this->query()->where('type',$type);
 
 		return $this;
 	}
@@ -101,7 +207,7 @@ class Aggregations extends AbstractRepository implements AggregationsRepository 
 	 */
 	public function isWeekly(DateTime $date)
 	{
-		if (!$date instanceof Carbon) $date = new Carbon($date);
+		if (!($date instanceof Carbon)) $date = new Carbon($date);
 
 		$date->setTimezone('UTC');
 
@@ -115,7 +221,7 @@ class Aggregations extends AbstractRepository implements AggregationsRepository 
 	 */
 	public function isMonthly(DateTime $date)
 	{
-		if (!$date instanceof Carbon) $date = new Carbon($date);
+		if (!($date instanceof Carbon)) $date = new Carbon($date);
 
 		$date->setTimezone('UTC');
 
@@ -129,7 +235,7 @@ class Aggregations extends AbstractRepository implements AggregationsRepository 
 	 */
 	public function isYearly(DateTime $date)
 	{
-		if (!$date instanceof Carbon) $date = new Carbon($date);
+		if (!($date instanceof Carbon)) $date = new Carbon($date);
 
 		$date->setTimezone('UTC');
 
@@ -207,7 +313,7 @@ class Aggregations extends AbstractRepository implements AggregationsRepository 
 					->where('month',0)
 					->where('year',(int)$date->format('y'));
 			})
-				->orWhere(function($query) use ($date)
+				->orWhere(function($query)
 			{
 				$query->where('day',0)
 					->where('week',0)

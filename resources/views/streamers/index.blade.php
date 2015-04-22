@@ -14,16 +14,16 @@
 								<a href="/streamers/{{ $streamer->id }}"><img class="avatar tile-image" src="{{ $streamer->avatar }}"/></a>
 								<h3 class="tile-title"><a href="/streamers/{{ $streamer->id }}">{{ $streamer->username }}</a></h3>
 								<ul>
-									<li>Active pledges:
-										@if ($streamer->activePledges)
-											{{ $streamer->activePledges }}
+									<li>Top pledge:
+										@if ($streamer->biggestPledge)
+											${{ number_format($streamer->biggestPledge,2) }}
 										@else
 											-
 										@endif
 									</li>
 									<li>Average pledge: 
 										@if ($streamer->averagePledge)
-											${{ sprintf('%0.2f',$streamer->averagePledge) }}
+											${{ number_format($streamer->averagePledge,2) }}
 										@else
 											-
 										@endif
@@ -48,9 +48,9 @@
 							<a href="/streamers/{{ $streamer->id }}"><img class="avatar tile-image" src="{{ $streamer->avatar }}"/></a>
 							<h3 class="tile-title"><a href="/streamers/{{ $streamer->id }}">{{ $streamer->username }}</a></h3>
 							<ul>
-								<li>Active pledges:
-										@if ($streamer->activePledges)
-											{{ $streamer->activePledges }}
+								<li>Top pledge:
+										@if ($streamer->biggestPledge)
+											${{ number_format($streamer->biggestPledge,2) }}
 										@else
 											-
 										@endif

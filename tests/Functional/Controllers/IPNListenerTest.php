@@ -17,6 +17,7 @@ use Illuminate\Cache\NullStore;
 use Illuminate\Cache\Repository;
 use Mockery as m;
 use Mockery;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @coversDefaultClass \App\Http\Controllers\PaypalPaymentController
@@ -31,10 +32,6 @@ class IPNListenerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
-        $deposits = $this->getDepositRepo();
-        $users = $this->getUsersRepo();
-        $acidifier = $this->getAcidifier();
 
         // Create a mock subscriber and queue two responses.
         $httpMock = new Mock([
@@ -53,9 +50,6 @@ class IPNListenerTest extends TestCase
 
         $httpClientMock = $this->getGuzzleClientMock($httpMock);
 
-        $this->app->instance(Deposits::class, $deposits);
-        $this->app->instance(Users::class, $users);
-        $this->app->instance(Acidifier::class, $acidifier);
         $this->app->instance(Client::class, $httpClientMock);
 
     }
@@ -70,9 +64,14 @@ class IPNListenerTest extends TestCase
      */
     public function testSimpleFundsAdded()
     {
-        $users=$this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create(['email'=>'foo']);
+        DB::table('users')->insert(
+        [
+            'email'=>'foo',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->first();
         $this->assertNotNull($user);
 
         $gross=20;
@@ -80,7 +79,7 @@ class IPNListenerTest extends TestCase
         $this->assertTrue($response->isOk());
 
         //get updated users
-        $user=$users->find($user->id);
+        $user = DB::table('users')->first();
         $this->assertEquals($gross-$this::calculateFee($gross), $user->funds);
     }
 
@@ -94,14 +93,25 @@ class IPNListenerTest extends TestCase
      */
     public function testFundsAddedAndRefunded()
     {
-        $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create(['email'=>'foo']);
+        DB::table('users')->insert(
+        [
+            'email'=>'foo',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->first();
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create(['email'=>'bar']);
+        DB::table('users')->insert(
+        [
+            'email'=>'bar',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->where('email','bar')->first();
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
@@ -109,12 +119,16 @@ class IPNListenerTest extends TestCase
 
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $transaction);
         $this->assertTrue($response->isOk());
+
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(1, count($users));
+
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $refund);
         $this->assertTrue($response->isOk());
 
         //get updated users
-        $user = $users->find($user->id);
-        $this->assertEquals(0, $user->funds);
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(2, count($users));
     }
 
     /**
@@ -127,14 +141,25 @@ class IPNListenerTest extends TestCase
      */
     public function testFundsAddedAndReversedAndReverseCanceled()
     {
-        $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create(['email'=>'foo']);
+        DB::table('users')->insert(
+        [
+            'email'=>'foo',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->first();
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create(['email'=>'bar']);
+        DB::table('users')->insert(
+        [
+            'email'=>'bar',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->where('email','bar')->first();
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
@@ -143,18 +168,22 @@ class IPNListenerTest extends TestCase
 
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $transaction);
         $this->assertTrue($response->isOk());
+
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(1, count($users));
+
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $reversed);
         $this->assertTrue($response->isOk());
 
         //get updated users
-        $user = $users->find($user->id);
-        $this->assertEquals(0, $user->funds);
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(2, count($users));
 
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $reverseCanceled);
         $this->assertTrue($response->isOk());
 
         //get updated users
-        $user = $users->find($user->id);
+        $user = DB::table('users')->find($user->id);
         $this->assertEquals($gross-$this->calculateFee($gross), $user->funds);
     }
 
@@ -170,12 +199,24 @@ class IPNListenerTest extends TestCase
     {
         $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create(['email'=>'foo']);
+        DB::table('users')->insert(
+        [
+            'email'=>'foo',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->first();
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create(['email'=>'bar']);
+        DB::table('users')->insert(
+        [
+            'email'=>'bar',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->where('email','bar')->first();
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
@@ -185,19 +226,21 @@ class IPNListenerTest extends TestCase
 
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $transaction);
         $this->assertTrue($response->isOk());
+
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(1, count($users));
+
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $reversed);
         $this->assertTrue($response->isOk());
 
-        //get updated users
-        $user = $users->find($user->id);
-        $this->assertEquals(0, $user->funds);
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(2, count($users));
 
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $refund);
         $this->assertTrue($response->isOk());
 
-        //get updated users
-        $user = $users->find($user->id);
-        $this->assertEquals(0, $user->funds);
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(2, count($users));
     }
 
     /**
@@ -212,12 +255,24 @@ class IPNListenerTest extends TestCase
     {
         $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create(['email'=>'foo']);
+        DB::table('users')->insert(
+        [
+            'email'=>'foo',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->first();
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create(['email'=>'bar']);
+        DB::table('users')->insert(
+        [
+            'email'=>'bar',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->where('email','bar')->first();
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
@@ -225,19 +280,21 @@ class IPNListenerTest extends TestCase
         $refund=$this->generateRefundedMessageData($transaction['txn_id'], $gross);
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $transaction);
         $this->assertTrue($response->isOk());
+
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(1, count($users));
+
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $refund);
         $this->assertTrue($response->isOk());
 
-        //get updated users
-        $user = $users->find($user->id);
-        $this->assertEquals(0, $user->funds);
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(2, count($users));
 
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $reversed);
         $this->assertTrue($response->isOk());
 
-        //get updated users
-        $user = $users->find($user->id);
-        $this->assertEquals(0, $user->funds);
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(2, count($users));
     }
 
     /**
@@ -252,56 +309,40 @@ class IPNListenerTest extends TestCase
     {
         $users = $this->app->make(Users::class);
         //create dummy user to add funds to
-        $user = $users->create(['email'=>'foo']);
+        DB::table('users')->insert(
+        [
+            'email'=>'foo',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->first();
         $this->assertNotNull($user);
 
 
         $gross = 20;
-        $user = $users->create(['email'=>'bar']);
+        DB::table('users')->insert(
+        [
+            'email'=>'bar',
+            'created_at'=>Carbon::now(),
+            'updated_at'=>Carbon::now(),
+        ]);
+        $user = DB::table('users')->where('email','bar')->first();
         $this->assertNotNull($user);
 
         $transaction = $this->generateCompleteMessageData($gross);
         $reverseCanceled=$this->generateReverseCanceledMessageData($transaction['txn_id'], $gross);
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $transaction);
         $this->assertTrue($response->isOk());
+
+        $users = DB::table('users')->where('funds',0)->get();
+        $this->assertEquals(1, count($users));
+
         $response = $this->route('POST', 'paypalIpn', ['userId' => $user->id], $reverseCanceled);
         $this->assertTrue($response->isOk());
 
         //get updated users
-        $user = $users->find($user->id);
+        $user = DB::table('users')->find($user->id);
         $this->assertEquals($gross-$this::calculateFee($gross), $user->funds);
-    }
-
-
-    /**
-     * @return Users
-     */
-    public function getUsersRepo()
-    {
-        return new \App\Repositories\Users($this->app);
-    }
-
-    public function getUsersRepoMock()
-    {
-        return m::mock(Users::class);
-    }
-
-    public function getDepositsRepoMock()
-    {
-        return m::mock(Deposits::class);
-    }
-
-    public function getAcidifierMock()
-    {
-        return m::mock(Acidifier::class);
-    }
-
-    /**
-     * @return Deposits
-     */
-    public function getDepositRepo()
-    {
-        return $this->app->make(Deposits::class);
     }
 
     public function getGuzzleClientMock($mock)
@@ -311,14 +352,6 @@ class IPNListenerTest extends TestCase
         // Add the mock subscriber to the client.
         $client->getEmitter()->attach($mock);
         return $client;
-    }
-
-    /**
-     * @return Acidifier
-     */
-    public function getAcidifier()
-    {
-        return $this->app->make(Acidifier::class);
     }
 
     private function generateCompleteMessageData($gross)

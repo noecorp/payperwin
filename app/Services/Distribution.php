@@ -9,7 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use App\Contracts\Service\Acidifier as AcidifierInterface;
 use App\Contracts\Service\Gurus\Transaction as TransactionGuru;
-use App\Models\User;
+use App\Models\Pledge;
+use App\Models\Match;
 
 class Distribution implements DistributionInterface {
 
@@ -82,7 +83,7 @@ class Distribution implements DistributionInterface {
 		$pledges = $this->pledges->withOwner()->isRunning()->forStreamer($streamerId)->all();
 
 		// First, stop all expired pledges
-		$expired = $pledges->filter(function($pledge) {
+		$expired = $pledges->filter(function(Pledge $pledge) {
 			// This includes reaching their set end date, ...
 			$dated = ($pledge->end_date !== null && Carbon::now()->gte($pledge->end_date));
 			
@@ -106,7 +107,7 @@ class Distribution implements DistributionInterface {
 	protected function stopExpired(Collection $expired)
 	{
 		// Do a mass update switching them all off at once
-		$this->pledges->updateAll($expired->map(function($pledge) {
+		$this->pledges->updateAll($expired->map(function(Pledge $pledge) {
 			return $pledge->id;
 		})->toArray(), [
 			'running' => 0
@@ -171,7 +172,8 @@ class Distribution implements DistributionInterface {
 						'user_id' => $pledge->owner->id,
 						'source' => 0,
 						'reference' => null,
-						'pledge_id' => $pledge->id
+						'pledge_id' => $pledge->id,
+						'username' => $streamer->username
 					];
 
 					// Add a financial transaction for the streamer
@@ -181,19 +183,20 @@ class Distribution implements DistributionInterface {
 						'user_id' => $streamer->id,
 						'source' => 0,
 						'reference' => null,
-						'pledge_id' => $pledge->id
+						'pledge_id' => $pledge->id,
+						'username' => $pledge->owner->username
 					];
 				}
 			}
 
 			// All unsettled matches can be considered settled now
-			$this->matches->updateAll($unsettledMatches->map(function($match)
+			$this->matches->updateAll($unsettledMatches->map(function(Match $match)
 			{
 				return $match->id;
 			})->toArray(), ['settled' => 1]);
 
 			// Increment the pledges' donation counters
-			$this->pledges->incrementAll($running->map(function($pledge)
+			$this->pledges->incrementAll($running->map(function(Match $pledge)
 			{
 				return $pledge->id;
 			})->toArray(), 'times_donated');

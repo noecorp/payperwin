@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\PaypalVerifyIPN;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\RedirectToStartIfNeeded;
 
 class Kernel extends HttpKernel {
 
@@ -34,6 +35,7 @@ class Kernel extends HttpKernel {
 		'ajax' => 'App\Http\Middleware\OnlyRespondIfAjax',
 		'json' => 'App\Http\Middleware\JsonIsExpected',
 		'paypal.verify.ipn' => PaypalVerifyIPN::class,
+		'start' => RedirectToStartIfNeeded::class,
 	];
 
 }

@@ -1,8 +1,6 @@
 <?php namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use App\Contracts\Repository\Users;
 use Illuminate\Contracts\Bus\QueueingDispatcher;
 use App\Commands\CheckTwitchStream;

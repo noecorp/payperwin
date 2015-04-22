@@ -9,7 +9,8 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-12 col-sm-5">
+		@if ($display != 'streamer')
+		<div class="col-xs-12 col-sm-{{ ($display == 'both') ? 5 : '6 col-sm-offset-3' }}">
 			<div class="todo" data-action="{{ (!$auth->user()->funds) ? url('deposits/create') : url('streamers') }}">
 				<div class="todo-search text-center text-uppercase">
 					<h2>Fans</h2>
@@ -46,7 +47,9 @@
 				</ul>
 			</div>
 		</div>
-		<div class="col-xs-12 col-sm-5 col-sm-offset-2">
+		@endif
+		@if ($display != 'fan')
+		<div class="col-xs-12 col-sm-{{ ($display == 'both') ? '5 col-sm-offset-2' : '6 col-sm-offset-3' }}">
 			<div class="todo" data-action="{{ (!$auth->user()->twitch_id || !$auth->user()->summoner_id) ? url('users/'.$auth->user()->id.'/edit') : url('streamers',[$auth->user()->id]) }}">
 				<div class="todo-search text-center text-uppercase">
 					<h2>Streamers</h2>
@@ -63,25 +66,26 @@
 						<div class="todo-icon fui-gear"></div>
 						<div class="todo-content">
 							<h4 class="todo-name">Setup</h4>
-							Connect your League of Legends account.
+							Link your League of Legends summoner name.
 						</div>
 					</li>
 					<li>
 						<div class="todo-icon fui-chat"></div>
 						<div class="todo-content">
 							<h4 class="todo-name">Share</h4>
-							Link to your PayPerWin profile on your stream.
+							Tell your viewers about your PayPerWin profile.
 						</div>
 					</li>
 					<li>
 						<div class="todo-icon fui-video"></div>
 						<div class="todo-content">
 							<h4 class="todo-name">Stream</h4>
-							Win and earn!
+							Win games and start earning!
 						</div>
 					</li>
 				</ul>
 			</div>
 		</div>
+		@endif
 	</div>
 @endsection

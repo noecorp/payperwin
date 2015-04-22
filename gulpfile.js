@@ -36,11 +36,13 @@ elixir.extend('cleanup', function(dir) {
  * Stylesheets-related work.
  *
  * - SASS processing
+ * - LESS processing
  * - Fonts
  * - Vendor css
  */
 elixir(function(mix) {
 	mix.sass()
+		.less()
 		.copy(
 			'bower_components/bootstrap-sass-official/assets/fonts/',
 			'public/css/fonts/'
@@ -50,17 +52,14 @@ elixir(function(mix) {
 			'public/css/fonts/'
 		)
 		.copy(
-			'bower_components/flat-ui/dist/css/flat-ui.css',
-			'public/css/vendor/flat-ui.css'
-		)
-		.copy(
 			'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.css',
 			'public/css/vendor/bootstrap.datepicker.css'
 		)
 		.styles([
 			'public/css/vendor/bootstrap.css',
 			'public/css/vendor/flat-ui.css',
-			'public/css/vendor/bootstrap.datepicker.css'
+			'public/css/vendor/bootstrap.datepicker.css',
+			'public/css/vendor/chartist.css'
 		], 'public/css/vendor/all.vendor.css', 'public/css')
 });
 
@@ -97,13 +96,18 @@ elixir(function(mix) {
 			'bower_components/jquery-cookie/jquery.cookie.js',
 			'public/js/vendor/jquery.cookie.js'
 		)
+		.copy(
+			'bower_components/chartist/dist/chartist.js',
+			'public/js/vendor/chartist.js'
+		)
 		.scripts([
 			'public/js/vendor/jquery.js',
 			'public/js/vendor/flat-ui.js',
 			'public/js/vendor/bootstrap.modal.js',
 			'public/js/vendor/bootstrap.datepicker.min.js',
 			'public/js/vendor/jquery.scrollintoview.js',
-			'public/js/vendor/jquery.cookie.js'
+			'public/js/vendor/jquery.cookie.js',
+			'public/js/vendor/chartist.js',
 		], 'public/js/vendor/all.vendor.js', 'public/js')
 		.scripts([
 			'app.js',

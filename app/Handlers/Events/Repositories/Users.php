@@ -12,7 +12,6 @@ use Illuminate\Session\SessionManager as Session;
 
 use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;
-use App\Models\User;
 use App\Commands\NotifyAboutNewStreamer;
 use App\Commands\AggregateDataFromUserUpdate;
 
@@ -93,7 +92,7 @@ class Users {
 
 		if ($user->streamer && $user->twitch_id && $user->summoner_id && !$user->streamer_completed)
 		{
-			$this->users->update($user, ['streamer_completed' => true]);
+			$this->users->update($user, ['streamer_completed' => true, 'start_completed' => true]);
 
 			$this->dispatcher->dispatchToQueue(new NotifyAboutNewStreamer($user->id));
 		}

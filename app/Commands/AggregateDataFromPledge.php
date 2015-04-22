@@ -1,6 +1,6 @@
 <?php namespace App\Commands;
 
-use App\Commands\Command;
+use App\Commands\AggregateData;
 
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
@@ -16,7 +16,7 @@ use App\Models\Aggregation;
 use Illuminate\Database\Eloquent\Collection;
 use Carbon\Carbon;
 
-class AggregateDataFromPledge extends Command implements SelfHandling, ShouldBeQueued {
+class AggregateDataFromPledge extends AggregateData implements SelfHandling, ShouldBeQueued {
 
 	use InteractsWithQueue;
 
@@ -122,47 +122,12 @@ class AggregateDataFromPledge extends Command implements SelfHandling, ShouldBeQ
 
 		foreach ($remaining as $type)
 		{
-			$data = [
-				'reason' => $reason,
-				'amount' => 1,
-				'type' => $type,
-				'user_id' => ($reason == $this->guru->pledgeFromUser()) ? $this->pledge->user_id : $this->pledge->streamer_id
-			];
+			$data = $this->getDateData($date, $this->guru, $type);
 
-			switch ($type) {
-				case $this->guru->daily():
-					$data['day'] = $date->day;
-					$data['week'] = 0;
-					$data['month'] = $date->month;
-					$data['year'] = (int)$date->format('y');
-					break;
-				case $this->guru->weekly():
-					$data['day'] = 0;
-					$data['week'] = $date->weekOfYear;
-					$data['month'] = 0;
-					$data['year'] = (int)$date->format('y');
-					break;
-				case $this->guru->monthly():
-					$data['day'] = 0;
-					$data['week'] = 0;
-					$data['month'] = $date->month;
-					$data['year'] = (int)$date->format('y');
-					break;
-				case $this->guru->yearly():
-					$data['day'] = 0;
-					$data['week'] = 0;
-					$data['month'] = 0;
-					$data['year'] = (int)$date->format('y');
-					break;
-				case $this->guru->total():
-					$data['day'] = 0;
-					$data['week'] = 0;
-					$data['month'] = 0;
-					$data['year'] = 0;
-					break;
-				default:
-					break;
-			}
+			$data['reason'] = $reason;
+			$data['amount'] = 1;
+			$data['type'] = $type;
+			$data['user_id'] = ($reason == $this->guru->pledgeFromUser()) ? $this->pledge->user_id : $this->pledge->streamer_id;
 
 			$this->aggregations->create($data);
 		}

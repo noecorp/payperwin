@@ -1,6 +1,5 @@
 <?php namespace App\Events\Repositories;
 
-use App\Events\Event;
 use App\Models\Model;
 use App\Contracts\Events\ModelUpdated as ModelUpdatedEventInterface;
 

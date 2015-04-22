@@ -14,13 +14,33 @@ class Welcome extends Controller {
 	protected $view;
 
 	/**
+	 * Redirector implementation.
+	 *
+	 * @var Redirect
+	 */
+	protected $redirect;
+
+	/**
+	 * Authentication implementation.
+	 *
+	 * @var Guard
+	 */
+	protected $auth;
+
+	/**
 	 * Create a new controller instance.
+	 *
+	 * @param View $view
+	 * @param Redirect $redirect
+	 * @param Guard $auth
 	 *
 	 * @return void
 	 */
-	public function __construct(View $view)
+	public function __construct(View $view, Redirect $redirect, Guard $auth)
 	{
 		$this->view = $view;
+		$this->redirect = $redirect;
+		$this->auth = $auth;
 		
 		$this->middleware('auth',['only'=>'start']);
 	}
@@ -28,16 +48,13 @@ class Welcome extends Controller {
 	/**
 	 * Show the application welcome screen to the visitor.
 	 *
-	 * @param Guard $auth
-	 * @param Redirect $redirect
-	 *
-	 * @return \Illuminate\View\View
+	 * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
 	 */
-	public function index(Guard $auth, Redirect $redirect)
+	public function index()
 	{
-		if ($auth->user())
+		if ($this->auth->user())
 		{
-			return $redirect->to('start');
+			return $this->redirect->to('dashboard');
 		}
 
 		return $this->view->make('welcome.index');
@@ -46,11 +63,28 @@ class Welcome extends Controller {
 	/**
 	 * Show the getting started screen to the newly-registered user.
 	 *
-	 * @return \Illuminate\View\View
+	 * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
 	 */
 	public function start()
 	{
-		return $this->view->make('welcome.start');
+		if ($this->auth->user()->start_completed)
+		{
+			return $this->redirect->to('dashboard');
+		}
+
+		$display = 'both';
+
+		if ($this->auth->user()->streamer && ($this->auth->user()->twitch_id || $this->auth->user()->summoner_id))
+		{
+			$display = 'streamer';
+		}
+
+		if ($this->auth->user()->funds > 0)
+		{
+			$display = ($display == 'streamer') ? 'both' : 'fan';
+		}
+
+		return $this->view->make('welcome.start', compact('display'));
 	}
 
 }

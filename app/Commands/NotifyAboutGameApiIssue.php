@@ -72,7 +72,7 @@ class NotifyAboutGameApiIssue extends Command implements SelfHandling, ShouldBeQ
 		$url = $this->url;
 		$info = $this->info;
 
-		$r = $mail->send('emails.admin.game-api-issue',compact('type','game','url','info'), function($message)
+		$mail->send('emails.admin.game-api-issue',compact('type','game','url','info'), function($message)
 		{
 			$message->to(config('mail.admin'))->subject('Game API Issue')->from(config('mail.from.address'),config('mail.from.name'));
 		});
