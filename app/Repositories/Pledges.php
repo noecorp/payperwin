@@ -125,4 +125,44 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 		return $this;
 	}
 
+	public function countPledgers()
+	{
+		$this->query()->distinct();
+
+		return $this->count('user_id');
+	}
+
+	public function today()
+	{
+		$now = Carbon::now();
+
+		$this->query()->whereDay('created_at', '=', $now->format('d'))
+			->whereMonth('created_at', '=', $now->format('m'))
+			->whereYear('created_at', '=', $now->format('Y'));
+
+		return $this;
+	}
+
+	public function thisMonth()
+	{
+		$now = Carbon::now();
+
+		$this->query()->whereMonth('created_at', '=', $now->format('m'))
+			->whereYear('created_at', '=', $now->format('Y'));
+
+		return $this;
+	}
+
+	public function thisWeek()
+	{
+		$now = Carbon::now();
+
+		$this->query()->whereDay('created_at', '>=', $now->startOfWeek()->format('d'))
+			->whereDay('created_at', '<=', $now->endOfWeek()->format('d'))
+			->whereMonth('created_at', '=', $now->format('m'))
+			->whereYear('created_at', '=', $now->format('Y'));
+
+		return $this;
+	}
+
 }

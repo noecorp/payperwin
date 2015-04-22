@@ -47,13 +47,13 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="navbar-collapse-7">
 			<ul class="nav navbar-nav">
-				<li><a href="/streamers"><span class="hidden-xs fui-list-numbered"></span> &nbsp; Streamers <small>{{ ($streamersLiveNow) ? '('.$streamersLiveNow.' live)' : '' }}</small></a></li>
+				<li><a href="/streamers"><span class="hidden-xs fui-video"></span> &nbsp; Streamers <small>{{ ($streamersLiveNow) ? '('.$streamersLiveNow.' live)' : '' }}</small></a></li>
 				@if ($auth->user())
 					<li>
 						@if (!$auth->user()->start_completed)
 							<a href="/start"><span class="hidden-xs fui-checkbox-checked"></span> &nbsp; Get Started</a>
 						@else
-							<a href="/dashboard"><span class="hidden-xs fui-star-2"></span> &nbsp; Dashboard</a>
+							<a href="/dashboard"><span class="hidden-xs fui-list-thumbnailed"></span> &nbsp; Dashboard</a>
 						@endif
 					</li>
 				@endif
