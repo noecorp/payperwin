@@ -10,7 +10,6 @@ use App\Events\Paypal\Ipn\SkippedMessage;
 use App\Events\Paypal\Ipn\TransactionNotFound;
 use App\Events\Paypal\Ipn\UserNotFound;
 use App\Events\Paypal\Ipn\ValidIPNReceived;
-use App\Http\Requests;
 use App\Models\Deposit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

@@ -12,7 +12,6 @@ use Illuminate\Session\SessionManager as Session;
 
 use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;
-use App\Models\User;
 use App\Commands\NotifyAboutNewStreamer;
 use App\Commands\AggregateDataFromUserUpdate;
 

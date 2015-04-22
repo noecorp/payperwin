@@ -98,8 +98,6 @@ class Streamers extends Controller {
 			return ($match->win) ? ++$carry : $carry;
 		},0);
 
-		$losses = $matches->count() - $wins;
-
 		$winLoss = 100 * round($wins / $matches->count(), 2);
 		
 		$killsAssists = $matches->reduce(function($carry, $match)

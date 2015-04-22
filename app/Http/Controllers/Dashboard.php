@@ -6,7 +6,6 @@ use App\Contracts\Repository\Aggregations;
 use App\Contracts\Repository\Pledges;
 use App\Contracts\Service\Gurus\Aggregation as Guru;
 use Carbon\Carbon;
-use App\Models\Aggregation;
 use App\Models\Pledge;
 use Illuminate\Http\Request;
 
@@ -90,12 +89,12 @@ class Dashboard extends Controller {
 
 		$pledges['active'] = $created->filter(function(Pledge $pledge)
 		{
-			return ($pledge->running == true);
+			return ($pledge->running === true);
 		});
 
 		$pledges['inactive'] = $created->filter(function(Pledge $pledge)
 		{
-			return ($pledge->running == false);
+			return ($pledge->running === false);
 		});
 
 		$spending['history'] = $this->dailyAmounts($this->guru->paidByUser());
@@ -299,7 +298,9 @@ class Dashboard extends Controller {
 			return ['id' => $pledge->user_id, 'amount' => ($type == 'biggest') ? $pledge->amount : $pledge->spent, 'username' => $pledge->owner->username];
 		})->toArray();
 
-		for ($i = 0; $i < count($mapped); $i++)
+		$c = count($mapped);
+
+		for ($i = 0; $i < $c; $i++)
 		{
 			$mapped[$i]['rank'] = $limit * ($page - 1) + $i + 1;
 		}

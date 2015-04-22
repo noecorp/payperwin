@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Controller;
 use App\Contracts\Repository\Users as UsersRepository;
-use App\Contracts\Repository\Pledges;
 use App\Http\Requests\UpdateUser;
 use Illuminate\Contracts\View\Factory as View;
 use Illuminate\Routing\Redirector as Redirect;

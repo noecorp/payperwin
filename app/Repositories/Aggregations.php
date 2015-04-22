@@ -313,7 +313,7 @@ class Aggregations extends AbstractRepository implements AggregationsRepository 
 					->where('month',0)
 					->where('year',(int)$date->format('y'));
 			})
-				->orWhere(function($query) use ($date)
+				->orWhere(function($query)
 			{
 				$query->where('day',0)
 					->where('week',0)

@@ -4,7 +4,7 @@ use App\Contracts\Service\Gurus\Pledge as PledgeGuruInterface;
 
 class Pledge implements PledgeGuruInterface {
 
-	const Win = 1;
+	const WIN = 1;
 
 	/**
 	 * List of all valid Pledge types.
@@ -12,7 +12,7 @@ class Pledge implements PledgeGuruInterface {
 	 * @var array
 	 */
 	protected $types = [
-		self::Win => 'win',
+		self::WIN => 'win',
 	];
 
 	/**
@@ -36,7 +36,7 @@ class Pledge implements PledgeGuruInterface {
 	 */
 	public function win()
 	{
-		return self::Win;
+		return self::WIN;
 	}
 
 }

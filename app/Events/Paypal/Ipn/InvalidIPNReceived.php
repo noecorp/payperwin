@@ -1,5 +1,4 @@
-<?php namespace App\Events;
-
+<?php namespace App\Events\Paypal\Ipn;
 
 class InvalidIPNReceived extends IPNEvent
 {
