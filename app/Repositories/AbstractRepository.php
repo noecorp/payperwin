@@ -421,16 +421,16 @@ abstract class AbstractRepository implements RepositoryContract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function count()
+	public function count($column = 'id')
 	{
-		$closure = function()
+		$closure = function() use ($column)
 		{
-			return $this->query()->count('id');
+			return $this->query()->count($column);
 		};
 
 		if ($this->useCache)
 		{
-			$hash = $this->getQueryHash('count');
+			$hash = $this->getQueryHash('count', $column);
 
 			$tags = $this->getCacheTags();
 

@@ -9,6 +9,7 @@ use App\Exceptions\Repositories\ModelClassMismatch;
 use App\Exceptions\Repositories\ModelDoesntExist;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
+use Closure;
 
 /**
  * @coversDefaultClass \App\Repositories\AbstractRepository
@@ -1008,6 +1009,7 @@ class AbstractTest extends \AppTests\TestCase {
 		$query->shouldReceive('toSql')->once()->andReturn('query');
 		$query->shouldReceive('getBindings')->once()->andReturn(['bar']);
 		$query->shouldReceive('getEagerLoads')->times(2)->andReturn([]);
+		$query->shouldReceive('count')->with('id')->andReturn('baz');
 
 		$model = $this->getModelMock()->makePartial();
 		$model->shouldReceive('newQuery')->once()->andReturn($query);
@@ -1016,7 +1018,10 @@ class AbstractTest extends \AppTests\TestCase {
 		$events = $this->getDispatcherMock();
 
 		$cache->shouldReceive('tags')->with([$model->getTable()])->andReturn($cache);
-		$cache->shouldReceive('rememberForever')->once()->with(md5('query count bar'),m::any())->andReturn('baz');
+		$cache->shouldReceive('rememberForever')->once()->with(md5('query count,id bar'),m::on(function(Closure $closure)
+		{
+			return ($closure() == 'baz');
+		}))->andReturn('baz');
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
@@ -1025,6 +1030,55 @@ class AbstractTest extends \AppTests\TestCase {
 		$repo = $this->getRepo();
 
 		$return = $repo->count();
+
+		$this->assertEquals($return, 'baz');
+		$this->assertNull($repo->getQuery());
+		$this->assertTrue($repo->getUseCache());
+		$this->assertTrue($repo->getSendEvents());
+	}
+
+	/**
+     * @small
+     *
+     * @group repositories
+     *
+     * @covers ::__construct
+     * @covers ::count
+     * @covers ::query
+     * @covers ::getQueryHash
+     * @covers ::getCacheTags
+     * @covers ::reset
+     */
+	public function test_count_with_column()
+	{
+		$column = 'foo';
+
+		$query = $this->getQueryMock()->makePartial();
+		$query->shouldReceive('getQuery')->once()->andReturn($query);
+		$query->shouldReceive('toSql')->once()->andReturn('query');
+		$query->shouldReceive('getBindings')->once()->andReturn(['bar']);
+		$query->shouldReceive('getEagerLoads')->times(2)->andReturn([]);
+		$query->shouldReceive('count')->with($column)->andReturn('baz');
+
+		$model = $this->getModelMock()->makePartial();
+		$model->shouldReceive('newQuery')->once()->andReturn($query);
+
+		$cache = $this->getCacheMock();
+		$events = $this->getDispatcherMock();
+
+		$cache->shouldReceive('tags')->with([$model->getTable()])->andReturn($cache);
+		$cache->shouldReceive('rememberForever')->once()->with(md5('query count,'.$column.' bar'),m::on(function(Closure $closure)
+		{
+			return ($closure() == 'baz');
+		}))->andReturn('baz');
+
+		$this->app->instance(Events::class,$events);
+		$this->app->instance(Cache::class,$cache);
+		$this->app->instance(FooModel::class,$model);
+
+		$repo = $this->getRepo();
+
+		$return = $repo->count($column);
 
 		$this->assertEquals($return, 'baz');
 		$this->assertNull($repo->getQuery());
