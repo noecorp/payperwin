@@ -44,8 +44,8 @@ class TransactionsTest extends \AppTests\TestCase {
 	 *
 	 * @uses \App\Models\User
 	 * @uses \App\Models\Transaction
-	 * @uses \App\Services\Gurus\Transactions
-	 * @uses \App\Services\Gurus\Pledges
+	 * @uses \App\Services\Gurus\Transaction
+	 * @uses \App\Services\Gurus\Pledge
 	 */
 	public function test_index_ok()
 	{
