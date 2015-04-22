@@ -44,7 +44,7 @@ class RedirectToStartIfNeeded {
 	{
 		if (!$this->auth->user()->start_completed)
 		{
-			$this->redirect->to('start');
+			return $this->redirect->to('start');
 		}
 
 		return $next($request);
