@@ -32,7 +32,6 @@ class UsersTest extends \AppTests\TestCase {
 	 * @group controllers
 	 *
 	 * @covers ::__construct
-	 * @covers ::show
 	 */
 	public function test_show_predictable_aborts()
 	{
