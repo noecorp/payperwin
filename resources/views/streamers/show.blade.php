@@ -11,176 +11,96 @@
 					<img class="avatar" src="{{ asset($streamer->avatar) }}">
 				@endif
 			</h1>
+
+			<hr/>
+
 			@if ($streamer->short_url)
 				Short link: <a href="{{ $streamer->short_url }}">{{ $streamer->short_url }}</a>
 			@endif
-			<hr/>
-			@if ($streamer->live)
-				<p class="text-primary"><strong>Live now!</strong></p>
-			@else
-				<p class="text-muted"><strong>Offline</strong></p>
-			@endif
 		</div>
 	</div>
+
 	<div class="row">
-		<div class="col-xs-12 col-sm-4">
+		<div class="col-xs-12 col-sm-4 col-sm-offset-4">
 			@if ($auth->guest())
 				<a href="/auth/login" class="btn btn-lg btn-success btn-block">Start a Pledge!</a>
 			@else
 				@if ($auth->user()->id != $streamer->id)
 					<button type="button" id="streamer-pledge" class="btn btn-lg btn-success btn-block" title="This will bring up a form." data-placement="top" data-toggle="tooltip" data-modal="streamer-pledge-modal">Start a Pledge!</button>
-				@else
-					@if ($streamer->twitch_id && $streamer->summoner_id)
-						<button type="button" class="btn btn-lg btn-info btn-block">That's you!</button>
-					@else
-						<div class="alert alert-warning" id="streamer-pledge-results">
-							<p>You haven't completed your streamer profile yet!</p>
-							<p><a href="/users/{{ $streamer->id }}/edit">Finish setting up &raquo;</a></p>
-						</div>
-					@endif
 				@endif
 			@endif
 		</div>
 	</div>
+
 	<div class="row">
-		<div class="col-xs-12 col-md-6">
+		<div class="col-xs-12 col-sm-4">
 			<h2 id="loading">Pledges</h2>
 
-			<ul id="pledges-list">
-				@if (!$feed->isEmpty())
-					@foreach ($feed as $pledge)
-						<li><a href="/users/{{ $pledge->owner->id }}">{{ $pledge->owner->username }}</a> with ${{ sprintf("%0.2f",$pledge->amount) }} per win.
-							@if ($pledge->message)
-								<br><blockquote>{{ $pledge->message }}</blockquote>
-							@endif
-						</li>
-					@endforeach
-				@else
-					<li>No pledges yet!</li>
-				@endif
+			<ul id="pledges-list" class="pledges">
+				@include('partials.pledges',['feed'=>$feed])
 			</ul>
 		</div>
-		<div class="col-xs-12 col-md-6">
+
+		<div class="col-xs-12 col-sm-6">
 			<h2>Stats</h2>
 
-			<table class="table table-hover">
-				<tbody>
-					<tr class="success">
-						<th>
-							Top pledger
-						</th>
-						<td>
-							@if ($stats['topPledger'])
-								<a href="/users/{{ $stats['topPledger']->owner->id }}">{{ $stats['topPledger']->owner->username }}</a> with ${{ sprintf("%0.2f",$stats['topPledger']->spent) }} total
-							@else
-								-
-							@endif
-						</td>
-					</tr>
-					<tr class="warning">
-						<th>
-							Highest pledge
-						</th>
-						<td>
-							@if ($stats['highestPledge'])
-								${{ sprintf("%0.2f",$stats['highestPledge']->amount) }}, <a href="/users/{{ $stats['highestPledge']->owner->id }}">{{ $stats['highestPledge']->owner->username }}</a>
-							@else
-								-
-							@endif
-						</td>
-					</tr>
-					<tr>
-						<th>
-							Average pledge
-						</th>
-						<td>
-							@if ($stats['average'])
-								${{ sprintf("%0.2f",$stats['average']) }}
-							@else
-								-
-							@endif
-						</td>
-					</tr>
-					<tr>
-						<th>&nbsp;</th>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<th>
-							Active pledges
-						</th>
-						<td>
-							@if ($stats['activePledges'])
-								{{ $stats['activePledges'] }}
-							@else
-								-
-							@endif
-						</td>
-					</tr>
-					<tr>
-						<th>
-							Total pledges
-						</th>
-						<td>
-							@if ($stats['totalPledges'])
-								{{ $stats['totalPledges'] }}
-							@else
-								-
-							@endif
-						</td>
-					</tr>
-					<tr>
-						<th>&nbsp;</th>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<th>
-							Recent wins
-						</th>
-						<td>
-							@if ($stats['winLoss'])
-								{{ $stats['winLoss'] }}%
-							@else
-								-
-							@endif
-						</td>
-					</tr>
-					<tr>
-						<th>
-							Recent KDA
-						</th>
-						<td>
-							@if ($stats['kda'])
-								{{ sprintf("%0.2f",$stats['kda']) }}
-							@else
-								-
-							@endif
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<p class="lead">Top pledger: 
+				@if ($stats['topPledger'])
+					${{ sprintf("%0.2f",$stats['topPledger']->spent) }} <small>total</small>, <a href="/users/{{ $stats['topPledger']->owner->id }}">{{ $stats['topPledger']->owner->username }}</a>
+				@else
+					-
+				@endif
+			</p>
+
+			<p class="lead">Highest pledge: 
+				@if ($stats['highestPledge'])
+					${{ sprintf("%0.2f",$stats['highestPledge']->amount) }} <small>/ win</small>, <a href="/users/{{ $stats['highestPledge']->owner->id }}">{{ $stats['highestPledge']->owner->username }}</a>
+				@else
+					-
+				@endif
+			</p>
+
+			<p class="lead">Average pledge: 
+				@if ($stats['average'])
+					${{ sprintf("%0.2f",$stats['average']) }}
+				@else
+					-
+				@endif
+			</p>
+
+			<p class="lead"><abbr title="Last 20 matches">Recent</abbr> wins: 
+				@if ($stats['winLoss'])
+					{{ $stats['winLoss'] }}%
+				@else
+					-
+				@endif
+			</p>
+
+			<p class="lead"><abbr title="Last 20 matches">Recent</abbr> KDA: 
+				@if ($stats['kda'])
+					{{ sprintf("%0.2f",$stats['kda']) }}
+				@else
+					-
+				@endif
+			</p>
 		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-12">
+
+		<div class="col-xs-12 col-sm-2">
 			<h2>Stream</h2>
 			@if ($streamer->twitch_username)
-			
-			<p><a class="btn btn-xs btn-default" href="javascript:;" id="streamer-hide" data-toggle="Show">Hide</a></p>
-			
-			<div class="row" id="streamer-stream">
-				<div class="col-xs-12 col-sm-8">
-					<div id="streamer-video" data-username="{{ $streamer->twitch_username }}">
-						<img src="/img/loading.gif">
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-4">
-					<div id="streamer-chat" data-username="{{ $streamer->twitch_username }}">
-				</div>
-			</div>
+
+				@if ($streamer->live)
+					<p class="text-primary"><strong>Live now!</strong></p>
+				@else
+					<p class="text-muted"><strong>Offline</strong></p>
+				@endif
+
+				<p><a target="_blank" href="http://www.twitch.tv/{{ $streamer->twitch_username }}">http://www.twitch.tv/{{ $streamer->twitch_username }}</a></p>
+				
 			@endif
 		</div>
 	</div>
+
 	@if ($auth->user() && $auth->user()->id != $streamer->id)
 		<div class="modal fade" id="streamer-pledge-modal" tabindex="-1" role="dialog" aria-labelledby="streamer-pledge-modal-label" aria-hidden="false">
 			<div class="modal-dialog">
