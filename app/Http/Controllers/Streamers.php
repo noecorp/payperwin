@@ -51,9 +51,10 @@ class Streamers extends Controller {
 		// Temporary until more efficient solution
 		foreach ($streamers as $streamer)
 		{
-			$streamer->averagePledge = round($pledges->forStreamer($streamer->id)->average('amount'),2);
+			$streamer->averagePledge = $pledges->forStreamer($streamer->id)->average('amount');
 
-			$streamer->activePledges = $pledges->forStreamer($streamer->id)->isRunning()->count();
+			$biggest = $pledges->forStreamer($streamer->id)->orderingByAmount()->find();
+			$streamer->biggestPledge = ($biggest) ? $biggest->amount : null;
 		}
 
 		$live = $streamers->filter(function($streamer)

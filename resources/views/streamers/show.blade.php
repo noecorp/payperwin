@@ -34,7 +34,7 @@
 
 	<div class="row">
 		<div class="col-xs-12 col-sm-4">
-			<h2 id="loading">Pledges</h2>
+			<h2><span class="fui-heart"></span> &nbsp; Pledges</h2>
 
 			<ul id="pledges-list" class="pledges">
 				@include('partials.pledges',['feed'=>$feed])
@@ -42,7 +42,7 @@
 		</div>
 
 		<div class="col-xs-12 col-sm-6">
-			<h2>Stats</h2>
+			<h2><span class="fui-info-circle"></span> &nbsp; Stats</h2>
 
 			<p class="lead">Top pledger: 
 				@if ($stats['topPledger'])
@@ -86,7 +86,7 @@
 		</div>
 
 		<div class="col-xs-12 col-sm-2">
-			<h2>Stream</h2>
+			<h2><span class="fui-video"></span> &nbsp; Stream</h2>
 			@if ($streamer->twitch_username)
 
 				@if ($streamer->live)
