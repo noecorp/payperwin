@@ -196,7 +196,7 @@ class Distribution implements DistributionInterface {
 			})->toArray(), ['settled' => 1]);
 
 			// Increment the pledges' donation counters
-			$this->pledges->incrementAll($running->map(function(Match $pledge)
+			$this->pledges->incrementAll($running->map(function(Pledge $pledge)
 			{
 				return $pledge->id;
 			})->toArray(), 'times_donated');
