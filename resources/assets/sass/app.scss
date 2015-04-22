@@ -12,7 +12,6 @@ body
 	width: 100% !important;
 	height: 100% !important;
 	position: fixed !important;
-	// z-index: 1030;
 }
 
 .navbar-inverse .navbar-nav>.dropdown>a .caret
@@ -188,6 +187,17 @@ article
 			border-bottom: 1px solid #ECF0F1;
 		}
 	}
+
+	#streamer-pledge
+	{
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+
+	td
+	{
+		border-top-color: #ECF0F1 !important;
+	}
 }
 
 footer
@@ -242,6 +252,11 @@ h2, .h2
 {
 	font-size: 24px;
 	font-weight: normal;
+}
+
+h3, .h3
+{
+	font-size: 20px;
 }
 
 p
