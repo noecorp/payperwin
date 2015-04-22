@@ -45,10 +45,7 @@
 			</table>
 		</div>
 	</div>
-	<div class="pagination">
-		<ul>
-			<li class="previous {{ (!$less) ? 'disabled' : '' }}"><a title="Next" href="{{ ($less) ? 'transactions?page='. ($page - 1) : 'javascript:;' }}" class="fui-arrow-left"></a></li>
-			<li class="next {{ (!$more) ? 'disabled' : '' }}"><a title="Previous" href="{{ ($more) ? 'transactions?page='. ($page + 1) : 'javascript:;' }}" class="fui-arrow-right"></a></li>
-		</ul>
-	</div>
+
+	@include('partials.pagination',['url' => 'transactions', 'less' => $less, 'more' => $more])
+
 @endsection
