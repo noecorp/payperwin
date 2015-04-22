@@ -10,11 +10,6 @@ use App\Contracts\Repository\Users;
 
 use GuzzleHttp\Client;
 
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ParseException;
-use GuzzleHttp\Exception\TooManyRedirectsException;
-
 class CheckTwitchStream extends Command implements SelfHandling, ShouldBeQueued {
 
 	use InteractsWithQueue;
@@ -71,18 +66,14 @@ class CheckTwitchStream extends Command implements SelfHandling, ShouldBeQueued 
 				$users->update($streamer,['live'=>0]);	
 			}
 		}
-		catch (\Exception $e)
+		catch (Exception $exception)
 		{
-			return $this->handleException($e);
+			$this->delete();
+
+			throw $exception;
 		}
 
 		$this->delete();
-	}
-
-	protected function handleException(\Exception $e)
-	{
-		//temp
-		throw $e;
 	}
 
 }
