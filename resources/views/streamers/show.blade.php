@@ -46,7 +46,7 @@
 
 			<p class="lead">Top pledger: 
 				@if ($stats['topPledger'])
-					${{ sprintf("%0.2f",$stats['topPledger']->spent) }} <small>total</small>, <a href="/users/{{ $stats['topPledger']->owner->id }}">{{ $stats['topPledger']->owner->username }}</a>
+					${{ sprintf("%0.2f",$stats['topPledger']->spent) }} <small>total</small>, {{ $stats['topPledger']->owner->username }}
 				@else
 					-
 				@endif
@@ -54,7 +54,7 @@
 
 			<p class="lead">Highest pledge: 
 				@if ($stats['highestPledge'])
-					${{ sprintf("%0.2f",$stats['highestPledge']->amount) }} <small>/ win</small>, <a href="/users/{{ $stats['highestPledge']->owner->id }}">{{ $stats['highestPledge']->owner->username }}</a>
+					${{ sprintf("%0.2f",$stats['highestPledge']->amount) }} <small>/ win</small>, {{ $stats['highestPledge']->owner->username }}
 				@else
 					-
 				@endif

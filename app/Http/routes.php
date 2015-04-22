@@ -20,7 +20,7 @@ Route::controllers([
 	'password' => 'Auth\Password',
 ]);
 
-Route::resource('users','Users',['except'=>['index','create','store','destroy']]);
+Route::resource('users','Users',['only'=>['edit','update']]);
 Route::resource('streamers','Streamers',['only'=>['index','show']]);
 Route::resource('pledges','Pledges',['except'=>['destroy','create']]);
 Route::resource('users.pledges','UsersPledges', ['only'=>'index']);

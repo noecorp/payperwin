@@ -34,33 +34,11 @@ class UsersTest extends \AppTests\TestCase {
 	 * @covers ::__construct
 	 * @covers ::show
 	 */
-	public function testShowAbortsWhenNotFound()
+	public function test_show_predictable_aborts()
 	{
-		$response = $this->call('GET', 'users/foo');
-
-		$this->assertResponseStatus(404);
-	}
-
-	/**
-	 * @small
-	 *
-	 * @group controllers
-	 *
-	 * @covers ::__construct
-	 * @covers ::show
-	 */
-	public function testShowOkWhenFound()
-	{
-		User::create(
-		[
-			'email' => 'foo@bar.com',
-			'username' => 'foo',
-		]);
-
 		$response = $this->call('GET', 'users/1');
 
-		$this->assertResponseOk();
-		$this->assertViewHasAll(['user','feed','stats']);
+		$this->assertResponseStatus(405);
 	}
 
 	/**

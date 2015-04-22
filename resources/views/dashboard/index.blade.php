@@ -51,7 +51,7 @@
 									{{ $leader['rank'] }}
 								</td>
 								<td>
-									<a href="/users/{{ $leader['id'] }}">{{ $leader['username'] }}</a>
+									{{ $leader['username'] }}
 								</td>
 								<td class="text-right">
 									${{ number_format($leader['amount'],2) }}</a>

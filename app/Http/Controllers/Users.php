@@ -38,31 +38,8 @@ class Users extends Controller {
 		$this->users = $users;
 		$this->view = $view;
 
-		$this->middleware('auth',['except'=>['show']]);
-		$this->middleware('own.user', ['except' => 'show']);
-	}
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  Pledges  $pledges
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show(Pledges $pledges, $id)
-	{
-		$user = $this->users->find($id);
-
-		if (!$user) return abort(404);
-
-		$feed = $pledges->withStreamer()->latest()->limit(10)->fromUser($id)->all();
-
-		$average = round($pledges->fromUser($id)->average('amount'),2);
-		$highestPledge = $pledges->withStreamer()->forStreamer($id)->orderingByAmount()->find();
-
-		$stats = compact('average','highestPledge');
-
-		return $this->view->make('users.show')->with(compact('user','feed','stats'));
+		$this->middleware('auth');
+		$this->middleware('own.user');
 	}
 
 	/**

@@ -77,7 +77,9 @@
 						{{ $auth->user()->username }} <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="/dashboard">Dashboard</a></li>
-						<li><a href="{{ ($auth->user()->streamer) ? '/streamers/' : '/users/' }}{{ $auth->user()->id }}">Profile</a></li>
+						@if ($auth->user()->streamer)
+							<li><a href="/streamers/{{ $auth->user()->id }}">Profile</a></li>
+						@endif
 						<li><a href="/users/{{ $auth->user()->id }}/edit">Settings</a></li>
 						@if ($auth->user()->streamer)
 							<li class="divider"></li>
