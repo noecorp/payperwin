@@ -8,3 +8,4 @@ filter:
         - resources/*
         - public/*
         - docs/*
+        - database/*
