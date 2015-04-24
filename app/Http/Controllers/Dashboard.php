@@ -97,15 +97,15 @@ class Dashboard extends Controller {
 			return ($pledge->running === false);
 		});
 
-		$spending['history'] = $this->dailyAmounts($this->guru->paidByUser());
-
-		$earnings['summary'] = $this->earningsSummary();
-
-		$earnings['history'] = $this->dailyAmounts($this->guru->paidToStreamer());
+		$spending['history'] = $this->dailyAmounts($this->guru->paidByUser(), (!$created->isEmpty()));
 
 		$pledges['stats'] = $this->pledgeStats();
 
-		$pledges['latest'] = $this->latestPledges();
+		$earnings['summary'] = $this->earningsSummary(($pledges['stats']['total'] > 0));
+
+		$earnings['history'] = $this->dailyAmounts($this->guru->paidToStreamer(), ($pledges['stats']['total'] > 0));
+
+		$pledges['latest'] = ($pledges['stats']['total']) ? $this->latestPledges() : new \Illuminate\Database\Eloquent\Collection;
 
 		$limit = 10;
 
@@ -113,18 +113,26 @@ class Dashboard extends Controller {
 		if ($page < 1) $page = 1;
 
 		$type = ($this->request->get('leaderboards') == 'biggest') ? 'biggest' : 'total';
-		if ($type == 'biggest')
+
+		if ($pledges['stats']['total'])
 		{
-			$leaderboard['leaders'] = $this->leaderboard('biggest', $limit, $page);
+			if ($type == 'biggest')
+			{
+				$leaderboard['leaders'] = $this->leaderboard('biggest', $limit, $page);
+			}
+			else
+			{
+				$leaderboard['leaders'] = $this->leaderboard('total', $limit, $page);
+			}
 		}
 		else
 		{
-			$leaderboard['leaders'] = $this->leaderboard('total', $limit, $page);
+			$leaderboard['leaders'] = [];
 		}
 
 		$leaderboard['type'] = $type;
 
-		$count = $this->countSpenders();
+		$count = ($pledges['stats']['total']) ? $this->countSpenders() : 0;
 
 		$leaderboard['more'] = ($count > $page * $limit);
 
@@ -146,15 +154,12 @@ class Dashboard extends Controller {
 	/**
 	 * Get the summarised earnings statistics.
 	 *
+	 * @param boolean $full Whether or not to return non-empty summary.
+	 *
 	 * @return array
 	 */
-	protected function earningsSummary()
+	protected function earningsSummary($full = true)
 	{
-		$aggregations = $this->aggregations->forUser($this->auth->user()->id)
-			->forDate(Carbon::now())
-			->forReason($this->guru->paidToStreamer())
-			->all();
-
 		$summary = [
 			'today' => 0,
 			'week' => 0,
@@ -162,26 +167,34 @@ class Dashboard extends Controller {
 			'total' => 0
 		];
 
-		foreach ($aggregations as $aggregation)
+		if ($full)
 		{
-			if ($aggregation->type == $this->guru->daily())
+			$aggregations = $this->aggregations->forUser($this->auth->user()->id)
+				->forDate(Carbon::now())
+				->forReason($this->guru->paidToStreamer())
+				->all();
+
+			foreach ($aggregations as $aggregation)
 			{
-				$summary['today'] = $aggregation->amount;
-			}
-			else if ($aggregation->type == $this->guru->weekly())
-			{
-				$summary['week'] = $aggregation->amount;
-			}
-			else if ($aggregation->type == $this->guru->monthly())
-			{
-				$summary['month'] = $aggregation->amount;
-			}
-			else if ($aggregation->type == $this->guru->total())
-			{
-				$summary['total'] = $aggregation->amount;
-			} else
-			{
-				continue;
+				if ($aggregation->type == $this->guru->daily())
+				{
+					$summary['today'] = $aggregation->amount;
+				}
+				else if ($aggregation->type == $this->guru->weekly())
+				{
+					$summary['week'] = $aggregation->amount;
+				}
+				else if ($aggregation->type == $this->guru->monthly())
+				{
+					$summary['month'] = $aggregation->amount;
+				}
+				else if ($aggregation->type == $this->guru->total())
+				{
+					$summary['total'] = $aggregation->amount;
+				} else
+				{
+					continue;
+				}
 			}
 		}
 
@@ -192,55 +205,59 @@ class Dashboard extends Controller {
 	 * Get the graphable daily earnings list.
 	 *
 	 * @param int $reason Paid to streamer / paid by user.
+	 * @param boolean $full Whether or not to return non-empty summary.
 	 *
 	 * @return array
 	 */
-	protected function dailyAmounts($reason)
+	protected function dailyAmounts($reason, $full = true)
 	{
-		$now = Carbon::now();
-
-		$limit = Carbon::now()->subDays(14);
-
-		$dailies = $this->aggregations->forUser($this->auth->user()->id)
-			->isDaily()
-			->forReason($reason)
-			->since($limit)
-			->all();
-
 		$history = [
 			'amounts' => [],
 			'days' => [],
 		];
 
-		$limit->subDays(1);
-
-		for ($i = 0; $i < 15; $i++)
+		if ($full)
 		{
-			$amount = 0;
+			$now = Carbon::now();
 
-			$limit->addDay();
-			$full = $limit->format('y-m-d');
-			
-			$day = '';
+			$limit = Carbon::now()->subDays(14);
 
-			if (($now->dayOfYear - $limit->dayOfYear) % 7 == 0)
+			$dailies = $this->aggregations->forUser($this->auth->user()->id)
+				->isDaily()
+				->forReason($reason)
+				->since($limit)
+				->all();
+
+			$limit->subDays(1);
+
+			for ($i = 0; $i < 15; $i++)
 			{
-				$day = ($full == $now->format('y-m-d')) ? 'Today' : $limit->format('d/m');
-			}
+				$amount = 0;
 
-			$history['days'][] = $day;
+				$limit->addDay();
+				$full = $limit->format('y-m-d');
+				
+				$day = '';
 
-			foreach ($dailies as $aggregation)
-			{
-				$date = Carbon::createFromFormat('y-m-d',$aggregation->year.'-'.$aggregation->month.'-'.$aggregation->day);
-
-				if ($date->format('y-m-d') == $full)
+				if (($now->dayOfYear - $limit->dayOfYear) % 7 == 0)
 				{
-					$amount = $aggregation->amount;
+					$day = ($full == $now->format('y-m-d')) ? 'Today' : $limit->format('d/m');
 				}
-			}
 
-			$history['amounts'][] = $amount;
+				$history['days'][] = $day;
+
+				foreach ($dailies as $aggregation)
+				{
+					$date = Carbon::createFromFormat('y-m-d',$aggregation->year.'-'.$aggregation->month.'-'.$aggregation->day);
+
+					if ($date->format('y-m-d') == $full)
+					{
+						$amount = $aggregation->amount;
+					}
+				}
+
+				$history['amounts'][] = $amount;
+			}
 		}
 
 		return $history;
@@ -253,17 +270,17 @@ class Dashboard extends Controller {
 	 */
 	protected function pledgeStats()
 	{
-		$stats['average'] = $this->pledges->forStreamer($this->auth->user()->id)->average('amount');
-
-		$stats['active'] = $this->pledges->forStreamer($this->auth->user()->id)->isRunning()->count();
-
 		$stats['total'] = $this->pledges->forStreamer($this->auth->user()->id)->count();
 
-		$stats['new-today'] = $this->pledges->forStreamer($this->auth->user()->id)->today()->count();
+		$stats['active'] = ($stats['total']) ? $this->pledges->forStreamer($this->auth->user()->id)->isRunning()->count() : 0;
 
-		$stats['new-week'] = $this->pledges->forStreamer($this->auth->user()->id)->thisWeek()->count();
+		$stats['average'] = ($stats['total']) ? $this->pledges->forStreamer($this->auth->user()->id)->average('amount') : 0;
 
-		$stats['new-month'] = $this->pledges->forStreamer($this->auth->user()->id)->thisMonth()->count();
+		$stats['new-today'] = ($stats['total']) ? $this->pledges->forStreamer($this->auth->user()->id)->today()->count() : 0;
+
+		$stats['new-week'] = ($stats['total']) ? $this->pledges->forStreamer($this->auth->user()->id)->thisWeek()->count() : 0;
+
+		$stats['new-month'] = ($stats['total']) ? $this->pledges->forStreamer($this->auth->user()->id)->thisMonth()->count() : 0;
 
 		return $stats;
 	}
