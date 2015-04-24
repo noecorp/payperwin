@@ -8,7 +8,7 @@
 		<div class="col-xs-12">
 			<h1>{{ $streamer->username }}
 				@if ($streamer->avatar)
-					<img class="avatar" src="{{ asset($streamer->avatar) }}">
+					<img class="avatar" src="/{{ $streamer->avatar }}">
 				@endif
 			</h1>
 

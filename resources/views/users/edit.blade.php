@@ -24,7 +24,7 @@
 				@if (!$user->twitch_id)
 					<div class="form-group">
 						<p class="help-block">Connect your Twitch profile for easy login.</p>
-						<a href="/auth/with/twitch" id="profile-twitch"><img src="{{ asset('img/connect-twitch.png') }}"/></a>
+						<a href="/auth/with/twitch" id="profile-twitch"><img src="/img/connect-twitch.png"/></a>
 					</div>
 				@else
 					<div class="form-group">
@@ -90,7 +90,7 @@
 					</div>
 					@if (!$user->twitch_id)
 						<div class="form-group">
-							<a href="/auth/with/twitch" id="streaming-twitch"><img src="{{ asset('img/connect-twitch.png') }}"/></a>
+							<a href="/auth/with/twitch" id="streaming-twitch"><img src="/img/connect-twitch.png"/></a>
 						</div>
 					@else
 						<div class="form-group">
@@ -151,7 +151,7 @@
 				<p>Share this URL on your stream:</p>
 				@if (!$user->short_url)
 					<div class="alert alert-info">
-						<a href="{{ url('streamers',$user->id) }}">{{ url('streamers',$user->id) }}</a> 
+						<a href="/streamers/{{ $user->id }}">{{ preg_replace('/http[s]?:\/\//','',url('streamers',$user->id)) }}</a> 
 						<p><small>We'll set up a shortened URL (on the ppw.gg domain) within a few hours!</small></p>
 					</div>
 				@else
@@ -162,7 +162,7 @@
 				<h2>Affiliate</h2>
 				<p>Invite other streamers and get a slightly lower commission for every streamer that registers with your affiliate link and completes their PayPerWin profile! Your unique affiliate URL is:
 				<div class="alert alert-info">
-					<a href="{{ url('/?auid='.$user->id) }}">{{ url('/?auid='.$user->id) }}</a>
+					<a href="/?auid={{ $user->id }}">{{ preg_replace('/http[s]?:\/\//','',url('/?auid='.$user->id)) }}</a>
 				</div>
 
 				<h2>Commission Tiers</h2>

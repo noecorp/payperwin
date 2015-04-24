@@ -6,13 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>@yield('title') - PayPerWin</title>
 
-	<link href="{{ asset('css/vendor/all.vendor.css') }}" rel="stylesheet">
+	<link href="/css/vendor/all.vendor.css" rel="stylesheet">
 	
 	@yield('styles')
 
 	<link href="{{ elixir("css/app.css") }}" rel="stylesheet">
 
-	<script src="{{ asset('js/vendor/all.vendor.js') }}"></script>
+	<script src="/js/vendor/all.vendor.js"></script>
 
 	@yield('scripts')
 
@@ -67,12 +67,12 @@
 					<li><a href="/transactions">Earnings: ${{ sprintf("%0.2f",$auth->user()->earnings) }}</a></li>
 				@else
 					<li><a href="/transactions">Funds: ${{ sprintf("%0.2f",$auth->user()->funds) }}</a></li>
-					<li><button id="nav-deposit" class="btn btn-sm btn-primary navbar-btn" type="button" data-href="{{ url('deposits/create') }}">Deposit</button></li>
+					<li><button id="nav-deposit" class="btn btn-sm btn-primary navbar-btn" type="button" data-href="/deposits/create">Deposit</button></li>
 				@endif
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 						@if ($auth->user()->avatar)
-							<img src="{{ asset($auth->user()->avatar) }}" class="avatar">&nbsp;
+							<img src="/{{ $auth->user()->avatar }}" class="avatar">&nbsp;
 						@endif
 						{{ $auth->user()->username }} <b class="caret"></b></a>
 					<ul class="dropdown-menu">

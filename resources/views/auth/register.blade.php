@@ -8,7 +8,7 @@
 	        <input type="hidden" name="_token" value="{{ csrf_token() }}">
 	        <div class="form-group">
 		        <p class="help-block">You can use your Twitch account to login instantly.</p>
-	        	<a href="/auth/with/twitch" id="register-twitch"><img src="{{ asset('img/connect-twitch.png') }}"/></a>
+	        	<a href="/auth/with/twitch" id="register-twitch"><img src="/img/connect-twitch.png"/></a>
 	        </div>
 	        <div class="form-group">
 		    	@if (!$errors->isEmpty())
