@@ -34,7 +34,7 @@
 								{{ $transaction->username }}
 							</td>
 							<td class="text-right">
-								${{ sprintf("%0.2f",$transaction->amount) }}
+								{{ (in_array($transaction->transaction_type, [$guru->pledgePaid(), $guru->fundsDeposited()])) ? '+' : '-' }} ${{ sprintf("%0.2f",$transaction->amount) }}
 							</td>
 							<td class="text-right">
 								<small>{{ $transaction->created_at->diffForHumans() }}</small>
