@@ -14,6 +14,10 @@ interface Users extends RepositoryContract {
 
 	public function havingTwitchUsername($twitchUsername);
 
+	public function havingCredentials(array $credentials);
+
+	public function havingRememberToken($token);
+
 	public function isStreamer();
 
 	public function isLive();

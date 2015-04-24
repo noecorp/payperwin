@@ -58,19 +58,6 @@ class Users extends AbstractRepository implements UsersRepository {
 		return new UsersWereUpdated();
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function create(array $data)
-	{
-		if (isset($data['password']))
-		{
-			$data['password'] = $this->container->make('hash')->make($data['password']);
-		}
-
-		return parent::create($data);
-	}
-
 	public function createWithFacebook(array $data)
 	{
 		$fields = [
@@ -119,6 +106,20 @@ class Users extends AbstractRepository implements UsersRepository {
 	public function havingTwitchUsername($twitchUsername)
 	{
 		$this->query()->whereTwitchUsername($twitchUsername);
+
+		return $this;
+	}
+
+	public function havingCredentials(array $credentials)
+	{
+		$this->query()->where('email', $credentials['email']);
+
+		return $this;
+	}
+
+	public function havingRememberToken($token)
+	{
+		$this->query()->where('remember_me', $token);
 
 		return $this;
 	}

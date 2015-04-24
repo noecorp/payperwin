@@ -258,7 +258,11 @@ abstract class AbstractRepository implements RepositoryContract {
 
 			foreach ($dirty as $column)
 			{
-				$changed[$column] = $model->getOriginal()[$column];
+				// Make sure the model actually has the attribute originally
+				if (isset($model->getOriginal()[$column]))
+				{
+					$changed[$column] = $model->getOriginal()[$column];
+				}
 			}
 			
 			$changed['updated_at'] = (string)$model->updated_at;

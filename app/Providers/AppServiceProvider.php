@@ -2,6 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Routing\ResponseFactory as Response;
+use App\Extensions\Auth\RepositoryUserProvider;
 
 class AppServiceProvider extends ServiceProvider {
 
@@ -12,7 +13,10 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function boot(Response $response)
 	{
-		
+		$this->app['auth']->extend('repository', function()
+		{
+			return $this->app->make(RepositoryUserProvider::class);
+		});
 	}
 
 	/**
@@ -26,7 +30,7 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		
+		$this->app->singleton(RepositoryUserProvider::class, RepositoryUserProvider::class);
 	}
 
 }
