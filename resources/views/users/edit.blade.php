@@ -150,14 +150,17 @@
 				<h2>Your Link</h2>
 				<p>Share this URL on your stream:</p>
 				@if (!$user->short_url)
+					<div class="form-group">
+						<input disabled type="text" class="form-control" value="{{ preg_replace('/http[s]?:\/\//','',app_url('streamers',$user->id)) }}" />
+					</div>
 					<div class="alert alert-info">
-						<a href="/streamers/{{ $user->id }}">{{ app_url('streamers',$user->id) }}</a> 
-						<p><small>We'll set up a shortened URL (on the ppw.gg domain) within a few hours!</small></p>
+						<p>We'll set up a shortened URL (on the ppw.gg domain) within a few hours!</p>
 					</div>
 				@else
-					<div class="alert alert-info">
-						<a href="{{ $user->short_url }}">{{ $user->short_url }}</a>
+					<div class="form-group">
+						<input disabled type="text" class="form-control" value="{{ preg_replace('/http[s]?:\/\//','',$user->short_url) }}" />
 					</div>
+					<p><em>If you want a different short url, <a href="mailto:gg@payperwin.gg" onclick="GrooveWidget.toggle(); return false;">let us know</a>.</em></p>
 				@endif
 				<h2>Affiliate</h2>
 				<p>Invite other streamers and get a slightly lower commission for every streamer that registers with your affiliate link and completes their PayPerWin profile! Your unique affiliate URL is:
