@@ -26,6 +26,15 @@
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
+
+	<script>
+		//<![CDATA[
+			(function() {var s=document.createElement('script');
+			s.type='text/javascript';s.async=true;
+			s.src=('https:'==document.location.protocol?'https':'http') +
+			'://ppw.groovehq.com/widgets/d3ed44cc-8c5a-4569-b20e-fdcf2d74fb85/ticket.js'; var q = document.getElementsByTagName('script')[0];q.parentNode.insertBefore(s, q);})();
+		//]]>
+	</script>
 </head>
 <body>
 	@if (env('APP_ENV') == 'production')
@@ -86,6 +95,7 @@
 							<li><a href="javascript:;">Request Payout</a></li>
 						@endif
 						<li class="divider"></li>
+						<li><a href="mailto:gg@payperwin.gg" onclick="GrooveWidget.toggle(); return false;">Help &amp; Feedback</a></li>
 						<li><a href="/auth/logout">Logout</a></li>
 					</ul>
 				</li>
@@ -107,7 +117,7 @@
 			<ul>
 				<li><a href="/">Home</a></li>
 				<li><a href="/streamers">Streamers</a></li>
-				<li><a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on">Contact Us</a></li>
+				<li><a href="mailto:gg@payperwin.gg" onclick="GrooveWidget.toggle(); return false;">Contact Us</a></li>
 				<li><a href="/privacy">Privacy Policy</a></li>
 				<li><a href="/terms">Terms &amp; Conditions</a></li>
 			</ul>
@@ -116,11 +126,7 @@
 			<small>PayPerWin isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</small>
 		</p>
 	</footer>
-
-	<div id="helpful">
-		<a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on" data-helpful-title="What's up?" class="btn btn-info">Help &amp; Suggestions</a>
-	</div>
-
+	
 	@if ($auth->user())
 		<script>
 			window.intercomSettings = {
