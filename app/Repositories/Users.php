@@ -119,7 +119,7 @@ class Users extends AbstractRepository implements UsersRepository {
 
 	public function havingRememberToken($token)
 	{
-		$this->query()->where('remember_me', $token);
+		$this->query()->where('remember_token', $token);
 
 		return $this;
 	}
