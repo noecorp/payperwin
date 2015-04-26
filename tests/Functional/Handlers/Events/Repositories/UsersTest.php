@@ -26,12 +26,6 @@ class UsersTest extends \AppTests\TestCase {
 	{
 		parent::setup();
 
-		config(['queue.default'=>'database']);
-
-		$this->app->singleton('queue.connection', function($app)
-		{
-			return $app['queue']->connection();
-		});
 	}
 
 	/**

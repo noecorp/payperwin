@@ -23,12 +23,6 @@ class PledgesTest extends \AppTests\TestCase {
 	{
 		parent::setUp();
 
-		config(['queue.default'=>'database']);
-
-		$this->app->singleton('queue.connection', function($app)
-		{
-			return $app['queue']->connection();
-		});
 	}
 
 	/**
