@@ -151,7 +151,7 @@
 				<p>Share this URL on your stream:</p>
 				@if (!$user->short_url)
 					<div class="alert alert-info">
-						<a href="/streamers/{{ $user->id }}">{{ preg_replace('/http[s]?:\/\//','',url('streamers',$user->id)) }}</a> 
+						<a href="/streamers/{{ $user->id }}">{{ app_url('streamers',$user->id) }}</a> 
 						<p><small>We'll set up a shortened URL (on the ppw.gg domain) within a few hours!</small></p>
 					</div>
 				@else
@@ -162,7 +162,7 @@
 				<h2>Affiliate</h2>
 				<p>Invite other streamers and get a slightly lower commission for every streamer that registers with your affiliate link and completes their PayPerWin profile! Your unique affiliate URL is:
 				<div class="alert alert-info">
-					<a href="/?auid={{ $user->id }}">{{ preg_replace('/http[s]?:\/\//','',url('/?auid='.$user->id)) }}</a>
+					<a href="/?auid={{ $user->id }}">{{ app_url('/?auid='.$user->id) }}</a>
 				</div>
 
 				<h2>Commission Tiers</h2>
