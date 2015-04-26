@@ -9,6 +9,7 @@ use App\Contracts\Events\Model;
 use App\Contracts\Events\Models;
 use App\Contracts\Repository\Users as UsersRepository;
 use Illuminate\Session\SessionManager as Session;
+use App\Contracts\Service\Shortener;
 
 use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;
@@ -39,19 +40,28 @@ class Users {
 	protected $session;
 
 	/**
+	 * URL Shortener implementation.
+	 *
+	 * @var Shortener
+	 */
+	protected $shorten;
+
+	/**
 	 * Create the event handler.
 	 *
 	 * @param Dispatcher $dispatcher
 	 * @param UsersRepository $users
 	 * @param Session $session
+	 * @param Shortener $shorten
 	 *
 	 * @return void
 	 */
-	public function __construct(Dispatcher $dispatcher, UsersRepository $users, Session $session)
+	public function __construct(Dispatcher $dispatcher, UsersRepository $users, Session $session, Shortener $shorten)
 	{
 		$this->dispatcher = $dispatcher;
 		$this->users = $users;
 		$this->session = $session;
+		$this->shorten = $shorten;
 	}
 
 	/**
@@ -93,6 +103,13 @@ class Users {
 		if ($user->streamer && $user->twitch_id && $user->summoner_id && !$user->streamer_completed)
 		{
 			$this->users->update($user, ['streamer_completed' => true, 'start_completed' => true]);
+
+			$url = $this->shorten->url(app_url('streamers',[$user->id]), $user->username);
+
+			if ($url)
+			{
+				$this->users->update($user, ['short_url' => $url]);
+			}
 
 			$this->dispatcher->dispatchToQueue(new NotifyAboutNewStreamer($user->id));
 		}

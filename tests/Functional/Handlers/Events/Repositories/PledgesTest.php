@@ -1,7 +1,7 @@
 <?php namespace AppTests\Functional\Handlers\Events\Repositories;
 
 use Mockery as m;
-use App\Handlers\Events\Repositories\Pledges;
+use App\Handlers\Events\Repositories\Pledges as Handler;
 use Illuminate\Contracts\Events\Dispatcher as Events;
 use App\Events\Repositories\PledgeWasCreated;
 use App\Models\Pledge;
@@ -19,10 +19,14 @@ class PledgesTest extends \AppTests\TestCase {
 	 */
 	protected $migrate = true;
 
-	public function setUp()
+	/**
+	 * Get an instance of the object being tested.
+	 *
+	 * @return Handler
+	 */
+	private function getHandler()
 	{
-		parent::setUp();
-
+		return $this->app->make(Handler::class);
 	}
 
 	/**
@@ -33,6 +37,9 @@ class PledgesTest extends \AppTests\TestCase {
 	 * @covers ::__construct
 	 * @covers ::onPledgeWasCreated
 	 * @covers ::subscribe
+	 *
+	 * @uses \App\Models\User
+	 * @uses \App\Models\Pledge
 	 */
 	public function test_on_Pledge_Was_Created_Without_Referred_By()
 	{
@@ -60,8 +67,8 @@ class PledgesTest extends \AppTests\TestCase {
 
 		$event = new PledgeWasCreated($pledge);
 
-		//We'll use the service container to also make sure that event subscriptions go through
-		$this->app->make(Events::class)->fire($event);
+		$handler = $this->getHandler();
+		$handler->onPledgeWasCreated($event);
 
 		$timestamp1 = $streamer->updated_at->timestamp;
 		$timestamp2 = $user->updated_at->timestamp;
@@ -93,6 +100,9 @@ class PledgesTest extends \AppTests\TestCase {
 	 * @covers ::__construct
 	 * @covers ::onPledgeWasCreated
 	 * @covers ::subscribe
+	 *
+	 * @uses \App\Models\User
+	 * @uses \App\Models\Pledge
 	 */
 	public function test_on_Pledge_Was_Created_With_Referral_Completed()
 	{
@@ -119,7 +129,8 @@ class PledgesTest extends \AppTests\TestCase {
 
 		$event = new PledgeWasCreated($pledge);
 
-		$this->app->make(Events::class)->fire($event);
+		$handler = $this->getHandler();
+		$handler->onPledgeWasCreated($event);
 
 		$timestamp1 = $streamer->updated_at->timestamp;
 		$timestamp2 = $user->updated_at->timestamp;
@@ -150,6 +161,9 @@ class PledgesTest extends \AppTests\TestCase {
 	 * @covers ::__construct
 	 * @covers ::onPledgeWasCreated
 	 * @covers ::subscribe
+	 *
+	 * @uses \App\Models\User
+	 * @uses \App\Models\Pledge
 	 */
 	public function test_on_Pledge_Was_Created()
 	{
@@ -176,7 +190,8 @@ class PledgesTest extends \AppTests\TestCase {
 
 		$event = new PledgeWasCreated($pledge);
 
-		$this->app->make(Events::class)->fire($event);
+		$handler = $this->getHandler();
+		$handler->onPledgeWasCreated($event);
 
 		$timestamp1 = $streamer->updated_at->timestamp;
 		$timestamp2 = $user->updated_at->timestamp;

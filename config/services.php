@@ -58,4 +58,9 @@ return [
 		'key' => env('RIOT_KEY'),
 	],
 
+	'shortener' => [
+		'key' => env('URL_SHORTENER_KEY'),
+		'url' => env('URL_SHORTENER_URL'),
+	],
+
 ];

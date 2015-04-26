@@ -25,7 +25,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		'name', 'username', 'email',
 		'twitch_id', 'facebook_id', 'twitch_username', 'live',
 		'password',
-		'streamer', 'summoner_id', 'summoner_name', 'region', 'streamer_completed',
+		'streamer', 'summoner_id', 'summoner_name', 'region', 'streamer_completed', 'short_url',
 		'funds', 'earnings',
 		'avatar',
 		'referral_completed', 'referred_by', 'referrals', 'commission',

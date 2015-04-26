@@ -57,6 +57,13 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
         return $client;
 	}
 
+	protected function mockGuzzle($status = 200, $headers = [], $content = '', $howMany = 1)
+	{
+		$guzzle = $this->getGuzzleMock($status, $headers, $content, $howMany);
+
+		$this->app->instance(GuzzleClient::class, $guzzle);
+	}
+
 	public function become($id)
 	{
 		$user = User::find($id);

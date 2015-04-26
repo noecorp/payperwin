@@ -5,6 +5,9 @@ use Illuminate\Support\ServiceProvider;
 use App\Contracts\Service\Gurus\Aggregation as AggregationGuruInterface;
 use App\Services\Gurus\Aggregation as AggregationGuru;
 
+use App\Contracts\Service\Shortener as ShortenerServiceInterface;
+use App\Services\Shortener as ShortenerService;
+
 class ServicesServiceProvider extends ServiceProvider {
 
 	/**
@@ -88,6 +91,11 @@ class ServicesServiceProvider extends ServiceProvider {
 		$this->app->singleton(
 			'App\Contracts\Service\Distribution',
 			'App\Services\Distribution'
+		);
+
+		$this->app->bind(
+			ShortenerServiceInterface::class,
+			ShortenerService::class
 		);
 	}
 }
