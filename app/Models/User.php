@@ -22,7 +22,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 * @var array
 	 */
 	protected $fillable = [
-		'name', 'username', 'email',
+		'name', 'username', 'email', 'email_confirmed', 'confirmation_code',
 		'twitch_id', 'facebook_id', 'twitch_username', 'live',
 		'password',
 		'streamer', 'summoner_id', 'summoner_name', 'region', 'streamer_completed', 'short_url',

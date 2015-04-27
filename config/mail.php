@@ -54,7 +54,7 @@ return [
 	|
 	*/
 
-	'from' => ['address' => env('MAIL_FROM_EMAIL'), 'name' => 'PayPerWin'],
+	'from' => ['address' => env('MAIL_FROM_EMAIL'), 'name' => env('MAIL_FROM_NAME')],
 
 	/*
 	|--------------------------------------------------------------------------

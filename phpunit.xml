@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="bootstrap/autoload.php"
+         bootstrap="tests/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -39,6 +39,7 @@
         <env name="MAIL_DRIVER" value="log"/>
         <env name="MAIL_ADMIN_EMAIL" value="foo@bar.com"/>
         <env name="MAIL_FROM_EMAIL" value="foo@bar.com"/>
+        <env name="MAIL_FROM_NAME" value="FooBar"/>
 
         <env name="DB_DRIVER" value="sqlite"/>
         <env name="DB_DATABASE" value=":memory:"/>

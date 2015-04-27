@@ -165,9 +165,9 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		parent::tearDown();
 	}
 
-	protected function clearLog()
+	protected function getLog()
 	{
-		exec('echo "" > '.storage_path().'/logs/laravel.log');
+		return file_get_contents(storage_path().'/logs/laravel.log');
 	}
 
 	protected function getMockOf($className)

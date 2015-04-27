@@ -15,6 +15,7 @@ use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Contracts\Bus\QueueingDispatcher as Dispatcher;
 use App\Commands\NotifyAboutNewStreamer;
 use App\Commands\AggregateDataFromUserUpdate;
+use App\Commands\SendEmailConfirmationRequest;
 
 class Users {
 
@@ -81,6 +82,11 @@ class Users {
 			{
 				$this->users->update($user, ['referred_by' => $referrer->id]);
 			}
+		}
+
+		if (!$user->email_confirmed)
+		{
+			$this->dispatcher->dispatchToQueue(new SendEmailConfirmationRequest($user->id));
 		}
 	}
 

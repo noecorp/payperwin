@@ -101,6 +101,7 @@ class Auth extends Controller {
 		$data = $request->all();
 		
 		$data['password'] = $this->hasher->make($data['password']);
+		$data['confirmation_code'] = str_random(8);
 
 		$this->auth->login($this->users->create($data), true);
 
@@ -271,6 +272,7 @@ class Auth extends Controller {
 		$data = [
 			'username' => $user->getNickname(),
 			'email' => $user->getEmail(),
+			'email_confirmed' => true
 		];
 
 		if ($provider == 'twitch')
