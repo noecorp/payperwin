@@ -154,8 +154,7 @@ return [
 		'App\Providers\RepositoriesServiceProvider',
 		'App\Providers\ServicesServiceProvider',
 		'App\Providers\ViewComposerServiceProvider',
-
-		\App\Providers\GuzzleServiceProvider::class,
+		\App\Providers\PackagesServiceProvider::class,
 
 	],
 
