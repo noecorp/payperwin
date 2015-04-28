@@ -187,37 +187,39 @@ class Client implements ClientInterface {
 		}
 		else if ($e instanceof RequestException)
 		{
-			switch ($e->getResponse()->getStatusCode()) {
-				case 400:
-					$this->event->fire($this->app->make(RequestWasInvalid::class,['league',$this->url]));
-					throw new BadRequest;
-					break;
-				case 429:
-					$this->event->fire($this->app->make(RateLimitWasExceeded::class,['league',$this->url]));
-					throw new RateLimitExceeded;
-					break;
-				case 401:
-					$this->event->fire($this->app->make(AccessWasUnauthorized::class,['league',$this->url]));
-					throw new AccessUnauthorized;
-					break;
-				case 503:
-					$this->event->fire($this->app->make(ServiceWasUnavailable::class,['league',$this->url]));
-					throw new ServiceUnavailable;
-					break;
-				case 500:
-					$this->event->fire($this->app->make(ServerHadAnError::class,['league',$this->url]));
-					throw new InternalServerError;
-					break;
-				default:
-					$this->event->fire($this->app->make(UnknownErrorOccurred::class,['league',$this->url]));
-					throw new UnknownError($e->getResponse()->getReasonPhrase());
-					break;
+			if (is_object($e->getResponse()))
+			{
+				switch ($e->getResponse()->getStatusCode())
+				{
+					case 400:
+						$this->event->fire($this->app->make(RequestWasInvalid::class,['league',$this->url]));
+						throw new BadRequest;
+						break;
+					case 429:
+						$this->event->fire($this->app->make(RateLimitWasExceeded::class,['league',$this->url]));
+						throw new RateLimitExceeded;
+						break;
+					case 401:
+						$this->event->fire($this->app->make(AccessWasUnauthorized::class,['league',$this->url]));
+						throw new AccessUnauthorized;
+						break;
+					case 503:
+						$this->event->fire($this->app->make(ServiceWasUnavailable::class,['league',$this->url]));
+						throw new ServiceUnavailable;
+						break;
+					case 500:
+						$this->event->fire($this->app->make(ServerHadAnError::class,['league',$this->url]));
+						throw new InternalServerError;
+						break;
+					default:
+						$this->event->fire($this->app->make(UnknownErrorOccurred::class,['league',$this->url]));
+						throw new UnknownError($e->getResponse()->getReasonPhrase());
+						break;
+				}
 			}
 		}
-		else
-		{
-			$this->event->fire($this->app->make(UnknownErrorOccurred::class,['league',$this->url,['message'=>$e->getMessage()]]));
-			throw new UnknownError($e->getMessage());
-		}
+		
+		$this->event->fire($this->app->make(UnknownErrorOccurred::class,['league',$this->url,['message'=>$e->getMessage()]]));
+		throw new UnknownError($e->getMessage());
 	}
 }
