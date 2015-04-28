@@ -555,7 +555,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	{
 		$relations = array_keys($this->query()->getEagerLoads());
 
-		$tags = [$this->model->getTable()];
+		$tags = ['models', $this->model->getTable()];
 
 		foreach ($relations as $relation)
 		{

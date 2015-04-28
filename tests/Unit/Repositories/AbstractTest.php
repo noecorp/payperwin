@@ -937,7 +937,8 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache = $this->getCacheMock();
 		$events = $this->getDispatcherMock();
 
-		$cache->shouldReceive('tags')->with([$model->getTable()])->andReturn($cache);
+		$tags = ['models',$model->getTable()];
+		$cache->shouldReceive('tags')->with(sort($tags))->andReturn($cache);
 		$cache->shouldReceive('rememberForever')->once()->with(md5('query  bar'),m::any())->andReturn('baz');
 
 		$this->app->instance(Events::class,$events);
@@ -1017,7 +1018,8 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache = $this->getCacheMock();
 		$events = $this->getDispatcherMock();
 
-		$cache->shouldReceive('tags')->with([$model->getTable()])->andReturn($cache);
+		$tags = ['models',$model->getTable()];
+		$cache->shouldReceive('tags')->with(sort($tags))->andReturn($cache);
 		$cache->shouldReceive('rememberForever')->once()->with(md5('query count,id bar'),m::on(function(Closure $closure)
 		{
 			return ($closure() == 'baz');
@@ -1066,7 +1068,8 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache = $this->getCacheMock();
 		$events = $this->getDispatcherMock();
 
-		$cache->shouldReceive('tags')->with([$model->getTable()])->andReturn($cache);
+		$tags = ['models',$model->getTable()];
+		$cache->shouldReceive('tags')->with(sort($tags))->andReturn($cache);
 		$cache->shouldReceive('rememberForever')->once()->with(md5('query count,'.$column.' bar'),m::on(function(Closure $closure)
 		{
 			return ($closure() == 'baz');
@@ -1151,7 +1154,8 @@ class AbstractTest extends \AppTests\TestCase {
 		$cache = $this->getCacheMock();
 		$events = $this->getDispatcherMock();
 
-		$cache->shouldReceive('tags')->with([$model->getTable()])->andReturn($cache);
+		$tags = ['models',$model->getTable()];
+		$cache->shouldReceive('tags')->with(sort($tags))->andReturn($cache);
 		$cache->shouldReceive('rememberForever')->once()->with(md5('query avg,foo bar'),m::any())->andReturn('baz');
 
 		$this->app->instance(Events::class,$events);
