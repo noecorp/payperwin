@@ -10,6 +10,7 @@ use App\Contracts\Repository\Users;
 use App\Contracts\Repository\Aggregations;
 use App\Contracts\Service\Gurus\Aggregation as Guru;
 use App\Contracts\Service\Acidifier;
+use Illuminate\Contracts\Cache\Repository as Cache;
 
 use App\Models\Aggregation;
 
@@ -19,6 +20,11 @@ use Carbon\Carbon;
 class AggregateDataFromUserUpdate extends AggregateData implements SelfHandling, ShouldBeQueued {
 
 	use InteractsWithQueue;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $unique = true;
 
 	/**
 	 * User identifier.
@@ -60,6 +66,27 @@ class AggregateDataFromUserUpdate extends AggregateData implements SelfHandling,
 	protected $current;
 
 	/**
+	 * Cache repository implementation.
+	 *
+	 * @var Cache
+	 */
+	protected $cache;
+
+	/**
+	 * Users repositorory implementation.
+	 *
+	 * @var Users
+	 */
+	protected $users;
+
+	/**
+	 * Acidifier implementation.
+	 *
+	 * @var Acidifier
+	 */
+	protected $acid;
+
+	/**
 	 * Create a new command instance.
 	 *
 	 * @param int $pledgeId
@@ -68,6 +95,8 @@ class AggregateDataFromUserUpdate extends AggregateData implements SelfHandling,
 	 */
 	public function __construct($userId, array $changed, array $current)
 	{
+		parent::__construct($userId, $changed, $current);
+
 		$this->userId = $userId;
 		$this->changed = $changed;
 		$this->current = $current;
@@ -80,26 +109,53 @@ class AggregateDataFromUserUpdate extends AggregateData implements SelfHandling,
 	 * @param Aggregations $aggregations
 	 * @param Guru $guru
 	 * @param Acidifier $acid
+	 * @param Cache $cache
 	 *
 	 * @return void
 	 */
-	public function handle(Users $users, Aggregations $aggregations, Acidifier $acid, Guru $guru)
+	public function handle(Users $users, Aggregations $aggregations, Acidifier $acid, Guru $guru, Cache $cache)
 	{
 		$this->aggregations = $aggregations;
 		$this->guru = $guru;
+		$this->cache = $cache;
+		$this->users = $users;
+		$this->acid = $acid;
 
-		if (!$users->find($this->userId))
+		$this->start();
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function work()
+	{
+		$user = $this->users->find($this->userId);
+		
+		if (!$user)
 		{
 			$this->delete();
 
 			return;
 		}
 
+		foreach ($this->current as $key => $val)
+		{
+			if ($user->$key != $val)
+			{
+				$this->delete();
+
+				return;
+
+				break;
+			}
+		}
+
 		$fromUser = (isset($this->changed['funds']) && $this->changed['funds'] > $this->current['funds']) ? $this->getUserAggregations($this->current['updated_at']) : null;
 
 		$forStreamer = (isset($this->changed['earnings'])) ? $this->getStreamerAggregations($this->current['updated_at']) : null;
 
-		$acid->transaction(function() use ($fromUser, $forStreamer)
+		$this->acid->transaction(function() use ($fromUser, $forStreamer)
 		{
 			// First the user's part...
 			if ($fromUser !== null)

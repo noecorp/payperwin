@@ -8,10 +8,16 @@ use Illuminate\Contracts\Queue\ShouldBeQueued;
 
 use App\Contracts\Repository\Users;
 use Illuminate\Contracts\Mail\Mailer;
+use Illuminate\Contracts\Cache\Repository as Cache;
 
 class SendEmailConfirmationRequest extends Command implements SelfHandling, ShouldBeQueued {
 
 	use InteractsWithQueue;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $unique = true;
 
 	/**
 	 * User model id.
@@ -19,6 +25,20 @@ class SendEmailConfirmationRequest extends Command implements SelfHandling, Shou
 	 * @var int
 	 */
 	protected $userId;
+
+	/**
+	 * Users repository implementation.
+	 *
+	 * @var Users
+	 */
+	protected $users;
+
+	/**
+	 * Mailer implementation.
+	 *
+	 * @var Mailer
+	 */
+	protected $mail;
 
 	/**
 	 * Create a new command instance.
@@ -29,6 +49,8 @@ class SendEmailConfirmationRequest extends Command implements SelfHandling, Shou
 	 */
 	public function __construct($userId)
 	{
+		parent::__construct($userId);
+
 		$this->userId = $userId;
 	}
 
@@ -37,26 +59,39 @@ class SendEmailConfirmationRequest extends Command implements SelfHandling, Shou
 	 *
 	 * @param Users $users
 	 * @param Mailer $mail
+	 * @param Cache $cache
 	 *
 	 * @return void
 	 */
-	public function handle(Users $users, Mailer $mail)
+	public function handle(Users $users, Mailer $mail, Cache $cache)
 	{
-		try
+		$this->users = $users;
+		$this->mail = $mail;
+		$this->cache = $cache;
+
+		$this->start();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function work()
+	{
+		$user = $this->users->find($this->userId);
+
+		if (!$user)
 		{
-			$user = $users->find($this->userId);
-
-			$mail->send('emails.confirm',['username' => $user->username, 'code' => $user->confirmation_code], function($message) use ($user)
-			{
-				$message->to($user->email)->subject('Welcome! One more thing...')->from(config('mail.from.address'),config('mail.from.name'));
-			});
-
 			$this->delete();
+
+			return;
 		}
-		catch (\Exception $e)
+
+		$this->mail->send('emails.confirm',['username' => $user->username, 'code' => $user->confirmation_code], function($message) use ($user)
 		{
-			$this->release(300);
-		}
+			$message->to($user->email)->subject('Welcome! One more thing...')->from(config('mail.from.address'),config('mail.from.name'));
+		});
+
+		$this->delete();
 	}
 
 }

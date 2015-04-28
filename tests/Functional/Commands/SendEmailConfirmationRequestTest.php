@@ -24,30 +24,7 @@ class SendEmailConfirmationRequestTest extends \AppTests\TestCase {
 	 *
 	 * @covers ::__construct
 	 * @covers ::handle
-	 */
-	public function test_handle_exception()
-	{
-		$this->runCommand(999);
-
-		$this->assertEquals(1, DB::table('jobs')->count());
-
-		$jobs = DB::table('jobs')->get();
-		
-		$this->assertEquals(1,count($jobs));
-
-		$job = json_decode($jobs[0]->payload);
-		$command = unserialize($job->data->command);
-
-		$this->assertEquals(Command::class, get_class($command));
-	}
-
-	/**
-	 * @small
-	 *
-	 * @group commands
-	 *
-	 * @covers ::__construct
-	 * @covers ::handle
+	 * @covers ::work
 	 */
 	public function test_handle()
 	{
@@ -76,6 +53,10 @@ class SendEmailConfirmationRequestTest extends \AppTests\TestCase {
 
 		$dispatcher = $this->app->make(QueueingDispatcher::class);
 		$dispatcher->dispatchToQueue($command);
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(1,count($jobs));
 
 		$queue = $this->app->make(Queue::class);
 		$queue->pop()->fire();

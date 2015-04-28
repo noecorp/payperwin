@@ -20,6 +20,11 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 	use InteractsWithQueue;
 
 	/**
+	 * {@inheritdoc}
+	 */
+	protected $unique = true;
+
+	/**
 	 * Streamer identifier for whom to fetch latest matches.
 	 *
 	 * @var int
@@ -34,15 +39,50 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 	protected $matchId;
 
 	/**
-	 * Create a new command instance.
+	 * Game api client implementation.
+	 *
+	 * @var Client
+	 */
+	protected $client;
+
+	/**
+	 * Users repositorory implementation.
+	 *
+	 * @var Users
+	 */
+	protected $users;
+
+	/**
+	 * Matches repository implementation.
+	 *
+	 * @var Matches
+	 */
+	protected $matches;
+
+	/**
+	 * Pledge distribution service implementation.
+	 *
+	 * @var Distribution
+	 */
+	protected $distribute;
+
+	/**
+	 * Cache repository implementation.
+	 *
+	 * @var Cache
+	 */
+	protected $cache;
+
+	/**
+	 * {@inheritdoc}
 	 *
 	 * @param int $streamerId
 	 * @param int $matchId
-	 *
-	 * @return void
 	 */
 	public function __construct($streamerId, $matchId)
 	{
+		parent::__construct($streamerId, $matchId);
+
 		$this->streamerId = $streamerId;
 		$this->matchId = $matchId;
 	}
@@ -60,9 +100,20 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 	 */
 	public function handle(Client $client, Users $users, Matches $matches, Distribution $distribute, Cache $cache)
 	{
+		$this->client = $client;
+		$this->users = $users;
+		$this->matches = $matches;
+		$this->distribute = $distribute;
+		$this->cache = $cache;
+
+		$this->start();
+	}
+
+	protected function work()
+	{
 		try
 		{
-			$rate = $cache->rememberForever('api.league.rate', function()
+			$rate = $this->cache->rememberForever('api.league.rate', function()
 			{
 				return 0;
 			});
@@ -72,17 +123,24 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 				$this->release(12);
 			}
 
-			$streamer = $users->isStreamer()->find($this->streamerId);
+			$streamer = $this->users->isStreamer()->find($this->streamerId);
+			
+			if (!$streamer)
+			{
+				$this->delete();
 
-			$latest = ($this->matchId) ? $matches->find($this->matchId) : null;
+				return;
+			}
 
-			$cache->increment('api.league.rate');
+			$latest = ($this->matchId) ? $this->matches->find($this->matchId) : null;
 
-			$history = $client->matchHistoryForSummonerIdInRegion($streamer->summoner_id,$streamer->region)->filter(function($item) use ($latest) {
+			$this->cache->increment('api.league.rate');
+
+			$history = $this->client->matchHistoryForSummonerIdInRegion($streamer->summoner_id,$streamer->region)->filter(function($item) use ($latest) {
 				return (!$latest || ($item->id() != $latest->match_server_id && $item->timestamp() > $latest->match_date->timestamp));
 			});
 
-			$cache->decrement('api.league.rate');
+			$this->cache->decrement('api.league.rate');
 
 			foreach ($history as $item)
 			{
@@ -98,13 +156,15 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 				]);
 			}
 
-			$distribute->pledgesFor($this->streamerId);
+			$this->distribute->pledgesFor($this->streamerId);
 		}
-		catch (Exception $exception)
+		catch (\Exception $e)
 		{
 			$this->delete();
 
-			throw $exception;
+			$this->cache->decrement('api.league.rate');
+			
+			throw $e;
 		}
 
 		$this->delete();
