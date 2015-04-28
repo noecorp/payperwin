@@ -198,6 +198,14 @@ article
 	{
 		border-top-color: #ECF0F1 !important;
 	}
+
+	section
+	{
+		&.edit-profile
+		{
+			margin-bottom: 60px;
+		}
+	}
 }
 
 footer
