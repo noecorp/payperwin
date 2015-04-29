@@ -87,7 +87,7 @@ class Streamers extends Controller {
 
 		$average = ($feed->count()) ? round($pledges->forStreamer($id)->average('amount'),2) : null;
 		
-		$highestPledge = ($feed->count()) ? $pledges->withOwner()->forStreamer($id)->orderingByAmount()->find() : null;
+		$highestPledge = ($feed->count()) ? $pledges->withOwner()->forStreamer($id)->donated()->orderingByAmount()->find() : null;
 		
 		$topPledger = ($feed->count()) ? $pledges->withOwner()->forStreamer($id)->mostSpent()->find() : null;
 

@@ -132,6 +132,13 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 		return $this->count('user_id');
 	}
 
+	public function donated()
+	{
+		$this->query()->where('times_donated', '>', 0);
+
+		return $this;
+	}
+
 	public function today()
 	{
 		$now = Carbon::now();

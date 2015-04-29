@@ -308,7 +308,7 @@ class Dashboard extends Controller {
 	{
 		$this->pledges->forStreamer($this->auth->user()->id)->withOwner()->limit($limit, $page);
 
-		$leaderboard = ($type == 'biggest') ? $this->pledges->orderingByAmount()->all() : $this->pledges->mostSpent()->all();
+		$leaderboard = ($type == 'biggest') ? $this->pledges->donated()->orderingByAmount()->all() : $this->pledges->mostSpent()->all();
 
 		$mapped = $leaderboard->map(function(Pledge $pledge) use ($type)
 		{

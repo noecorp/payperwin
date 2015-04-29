@@ -52,7 +52,7 @@
 				@endif
 			</p>
 
-			<p class="lead">Highest pledge: 
+			<p class="lead"><abbr data-toggle="tooltip" data-original-title="Pledges with at least 1 donation logged">Highest</abbr> pledge: 
 				@if ($stats['highestPledge'])
 					${{ sprintf("%0.2f",$stats['highestPledge']->amount) }} <small>/ win</small>, {{ $stats['highestPledge']->owner->username }}
 				@else
