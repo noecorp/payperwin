@@ -30,7 +30,7 @@ class UsersTest extends \AppTests\TestCase {
 	 * @covers ::find
 	 * @covers ::query
 	 *
-	 * @uses \App\Services\Guru\Role
+	 * @uses \App\Services\Gurus\Role
 	 */
 	public function test_find()
 	{
