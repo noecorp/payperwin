@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Commands\AggregateDataFromUserUpdate;
 use App\Commands\NotifyAboutNewStreamer;
 use App\Commands\SendEmailConfirmationRequest;
+use App\Commands\SendInitialCheckingInEmail;
 
 /**
  * @coversDefaultClass \App\Handlers\Events\Repositories\Users
@@ -71,12 +72,17 @@ class UsersTest extends \AppTests\TestCase {
 
 		$jobs = DB::table('jobs')->get();
 		
-		$this->assertEquals(1,count($jobs));
+		$this->assertEquals(2,count($jobs));
 
 		$job = json_decode($jobs[0]->payload);
 		$command = unserialize($job->data->command);
 
 		$this->assertEquals(SendEmailConfirmationRequest::class, get_class($command));
+
+		$job = json_decode($jobs[1]->payload);
+		$command = unserialize($job->data->command);
+
+		$this->assertEquals(SendInitialCheckingInEmail::class, get_class($command));
 	}
 
 	/**
@@ -117,12 +123,17 @@ class UsersTest extends \AppTests\TestCase {
 
 		$jobs = DB::table('jobs')->get();
 		
-		$this->assertEquals(1,count($jobs));
+		$this->assertEquals(2,count($jobs));
 
 		$job = json_decode($jobs[0]->payload);
 		$command = unserialize($job->data->command);
 
 		$this->assertEquals(SendEmailConfirmationRequest::class, get_class($command));
+
+		$job = json_decode($jobs[1]->payload);
+		$command = unserialize($job->data->command);
+
+		$this->assertEquals(SendInitialCheckingInEmail::class, get_class($command));
 	}
 
 	/**
@@ -166,12 +177,17 @@ class UsersTest extends \AppTests\TestCase {
 
 		$jobs = DB::table('jobs')->get();
 		
-		$this->assertEquals(1,count($jobs));
+		$this->assertEquals(2,count($jobs));
 
 		$job = json_decode($jobs[0]->payload);
 		$command = unserialize($job->data->command);
 
 		$this->assertEquals(SendEmailConfirmationRequest::class, get_class($command));
+
+		$job = json_decode($jobs[1]->payload);
+		$command = unserialize($job->data->command);
+
+		$this->assertEquals(SendInitialCheckingInEmail::class, get_class($command));
 	}
 
 	/**
@@ -208,7 +224,12 @@ class UsersTest extends \AppTests\TestCase {
 
 		$jobs = DB::table('jobs')->get();
 		
-		$this->assertEquals(0,count($jobs));
+		$this->assertEquals(1,count($jobs));
+
+		$job = json_decode($jobs[0]->payload);
+		$command = unserialize($job->data->command);
+
+		$this->assertEquals(SendInitialCheckingInEmail::class, get_class($command));
 	}
 
 	/**

@@ -11,48 +11,69 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-12 col-sm-5">
-			<h2>Profile</h2>
-			<form role="form" method="PUT" action="/users/{{ $user->id }}" id="profile-form">
-				<input type="hidden" name="_token" value="{{ csrf_token() }}">
-				<input type="hidden" name="_user_id" value="{{ $user->id }}">
-				<div class="form-group">
-					<div class="alert" style="display:none;" id="profile-results">
-						<ul>
-						</ul>
-					</div>
-				</div>
-				@if (!$user->twitch_id)
+			<section class="edit-profile">
+				<h2>Profile</h2>
+				<form role="form" method="PUT" action="/users/{{ $user->id }}" id="profile-form">
+					<input type="hidden" name="_token" value="{{ csrf_token() }}">
+					<input type="hidden" name="_user_id" value="{{ $user->id }}">
 					<div class="form-group">
-						<p class="help-block">Connect your Twitch profile for easy login.</p>
-						<a href="/auth/with/twitch" id="profile-twitch"><img src="/img/connect-twitch.png"/></a>
+						<div class="alert" style="display:none;" id="profile-results">
+							<ul>
+							</ul>
+						</div>
 					</div>
-				@else
-					<div class="form-group">
-						<p class="help-block">Connected Twitch account: </p>
-						<input disabled type="text" class="form-control" value="{{ $user->twitch_username }}" />
-					</div>
-				@endif
-				<div class="form-group">
-					<p class="help-block">Your publicly-visible PayPerWin username:</p>
-					<input type="text" class="form-control" id="profile-username" name="username" placeholder="Username" value="{{ (old('username')) ?: $user->username }}">
-				</div>
-				<div class="form-group">
-					<p class="help-block">We keep your email private and use it only for sending you updates and notifications.</p>
-					<input type="text" class="form-control" id="profile-email" name="email" placeholder="Email" value="{{ (old('email')) ?: $user->email }}">
-				</div>
-				<div class="form-group">
-					@if ($user->password === null)
-						<p class="help-block">If you set a password, you'll be able to log in with your email as well as with Twitch.</p>
+					@if (!$user->twitch_id)
+						<div class="form-group">
+							<p class="help-block">Connect your Twitch profile for easy login.</p>
+							<a href="/auth/with/twitch" id="profile-twitch"><img src="/img/connect-twitch.png"/></a>
+						</div>
+					@else
+						<div class="form-group">
+							<p class="help-block">Connected Twitch account: </p>
+							<input disabled type="text" class="form-control" value="{{ $user->twitch_username }}" />
+						</div>
 					@endif
-					<input type="password" class="form-control" id="profile-password" name="password" placeholder="{{ ($user->password !== null) ? 'New Password' : 'Password' }}">
-				</div>
-				<div class="form-group">
-					<input type="password" class="form-control" id="profile-password-confirmation" name="password_confirmation" placeholder="{{ ($user->password !== null) ? 'Confirm New Password' : 'Confirm Password' }}">
-				</div>
-				<div class="form-group">
-					<button type="submit" class="btn btn-success btn-lg btn-block" id="profile-submit">Update</button>
-				</div>
-			</form>
+					<div class="form-group">
+						<p class="help-block">Your publicly-visible PayPerWin username:</p>
+						<input type="text" class="form-control" id="profile-username" name="username" placeholder="Username" value="{{ (old('username')) ?: $user->username }}">
+					</div>
+					<div class="form-group">
+						<p class="help-block">We keep your email private and use it only for sending you updates and notifications.</p>
+						<input type="text" class="form-control" id="profile-email" name="email" placeholder="Email" value="{{ (old('email')) ?: $user->email }}">
+					</div>
+					<div class="form-group">
+						@if ($user->password === null)
+							<p class="help-block">If you set a password, you'll be able to log in with your email as well as with Twitch.</p>
+						@endif
+						<input type="password" class="form-control" id="profile-password" name="password" placeholder="{{ ($user->password !== null) ? 'New Password' : 'Password' }}">
+					</div>
+					<div class="form-group">
+						<input type="password" class="form-control" id="profile-password-confirmation" name="password_confirmation" placeholder="{{ ($user->password !== null) ? 'Confirm New Password' : 'Confirm Password' }}">
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-success btn-lg btn-block" id="profile-submit">Update</button>
+					</div>
+				</form>
+			</section>
+			<section class="edit-profile">
+				<h2>Subscriptions</h2>
+				<form role="form" method="PUT" action="/users/{{ $user->id }}" id="profile-subscriptions">
+					<input type="hidden" name="_token" value="{{ csrf_token() }}">
+					<div class="form-group">
+						<label class="checkbox" for="profile-newsletter">
+							<input type="checkbox" {{ ($user->newsletter_enabled) ? 'checked' : '' }} data-toggle="checkbox" value="1" name="newsletter_enabled" id="profile-newsletter">
+							Newsletter
+						</label>
+					</div>
+
+					<div class="form-group">
+						<label class="checkbox" for="profile-notifications">
+							<input type="checkbox" checked disabled data-toggle="checkbox" value="1" id="profile-notifications">
+							Pledge Notifications
+						</label>
+					</div>
+				</form>
+			</section>
 		</div>
 		<div class="col-xs-12 col-sm-5 col-sm-offset-2">
 			<section class="edit-profile">

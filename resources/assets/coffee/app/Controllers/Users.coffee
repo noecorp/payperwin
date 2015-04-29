@@ -201,6 +201,23 @@ class Users extends Controller
 
 				return false
 			)
+
+			$profileNewsletter = $('#profile-newsletter')
+			$profileNewsletter.change((event) ->
+
+				formData = $profileNewsletter.closest('form').serializeArray()
+
+				if !$profileNewsletter.prop('checked')
+					prop = {name:$profileNewsletter.attr('name'), value: 0}
+					formData.push prop
+
+				$.ajax {
+					type: 'put',
+					url: $profileNewsletter.closest('form').attr('action')
+					data: formData,
+					dataType: 'json'
+				}
+			)
 	}
 
 window.app.route('users/:id/edit','users.edit')

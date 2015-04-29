@@ -22,7 +22,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 * @var array
 	 */
 	protected $fillable = [
-		'name', 'username', 'email', 'email_confirmed', 'confirmation_code',
+		'name', 'username', 'email', 'email_confirmed', 'confirmation_code', 'newsletter_enabled',
 		'twitch_id', 'facebook_id', 'twitch_username', 'live',
 		'password',
 		'streamer', 'summoner_id', 'summoner_name', 'region', 'streamer_completed', 'short_url',
@@ -42,7 +42,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	protected $casts = [
 		'streamer' => 'boolean',
 		'funds' => 'float',
-		'earnings' => 'float'
+		'earnings' => 'float',
+		'newsletter_enabled' => 'boolean',
 	];
 
 	public function pledges()

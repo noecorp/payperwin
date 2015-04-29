@@ -19,6 +19,7 @@ class UpdateUser extends Request {
 			'summoner_id' => 'integer',
 			'summoner_name' => 'min:1|max:64',
 			'region' => 'in:br,eune,euw,kr,lan,las,na,oce,ru,tr',
+			'newsletter_enabled' => 'in:1,0'
 		];
 	}
 
