@@ -42,7 +42,7 @@
         <env name="MAIL_FROM_NAME" value="FooBar"/>
 
         <env name="DB_DRIVER" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
+        <env name="DB_DATABASE" value="./tests/database.sqlite"/>
 
         <env name="PAYPAL_RECEIVER" value="foo@bar.com"/>
         <env name="PAYPAL_VERIFY_URL" value="http://foo.bar"/>

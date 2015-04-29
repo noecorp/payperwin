@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
 	/**
-	 * Whether or not to run table database migrations to set up tables.
+	 * Whether or not database queries are required.
 	 *
 	 * This shouldn't be needed in unit tests, but necessary in other test types.
 	 *
@@ -139,7 +139,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
 		if ($this->migrate)
 		{
-			$this->artisan('migrate');
+			DB::beginTransaction();
 		}
 
 		// Set Carbon (date) instance for testing.
@@ -151,7 +151,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 	{
 		if ($this->migrate)
 		{
-			$this->artisan('migrate:rollback');
+			DB::rollback();
 		}
 		
 		$this->artisan('cache:clear');
