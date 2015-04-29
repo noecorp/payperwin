@@ -745,16 +745,6 @@ class AbstractTest extends \AppTests\TestCase {
 		$returnModel = new FooModel;
 		$returnModel->id = $id;
 
-		$query = $this->getQueryMock()->makePartial();
-		$query->shouldReceive('whereId')->once()->with($id);
-		$query->shouldReceive('getQuery')->once()->andReturn($query);
-		$query->shouldReceive('toSql')->once()->andReturn('query');
-		$query->shouldReceive('getBindings')->once()->andReturn(['bar']);
-		$query->shouldReceive('getEagerLoads')->times(3)->andReturn([]);
-
-		$model = $this->getModelMock()->makePartial();
-		$model->shouldReceive('newQuery')->once()->andReturn($query);
-
 		$cache = $this->getCacheMock();
 		$events = $this->getDispatcherMock();
 
@@ -762,7 +752,6 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
-		$this->app->instance(FooModel::class,$model);
 
 		$repo = $this->getRepo();
 
@@ -836,16 +825,6 @@ class AbstractTest extends \AppTests\TestCase {
 		$returnModel = new FooModel;
 		$returnModel->id = $id;
 
-		$query = $this->getQueryMock()->makePartial();
-		$query->shouldReceive('whereId')->times(1)->with($id);
-		$query->shouldReceive('getQuery')->times(1)->andReturn($query);
-		$query->shouldReceive('toSql')->times(1)->andReturn('query');
-		$query->shouldReceive('getBindings')->times(1)->andReturn(['bar']);
-		$query->shouldReceive('getEagerLoads')->times(5)->andReturn([]);
-
-		$model = $this->getModelMock()->makePartial();
-		$model->shouldReceive('newQuery')->times(3)->andReturn($query);
-
 		$cache = $this->getCacheMock();
 		$events = $this->getDispatcherMock();
 
@@ -853,7 +832,6 @@ class AbstractTest extends \AppTests\TestCase {
 
 		$this->app->instance(Events::class,$events);
 		$this->app->instance(Cache::class,$cache);
-		$this->app->instance(FooModel::class,$model);
 
 		$repo = $this->getRepo();
 

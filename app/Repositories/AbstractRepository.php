@@ -357,7 +357,7 @@ abstract class AbstractRepository implements RepositoryContract {
 				return $this->models[$this->model->getTable()][$id];
 			}
 
-			$this->query()->whereId($id);
+			$this->query()->where($this->model->getTable().'.id', $id);
 		}
 		else
 		{
