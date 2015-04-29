@@ -25,6 +25,13 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 	protected $migrate = true;
 
 	/**
+	 * Whether or not session is used.
+	 *
+	 * @var boolean
+	 */
+	protected $session = true;
+
+	/**
 	 * Carbon (date) instance to predictable test against.
 	 */
 	protected $carbon;
@@ -142,6 +149,13 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 			DB::beginTransaction();
 		}
 
+		if ($this->session)
+		{
+			$this->flushSession();
+		}
+
+		$this->artisan('cache:clear');
+
 		// Set Carbon (date) instance for testing.
 		$this->carbon = new Carbon('2015-01-02 03:04:05');
 		Carbon::setTestNow($this->carbon);
@@ -153,11 +167,6 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		{
 			DB::rollback();
 		}
-		
-		$this->artisan('cache:clear');
-		$this->flushSession();
-
-		$this->artisan('clear:apc');
 
 		// Revert Carbon to normal behaviour.
 		Carbon::setTestNow(null);
