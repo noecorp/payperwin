@@ -66,6 +66,15 @@ class Support
 			}).addSliderSegments()
 		)
 
+		$('.support-link').click((event) ->
+			if typeof window.GrooveWidget != 'undefined'
+				event.preventDefault()
+
+				window.GrooveWidget.toggle()
+
+				return false
+		)
+
 class App
 	controllers: {}
 	routes: []

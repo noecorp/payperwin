@@ -28,6 +28,16 @@
 	<![endif]-->
 
 	<script>
+		var grooveOnLoad = function()
+		{
+			@if ($auth->user())
+				GrooveWidget.options({
+					name: "{{ $auth->user()->username }}", 
+					email: "{{ $auth->user()->email }}", 
+					about: "id: {{ $auth->user()->id }}"
+				});
+			@endif
+		};
 		//<![CDATA[
 			(function() {var s=document.createElement('script');
 			s.type='text/javascript';s.async=true;
@@ -95,7 +105,7 @@
 							<li><a href="javascript:;">Request Payout</a></li>
 						@endif
 						<li class="divider"></li>
-						<li><a href="mailto:gg@payperwin.gg" onclick="GrooveWidget.toggle(); return false;">Help &amp; Feedback</a></li>
+						<li><a href="mailto:gg@payperwin.gg" class="support-link">Help &amp; Feedback</a></li>
 						<li><a href="/auth/logout">Logout</a></li>
 					</ul>
 				</li>
@@ -117,7 +127,7 @@
 			<ul>
 				<li><a href="/">Home</a></li>
 				<li><a href="/streamers">Streamers</a></li>
-				<li><a href="mailto:gg@payperwin.gg" onclick="GrooveWidget.toggle(); return false;">Contact Us</a></li>
+				<li><a href="mailto:gg@payperwin.gg" class="support-link">Contact Us</a></li>
 				<li><a href="/privacy">Privacy Policy</a></li>
 				<li><a href="/terms">Terms &amp; Conditions</a></li>
 			</ul>

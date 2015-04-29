@@ -167,7 +167,7 @@
 						<div class="form-group">
 							<input disabled type="text" class="form-control" value="{{ preg_replace('/http[s]?:\/\//','',$user->short_url) }}" />
 						</div>
-						<p><em>If you want a different short url, <a href="mailto:gg@payperwin.gg" onclick="GrooveWidget.toggle(); return false;">let us know</a>.</em></p>
+						<p><em>If you want a different short url, <a class="support-link" href="mailto:gg@payperwin.gg">let us know</a>.</em></p>
 					@endif
 				</section>
 
