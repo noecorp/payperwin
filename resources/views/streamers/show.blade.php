@@ -68,7 +68,7 @@
 				@endif
 			</p>
 
-			<p class="lead"><abbr title="Last 20 matches">Recent</abbr> wins: 
+			<p class="lead"><abbr data-toggle="tooltip" data-original-title="Last 20 matches">Recent</abbr> wins: 
 				@if ($stats['winLoss'])
 					{{ $stats['winLoss'] }}%
 				@else
@@ -76,7 +76,7 @@
 				@endif
 			</p>
 
-			<p class="lead"><abbr title="Last 20 matches">Recent</abbr> KDA: 
+			<p class="lead"><abbr data-toggle="tooltip" data-original-title="Last 20 matches">Recent</abbr> KDA: 
 				@if ($stats['kda'])
 					{{ sprintf("%0.2f",$stats['kda']) }}
 				@else
