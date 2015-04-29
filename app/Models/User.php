@@ -45,6 +45,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		'funds' => 'float',
 		'earnings' => 'float',
 		'newsletter_enabled' => 'boolean',
+		'email_confirmed' => 'boolean'
 	];
 
 	/**
