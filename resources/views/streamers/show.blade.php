@@ -8,7 +8,7 @@
 		<div class="col-xs-12">
 			<h1>{{ $streamer->username }}
 				@if ($streamer->avatar)
-					<img class="avatar" src="{{ asset($streamer->avatar) }}">
+					<img class="avatar" src="/{{ $streamer->avatar }}">
 				@endif
 			</h1>
 
@@ -52,7 +52,7 @@
 				@endif
 			</p>
 
-			<p class="lead">Highest pledge: 
+			<p class="lead"><abbr data-toggle="tooltip" data-original-title="Pledges with at least 1 donation logged">Highest</abbr> pledge: 
 				@if ($stats['highestPledge'])
 					${{ sprintf("%0.2f",$stats['highestPledge']->amount) }} <small>/ win</small>, {{ $stats['highestPledge']->owner->username }}
 				@else
@@ -68,7 +68,7 @@
 				@endif
 			</p>
 
-			<p class="lead"><abbr title="Last 20 matches">Recent</abbr> wins: 
+			<p class="lead"><abbr data-toggle="tooltip" data-original-title="Last 20 matches">Recent</abbr> wins: 
 				@if ($stats['winLoss'])
 					{{ $stats['winLoss'] }}%
 				@else
@@ -76,7 +76,7 @@
 				@endif
 			</p>
 
-			<p class="lead"><abbr title="Last 20 matches">Recent</abbr> KDA: 
+			<p class="lead"><abbr data-toggle="tooltip" data-original-title="Last 20 matches">Recent</abbr> KDA: 
 				@if ($stats['kda'])
 					{{ sprintf("%0.2f",$stats['kda']) }}
 				@else

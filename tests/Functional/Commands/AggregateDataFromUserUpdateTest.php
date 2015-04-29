@@ -4,6 +4,8 @@ use App\Commands\AggregateDataFromUserUpdate as Command;
 use \Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Contracts\Service\Gurus\Aggregation as Guru;
+use Illuminate\Contracts\Bus\QueueingDispatcher;
+use Illuminate\Contracts\Queue\Queue;
 
 /**
  * @coversDefaultClass \App\Commands\AggregateDataFromUserUpdate
@@ -22,12 +24,17 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 */
 	public function test_handle_with_no_pledge()
 	{
 		$this->runCommand(999, [], []);
 
 		$this->assertEquals(0,count(DB::table('aggregations')->get()));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -37,17 +44,19 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::getUserAggregations
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_no_aggregations_for_funds()
 	{
-		$user = $this->fixtureUser(0);
+		$date = '2014-11-11 11:11:11';
+
+		$user = $this->fixtureUser(0, 0, $date);
 
 		$guru = $this->app->make(Guru::class);
 
-		$date = '2014-11-11 11:11:11';
-		$this->runCommand($user->id, ['funds'=>10,'updated_at'=>'2013-01-02 03:04:05'], ['funds'=>0,'updated_at'=>(string)$date]);
+		$this->runCommand($user->id, ['funds'=>10,'updated_at'=>'2013-01-02 03:04:05'], ['funds'=>0,'updated_at'=> $date]);
 
 		$aggregations = DB::table('aggregations')->where('reason',$guru->paidByUser())->where('amount',10)->get();
 
@@ -58,6 +67,10 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		$this->assertEquals(5,count($aggregations));
 
 		$this->checkAggregationResults($aggregations, $user, new Carbon($date));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -67,17 +80,19 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::getStreamerAggregations
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_no_aggregations_for_earnings()
 	{
-		$user = $this->fixtureUser(0, 10);
+		$date = '2014-11-11 11:11:11';
+
+		$user = $this->fixtureUser(0, 10, $date);
 
 		$guru = $this->app->make(Guru::class);
 
-		$date = '2014-11-11 11:11:11';
-		$this->runCommand($user->id, ['earnings'=>0,'updated_at'=>'2013-01-02 03:04:05'], ['earnings'=>10,'updated_at'=>(string)$date]);
+		$this->runCommand($user->id, ['earnings'=>0,'updated_at'=>'2013-01-02 03:04:05'], ['earnings'=>10,'updated_at'=> $date]);
 
 		$aggregations = DB::table('aggregations')->where('reason',$guru->paidToStreamer())->where('amount',10)->get();
 
@@ -88,6 +103,10 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		$this->assertEquals(5,count($aggregations));
 
 		$this->checkAggregationResults($aggregations, $user, new Carbon($date));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 
@@ -98,12 +117,15 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::getUserAggregations
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_some_aggregations_for_funds()
 	{
-		$user = $this->fixtureUser(0);
+		$date = '2014-11-11 11:11:11';
+
+		$user = $this->fixtureUser(0, 0, $date);
 
 		$guru = $this->app->make(Guru::class);
 
@@ -135,8 +157,7 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		]);
 		$aggregation2 = DB::table('aggregations')->orderBy('id','desc')->first();
 
-		$date = '2014-11-11 11:11:11';
-		$this->runCommand($user->id, ['funds'=>10,'updated_at'=>'2013-01-02 03:04:05'], ['funds'=>0,'updated_at'=>(string)$date]);
+		$this->runCommand($user->id, ['funds'=>10,'updated_at'=>'2013-01-02 03:04:05'], ['funds'=>0,'updated_at'=> $date]);
 
 		$aggregations = DB::table('aggregations')->get();
 		$this->assertEquals(5,count($aggregations));
@@ -151,6 +172,10 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		$this->assertEquals(13,$aggregation2->amount);
 
 		$this->checkAggregationResults($aggregations, $user, new Carbon($date));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -160,12 +185,15 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::getStreamerAggregations
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_some_aggregations_for_earnings()
 	{
-		$user = $this->fixtureUser(0, 10);
+		$date = '2014-11-11 11:11:11';
+
+		$user = $this->fixtureUser(0, 10, $date);
 
 		$guru = $this->app->make(Guru::class);
 
@@ -197,8 +225,7 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		]);
 		$aggregation2 = DB::table('aggregations')->orderBy('id','desc')->first();
 
-		$date = '2014-11-11 11:11:11';
-		$this->runCommand($user->id, ['earnings'=>0,'updated_at'=>'2013-01-02 03:04:05'], ['earnings'=>10,'updated_at'=>(string)$date]);
+		$this->runCommand($user->id, ['earnings'=>0,'updated_at'=>'2013-01-02 03:04:05'], ['earnings'=>10,'updated_at'=> $date]);
 
 		$aggregations = DB::table('aggregations')->get();
 		$this->assertEquals(5,count($aggregations));
@@ -213,6 +240,10 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		$this->assertEquals(13,$aggregation2->amount);
 
 		$this->checkAggregationResults($aggregations, $user, new Carbon($date));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -222,13 +253,16 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::getUserAggregations
 	 * @covers ::getStreamerAggregations
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_some_of_both()
 	{
-		$user = $this->fixtureUser(0,10);
+		$date = '2014-11-11 11:11:11';
+
+		$user = $this->fixtureUser(0, 10, $date);
 
 		$guru = $this->app->make(Guru::class);
 
@@ -288,8 +322,7 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		]);
 		$aggregation4 = DB::table('aggregations')->orderBy('id','desc')->first();
 
-		$date = '2014-11-11 11:11:11';
-		$this->runCommand($user->id, ['funds'=>10,'earnings'=>0,'updated_at'=>'2013-01-02 03:04:05'], ['funds'=>0,'earnings'=>10,'updated_at'=>(string)$date]);
+		$this->runCommand($user->id, ['funds'=>10,'earnings'=>0,'updated_at'=>'2013-01-02 03:04:05'], ['funds'=>0,'earnings'=>10,'updated_at'=> $date]);
 
 		$aggregations = DB::table('aggregations')->get();
 		$this->assertEquals(10,count($aggregations));
@@ -310,6 +343,10 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		$this->assertEquals(15,$aggregation4->amount);
 
 		$this->checkAggregationResults($aggregations, $user, new Carbon($date));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -319,17 +356,20 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::getUserAggregations
 	 * @covers ::getStreamerAggregations
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_all_available()
 	{
-		$user = $this->fixtureUser(0,10);
+		$date = '2014-11-11 11:11:11';
+
+		$user = $this->fixtureUser(0, 10, $date);
 
 		$guru = $this->app->make(Guru::class);
 
-		$date = new Carbon('2014-11-11 11:11:11');
+		$date = new Carbon($date);
 
 		DB::table('aggregations')->insert([
 			'user_id' => $user->id,
@@ -507,25 +547,35 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		$this->assertEquals(21,$aggregation10->amount);
 
 		$this->checkAggregationResults($aggregations, $user, $date);
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	private function runCommand($userId, array $changed, array $current)
 	{
 		$command = new Command($userId, $changed, $current);
 
-		$this->app->instance(Command::class, $command);
+		$dispatcher = $this->app->make(QueueingDispatcher::class);
+		$dispatcher->dispatchToQueue($command);
 
-		$this->app->call(Command::class.'@handle');
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(1,count($jobs));
+
+		$queue = $this->app->make(Queue::class);
+		$queue->pop()->fire();
 	}
 
-	private function fixtureUser($funds, $earnings = 0)
+	private function fixtureUser($funds, $earnings = 0, $date = null)
 	{
 		DB::table('users')->insert([
 			'email' => 'foo@bar.com'.$earnings,
 			'earnings' => $earnings,
 			'funds' => $funds,
-			'created_at' => Carbon::now(),
-			'updated_at' => Carbon::now(),
+			'created_at' => ($date) ? $date : Carbon::now(),
+			'updated_at' => ($date) ? $date : Carbon::now(),
 		]);
 		return DB::table('users')->first();
 	}

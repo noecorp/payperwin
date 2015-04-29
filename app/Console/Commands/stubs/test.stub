@@ -26,12 +26,11 @@ class {{class}}Test extends \{{rootNamespace}}TestCase {
 	 */
 	public function test_foo_method()
 	{
-		//
-	}
+		// $mock = $this->getMockOf(\Foo\Bar\Baz::class);
 
-	public function getBarMock()
-	{
-		return m::mock('Foo\Bar\Baz');
+		// $object = $this->fixture('table', ['column' => 'data']);
+
+		// $this->mockGuzzle([201], [ ['Content-Type'=>'application/json; charset=UTF-8'] ], ['{"url":"baz"}']);
 	}
 
 }

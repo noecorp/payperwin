@@ -4,6 +4,8 @@ use App\Commands\AggregateDataFromPledge as Command;
 use \Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Contracts\Service\Gurus\Aggregation as Guru;
+use Illuminate\Contracts\Bus\QueueingDispatcher;
+use Illuminate\Contracts\Queue\Queue;
 
 /**
  * @coversDefaultClass \App\Commands\AggregateDataFromPledge
@@ -22,12 +24,17 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 */
 	public function test_handle_with_no_pledge()
 	{
 		$this->runCommand(999);
 
 		$this->assertEquals(0,count(DB::table('aggregations')->get()));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -37,6 +44,7 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_no_aggregations()
@@ -52,6 +60,10 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 		$this->assertEquals(10,count($aggregations));
 
 		$this->checkAggregationResults($aggregations, $user, $streamer, new Carbon($pledge->created_at));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -61,6 +73,7 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_some_user_aggregations()
@@ -114,6 +127,10 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 		$this->assertEquals(4,$aggregation2->amount);
 
 		$this->checkAggregationResults($aggregations, $user, $streamer, new Carbon($pledge->created_at));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -123,6 +140,7 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_some_streamer_aggregations()
@@ -176,6 +194,10 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 		$this->assertEquals(4,$aggregation2->amount);
 
 		$this->checkAggregationResults($aggregations, $user, $streamer, new Carbon($pledge->created_at));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -185,6 +207,7 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_some_of_both()
@@ -272,6 +295,10 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 		$this->assertEquals(6,$aggregation4->amount);
 
 		$this->checkAggregationResults($aggregations, $user, $streamer, new Carbon($pledge->created_at));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	/**
@@ -281,6 +308,7 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_all_available()
@@ -470,15 +498,25 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 		$this->assertEquals(12,$aggregation10->amount);
 
 		$this->checkAggregationResults($aggregations, $user, $streamer, new Carbon($pledge->created_at));
+
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(0,count($jobs));
 	}
 
 	private function runCommand($pledgeId)
 	{
 		$command = new Command($pledgeId);
 
-		$this->app->instance(Command::class, $command);
+		$dispatcher = $this->app->make(QueueingDispatcher::class);
+		$dispatcher->dispatchToQueue($command);
 
-		$this->app->call(Command::class.'@handle');
+		$jobs = DB::table('jobs')->get();
+		
+		$this->assertEquals(1,count($jobs));
+
+		$queue = $this->app->make(Queue::class);
+		$queue->pop()->fire();
 	}
 
 	private function fixtureUser()

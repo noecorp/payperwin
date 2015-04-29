@@ -11,7 +11,7 @@
 	<div class="row">
 		@if ($display != 'streamer')
 		<div class="col-xs-12 col-sm-{{ ($display == 'both') ? 5 : '6 col-sm-offset-3' }}">
-			<div class="todo" data-action="{{ (!$auth->user()->funds) ? url('deposits/create') : url('streamers') }}">
+			<div class="todo" data-action="{{ (!$auth->user()->funds) ? '/deposits/create' : '/streamers' }}">
 				<div class="todo-search text-center text-uppercase">
 					<h2>Fans</h2>
 				</div>
@@ -50,7 +50,7 @@
 		@endif
 		@if ($display != 'fan')
 		<div class="col-xs-12 col-sm-{{ ($display == 'both') ? '5 col-sm-offset-2' : '6 col-sm-offset-3' }}">
-			<div class="todo" data-action="{{ (!$auth->user()->twitch_id || !$auth->user()->summoner_id) ? url('users/'.$auth->user()->id.'/edit') : url('streamers',[$auth->user()->id]) }}">
+			<div class="todo" data-action="{{ (!$auth->user()->twitch_id || !$auth->user()->summoner_id) ? '/users/'.$auth->user()->id.'/edit' : '/streamers/'.$auth->user()->id }}">
 				<div class="todo-search text-center text-uppercase">
 					<h2>Streamers</h2>
 				</div>

@@ -40,31 +40,33 @@ class Dashboard extends Controller
 
 			$earningsChart = $('#earnings-chart')
 
-			data = {
-				labels: $earningsChart.data('labels').split(','),
-				series: [
-					{
-						data: $earningsChart.data('values').split(','),
-						className: 'ct-success'
-					}
-				]
-			}
+			if $earningsChart.length
+				data = {
+					labels: $earningsChart.data('labels').split(','),
+					series: [
+						{
+							data: $earningsChart.data('values').split(','),
+							className: 'ct-success'
+						}
+					]
+				}
 
-			new Chartist.Line('#earnings-chart', data, options, responsiveOptions)
+				new Chartist.Line('#earnings-chart', data, options, responsiveOptions)
 
 			$spendingChart = $('#spending-chart')
 
-			data = {
-				labels: $spendingChart.data('labels').split(','),
-				series: [
-					{
-						data: $spendingChart.data('values').split(','),
-						className: 'ct-success'
-					}
-				]
-			}
+			if $spendingChart.length
+				data = {
+					labels: $spendingChart.data('labels').split(','),
+					series: [
+						{
+							data: $spendingChart.data('values').split(','),
+							className: 'ct-success'
+						}
+					]
+				}
 
-			new Chartist.Line('#spending-chart', data, options, responsiveOptions)
+				new Chartist.Line('#spending-chart', data, options, responsiveOptions)
 
 
 			$charts = $('.ct-chart')

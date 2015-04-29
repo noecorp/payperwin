@@ -8,6 +8,7 @@ use App\Events\Repositories\PledgeWasCreated;
 use App\Events\Repositories\PledgeWasUpdated;
 use App\Events\Repositories\PledgesWereCreated;
 use App\Events\Repositories\PledgesWereUpdated;
+use Illuminate\Database\Query\Expression;
 
 class Pledges extends AbstractRepository implements PledgesRepository {
 
@@ -120,7 +121,7 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 
 	public function mostSpent()
 	{
-		$this->query()->select('*',$this->container->make('db')->raw('sum(`amount` * `times_donated`) as spent'))->groupBy('user_id');
+		$this->query()->select('*', new Expression('sum(`amount` * `times_donated`) as spent'))->groupBy('user_id');
 
 		return $this;
 	}
@@ -130,6 +131,13 @@ class Pledges extends AbstractRepository implements PledgesRepository {
 		$this->query()->distinct();
 
 		return $this->count('user_id');
+	}
+
+	public function donated()
+	{
+		$this->query()->where('times_donated', '>', 0);
+
+		return $this;
 	}
 
 	public function today()

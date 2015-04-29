@@ -82,6 +82,9 @@ class Distribution implements DistributionInterface {
 	{
 		$pledges = $this->pledges->withOwner()->isRunning()->forStreamer($streamerId)->all();
 
+		// If there aren't any pledges, STAHP.
+		if ($pledges->isEmpty()) return;
+
 		// First, stop all expired pledges
 		$expired = $pledges->filter(function(Pledge $pledge) {
 			// This includes reaching their set end date, ...
@@ -106,6 +109,9 @@ class Distribution implements DistributionInterface {
 
 	protected function stopExpired(Collection $expired)
 	{
+		// If there aren't any expired pledges, STAHP.
+		if ($expired->isEmpty()) return;
+
 		// Do a mass update switching them all off at once
 		$this->pledges->updateAll($expired->map(function(Pledge $pledge) {
 			return $pledge->id;
@@ -119,7 +125,16 @@ class Distribution implements DistributionInterface {
 		
 		// Potential for DB::connection()->disableQueryLog(); somewhere here
 
+		// If there aren't any running pledges, STAHP.
+		if ($running->isEmpty()) return;
+
+		// Otherwise, continue.
 		$streamer = $this->users->find($streamerId);
+
+		// But, not if there's no streamer, for whatever reason... Quitting like 
+		// this is fine, since the previous logic was all about expiring relevant
+		// pledges only.
+		if (!$streamer) return;
 
 		$unsettledMatches = $this->matches->forStreamer($streamerId)->isUnsettled()->all();
 
@@ -135,6 +150,9 @@ class Distribution implements DistributionInterface {
 			// Pledges that have just expired
 			$expired = [];
 
+			// Pledges whose owners don't have enough funds
+			$notEnoughFunds = [];
+
 			foreach ($unsettledMatches as $match)
 			{
 				// Only care about won matches!
@@ -145,7 +163,11 @@ class Distribution implements DistributionInterface {
 
 				foreach ($running as $pledge)
 				{
-					if ($pledge->owner->funds < $pledge->amount) continue;
+					if ($pledge->owner->funds < $pledge->amount)
+					{
+						$notEnoughFunds[] = $pledge->id;
+						continue;
+					}
 
 					// Increment total funds to be added to streamer account
 					$funds += $pledge->amount;
@@ -196,10 +218,12 @@ class Distribution implements DistributionInterface {
 			})->toArray(), ['settled' => 1]);
 
 			// Increment the pledges' donation counters
-			$this->pledges->incrementAll($running->map(function(Match $pledge)
+			$incrementing = array_diff($running->map(function(Pledge $pledge)
 			{
 				return $pledge->id;
-			})->toArray(), 'times_donated');
+			})->toArray(), $notEnoughFunds);
+			
+			$this->pledges->incrementAll($incrementing, 'times_donated');
 
 			// Add the total funds gather from pledges to the streamer's earnings
 			$this->users->update($streamer, ['earnings' => $streamer->earnings + $funds]);

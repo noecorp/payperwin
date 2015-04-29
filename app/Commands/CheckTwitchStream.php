@@ -7,17 +7,17 @@ use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldBeQueued;
 
 use App\Contracts\Repository\Users;
-
+use Illuminate\Contracts\Cache\Repository as Cache;
 use GuzzleHttp\Client;
-
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ParseException;
-use GuzzleHttp\Exception\TooManyRedirectsException;
 
 class CheckTwitchStream extends Command implements SelfHandling, ShouldBeQueued {
 
 	use InteractsWithQueue;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $unique = true;
 
 	/**
 	 * Streamer identifier for whom to fetch latest matches.
@@ -25,6 +25,20 @@ class CheckTwitchStream extends Command implements SelfHandling, ShouldBeQueued 
 	 * @var int
 	 */
 	protected $streamerId;
+
+	/**
+	 * Guzzle client implementation.
+	 *
+	 * @var Client
+	 */
+	protected $client;
+
+	/**
+	 * Users repositorory implementation.
+	 *
+	 * @var Users
+	 */
+	protected $users;
 
 	/**
 	 * Create a new command instance.
@@ -35,6 +49,8 @@ class CheckTwitchStream extends Command implements SelfHandling, ShouldBeQueued 
 	 */
 	public function __construct($streamerId)
 	{
+		parent::__construct($streamerId);
+
 		$this->streamerId = $streamerId;
 	}
 
@@ -43,18 +59,36 @@ class CheckTwitchStream extends Command implements SelfHandling, ShouldBeQueued 
 	 *
 	 * @param Client $client
 	 * @param Users $users
-	 * @param Matches $matches
-	 * @param Distribution $distribute
+	 * @param Cache $cache
 	 *
 	 * @return void
 	 */
-	public function handle(Client $client, Users $users)
+	public function handle(Client $client, Users $users, Cache $cache)
 	{
-		$streamer = $users->isStreamer()->find($this->streamerId);
+		$this->client = $client;
+		$this->users = $users;
+		$this->cache = $cache;
 
+		$this->start();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function work()
+	{
 		try
 		{
-			$response = $client->get('https://api.twitch.tv/kraken/streams/'.$streamer->twitch_username, [
+			$streamer = $this->users->isStreamer()->find($this->streamerId);
+
+			if (!$streamer)
+			{
+				$this->delete();
+
+				return;
+			}
+
+			$response = $this->client->get('https://api.twitch.tv/kraken/streams/'.$streamer->twitch_username, [
 				'timeout' => 10,
 				'exceptions' => true,
 				'headers' => ['Accept' => 'application/vnd.twitchtv.v3+json']
@@ -64,25 +98,21 @@ class CheckTwitchStream extends Command implements SelfHandling, ShouldBeQueued 
 
 			if ($object['stream'] !== null)
 			{
-				$users->update($streamer,['live'=>1]);
+				$this->users->update($streamer,['live'=>1]);
 			}
 			else
 			{
-				$users->update($streamer,['live'=>0]);	
+				$this->users->update($streamer,['live'=>0]);	
 			}
 		}
-		catch (\Exception $e)
+		catch (\Exception $exception)
 		{
-			return $this->handleException($e);
+			$this->delete();
+
+			throw $exception;
 		}
 
 		$this->delete();
-	}
-
-	protected function handleException(\Exception $e)
-	{
-		//temp
-		throw $e;
 	}
 
 }

@@ -18,6 +18,8 @@ interface Pledges extends RepositoryContract {
 
 	public function countPledgers();
 
+	public function donated();
+
 	public function today();
 
 	public function thisMonth();

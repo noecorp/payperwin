@@ -28,6 +28,7 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 */
 	public function test_handle_with_no_pledge()
 	{
@@ -57,6 +58,7 @@ class AggregateDataFromPledgeTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::updateOrCreate
 	 */
 	public function test_handle_with_no_aggregations()

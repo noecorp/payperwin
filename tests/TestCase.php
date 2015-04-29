@@ -16,13 +16,20 @@ use Illuminate\Support\Facades\DB;
 class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
 	/**
-	 * Whether or not to run table database migrations to set up tables.
+	 * Whether or not database queries are required.
 	 *
 	 * This shouldn't be needed in unit tests, but necessary in other test types.
 	 *
 	 * @var boolean
 	 */
 	protected $migrate = true;
+
+	/**
+	 * Whether or not session is used.
+	 *
+	 * @var boolean
+	 */
+	protected $session = true;
 
 	/**
 	 * Carbon (date) instance to predictable test against.
@@ -55,6 +62,13 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		$client->getEmitter()->attach($mock);
 
         return $client;
+	}
+
+	protected function mockGuzzle($status = 200, $headers = [], $content = '', $howMany = 1)
+	{
+		$guzzle = $this->getGuzzleMock($status, $headers, $content, $howMany);
+
+		$this->app->instance(GuzzleClient::class, $guzzle);
 	}
 
 	public function become($id)
@@ -132,8 +146,15 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 
 		if ($this->migrate)
 		{
-			$this->artisan('migrate');
+			DB::beginTransaction();
 		}
+
+		if ($this->session)
+		{
+			$this->flushSession();
+		}
+
+		$this->artisan('cache:clear');
 
 		// Set Carbon (date) instance for testing.
 		$this->carbon = new Carbon('2015-01-02 03:04:05');
@@ -144,13 +165,8 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 	{
 		if ($this->migrate)
 		{
-			$this->artisan('migrate:rollback');
+			DB::rollback();
 		}
-		
-		$this->artisan('cache:clear');
-		$this->flushSession();
-
-		$this->artisan('clear:apc');
 
 		// Revert Carbon to normal behaviour.
 		Carbon::setTestNow(null);
@@ -158,9 +174,9 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase {
 		parent::tearDown();
 	}
 
-	protected function clearLog()
+	protected function getLog()
 	{
-		exec('echo "" > '.storage_path().'/logs/laravel.log');
+		return file_get_contents(storage_path().'/logs/laravel.log');
 	}
 
 	protected function getMockOf($className)

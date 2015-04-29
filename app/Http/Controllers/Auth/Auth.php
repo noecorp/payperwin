@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Contracts\Repository\Users;
 use Illuminate\Contracts\View\Factory as View;
 use Illuminate\Routing\Redirector as Redirect;
+use Illuminate\Contracts\Hashing\Hasher;
 use Intervention\Image\ImageManager;
 
 class Auth extends Controller {
@@ -46,6 +47,12 @@ class Auth extends Controller {
 	 */
 	protected $redirect;
 
+	/**
+	 * The Hasher implementation.
+	 *
+	 * @var Hasher
+	 */
+	protected $hasher;
 
 	/**
 	 * Create a new authentication controller instance.
@@ -55,16 +62,18 @@ class Auth extends Controller {
 	 * @param  Socialite  $socialite
 	 * @param  View  $view
 	 * @param  Redirect  $redirect
+	 * @param  Hasher $hasher
 	 *
 	 * @return void
 	 */
-	public function __construct(Guard $auth, Users $users, Socialite $socialite, View $view, Redirect $redirect)
+	public function __construct(Guard $auth, Users $users, Socialite $socialite, View $view, Redirect $redirect, Hasher $hasher)
 	{
 		$this->auth = $auth;
 		$this->users = $users;
 		$this->socialite = $socialite;
 		$this->view = $view;
 		$this->redirect = $redirect;
+		$this->hasher = $hasher;
 
 		$this->middleware('guest', ['except' => ['getLogout','getWith','getProvider']]);
 	}
@@ -89,7 +98,12 @@ class Auth extends Controller {
 	 */
 	public function postRegister(\App\Http\Requests\Register $request)
 	{
-		$this->auth->login($this->users->create($request->all()),true);
+		$data = $request->all();
+		
+		$data['password'] = $this->hasher->make($data['password']);
+		$data['confirmation_code'] = str_random(8);
+
+		$this->auth->login($this->users->create($data), true);
 
 		return $this->redirect->to('/start');
 	}
@@ -258,6 +272,7 @@ class Auth extends Controller {
 		$data = [
 			'username' => $user->getNickname(),
 			'email' => $user->getEmail(),
+			'email_confirmed' => true
 		];
 
 		if ($provider == 'twitch')

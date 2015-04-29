@@ -10,6 +10,7 @@ use App\Contracts\Repository\Pledges;
 use App\Contracts\Repository\Aggregations;
 use App\Contracts\Service\Gurus\Aggregation as Guru;
 use App\Contracts\Service\Acidifier;
+use Illuminate\Contracts\Cache\Repository as Cache;
 
 use App\Models\Aggregation;
 
@@ -19,6 +20,11 @@ use Carbon\Carbon;
 class AggregateDataFromPledge extends AggregateData implements SelfHandling, ShouldBeQueued {
 
 	use InteractsWithQueue;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $unique = true;
 
 	/**
 	 * Pledge identifier.
@@ -49,6 +55,27 @@ class AggregateDataFromPledge extends AggregateData implements SelfHandling, Sho
 	protected $pledge;
 
 	/**
+	 * Cache repository implementation.
+	 *
+	 * @var Cache
+	 */
+	protected $cache;
+
+	/**
+	 * Pledges repositorory implementation.
+	 *
+	 * @var Pledges
+	 */
+	protected $pledges;
+
+	/**
+	 * Acidifier implementation.
+	 *
+	 * @var Acidifier
+	 */
+	protected $acid;
+
+	/**
 	 * Create a new command instance.
 	 *
 	 * @param int $pledgeId
@@ -57,6 +84,8 @@ class AggregateDataFromPledge extends AggregateData implements SelfHandling, Sho
 	 */
 	public function __construct($pledgeId)
 	{
+		parent::__construct($pledgeId);
+
 		$this->pledgeId = $pledgeId;
 	}
 
@@ -67,26 +96,40 @@ class AggregateDataFromPledge extends AggregateData implements SelfHandling, Sho
 	 * @param Aggregations $aggregations
 	 * @param Guru $guru
 	 * @param Acidifier $acid
+	 * @param Cache $cache
 	 *
 	 * @return void
 	 */
-	public function handle(Pledges $pledges, Aggregations $aggregations, Acidifier $acid, Guru $guru)
+	public function handle(Pledges $pledges, Aggregations $aggregations, Acidifier $acid, Guru $guru, Cache $cache)
 	{
 		$this->aggregations = $aggregations;
 		$this->guru = $guru;
+		$this->cache = $cache;
+		$this->pledges = $pledges;
+		$this->acid = $acid;
 
-		$this->pledge = $pledges->find($this->pledgeId);
+		$this->start();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function work()
+	{
+		$this->pledge = $this->pledges->find($this->pledgeId);
 
 		if (!$this->pledge)
 		{
-			return $this->delete();
+			$this->delete();
+			
+			return;
 		}
 
-		$fromUser = $aggregations->forUser($this->pledge->user_id)->forReason($this->guru->pledgeFromUser())->all();
+		$fromUser = $this->aggregations->forUser($this->pledge->user_id)->forReason($this->guru->pledgeFromUser())->all();
 
-		$forStreamer = $aggregations->forUser($this->pledge->streamer_id)->forReason($this->guru->pledgeToStreamer())->all();
+		$forStreamer = $this->aggregations->forUser($this->pledge->streamer_id)->forReason($this->guru->pledgeToStreamer())->all();
 
-		$acid->transaction(function() use ($fromUser, $forStreamer)
+		$this->acid->transaction(function() use ($fromUser, $forStreamer)
 		{
 			// First the user's part...
 			$this->updateOrCreate($fromUser, $this->guru->pledgeFromUser());

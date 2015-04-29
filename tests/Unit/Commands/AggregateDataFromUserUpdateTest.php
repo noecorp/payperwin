@@ -27,6 +27,7 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 */
 	public function test_handle_with_no_user()
 	{
@@ -55,6 +56,7 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 	 *
  	 * @covers ::__construct
 	 * @covers ::handle
+	 * @covers ::work
 	 * @covers ::getUserAggregations
 	 * @covers ::updateOrCreate
 	 */
@@ -73,6 +75,7 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 		$user = $this->getUserMock();
 		$user->shouldReceive('getAttribute')->with('funds')->andReturn(0);
 		$user->shouldReceive('getAttribute')->with('id')->andReturn(999);
+		$user->shouldReceive('getAttribute')->with('updated_at')->andReturn('2014-11-11 11:11:11');
 
 		$users = $this->getUsersMock();
 		$users->shouldReceive('find')->once()->andReturn($user);
@@ -155,6 +158,50 @@ class AggregateDataFromUserUpdateTest extends \AppTests\TestCase {
 			$closure($userCollection, null);
 			return true;
 		}));
+
+		$command = new Command(999, $changed, $current);
+
+		$this->app->instance(Users::class,$users);
+		$this->app->instance(Aggregations::class,$aggregations);
+		$this->app->instance(Acidifier::class,$acid);
+		$this->app->instance(Guru::class,$guru);
+		$this->app->instance(Command::class, $command);
+
+		$this->assertNull($this->app->call(Command::class.'@handle'));
+	}
+
+	/**
+	 * @small
+	 *
+	 * @group commands
+	 *
+ 	 * @covers ::__construct
+	 * @covers ::handle
+	 * @covers ::work
+	 */
+	public function test_handle_with_out_of_date_fields()
+	{
+		$changed = [
+			'funds' => 10,
+			'updated_at' => '2013-01-02 03:04:05'
+		];
+
+		$current = [
+			'funds' => 0,
+			'updated_at' => '2014-11-11 11:11:11'
+		];
+
+		$user = $this->getUserMock();
+		$user->shouldReceive('getAttribute')->with('funds')->andReturn(0);
+		$user->shouldReceive('getAttribute')->with('id')->andReturn(999);
+		$user->shouldReceive('getAttribute')->with('updated_at')->andReturn('2014-12-12 12:12:12');
+
+		$users = $this->getUsersMock();
+		$users->shouldReceive('find')->once()->andReturn($user);
+
+		$aggregations = $this->getAggregationsMock();
+		$guru = $this->getGuruMock();
+		$acid = $this->getAcidifierMock();
 
 		$command = new Command(999, $changed, $current);
 

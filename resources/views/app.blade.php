@@ -6,13 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>@yield('title') - PayPerWin</title>
 
-	<link href="{{ asset('css/vendor/all.vendor.css') }}" rel="stylesheet">
+	<link href="/css/vendor/all.vendor.css" rel="stylesheet">
 	
 	@yield('styles')
 
 	<link href="{{ elixir("css/app.css") }}" rel="stylesheet">
 
-	<script src="{{ asset('js/vendor/all.vendor.js') }}"></script>
+	<script src="/js/vendor/all.vendor.js"></script>
 
 	@yield('scripts')
 
@@ -26,6 +26,25 @@
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
+
+	<script>
+		var grooveOnLoad = function()
+		{
+			@if ($auth->user())
+				GrooveWidget.options({
+					name: "{{ $auth->user()->username }}", 
+					email: "{{ $auth->user()->email }}", 
+					about: "id: {{ $auth->user()->id }}"
+				});
+			@endif
+		};
+		//<![CDATA[
+			(function() {var s=document.createElement('script');
+			s.type='text/javascript';s.async=true;
+			s.src=('https:'==document.location.protocol?'https':'http') +
+			'://ppw.groovehq.com/widgets/d3ed44cc-8c5a-4569-b20e-fdcf2d74fb85/ticket.js'; var q = document.getElementsByTagName('script')[0];q.parentNode.insertBefore(s, q);})();
+		//]]>
+	</script>
 </head>
 <body>
 	@if (env('APP_ENV') == 'production')
@@ -67,12 +86,12 @@
 					<li><a href="/transactions">Earnings: ${{ sprintf("%0.2f",$auth->user()->earnings) }}</a></li>
 				@else
 					<li><a href="/transactions">Funds: ${{ sprintf("%0.2f",$auth->user()->funds) }}</a></li>
-					<li><button id="nav-deposit" class="btn btn-sm btn-primary navbar-btn" type="button" data-href="{{ url('deposits/create') }}">Deposit</button></li>
+					<li><button id="nav-deposit" class="btn btn-sm btn-primary navbar-btn" type="button" data-href="/deposits/create">Deposit</button></li>
 				@endif
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 						@if ($auth->user()->avatar)
-							<img src="{{ asset($auth->user()->avatar) }}" class="avatar">&nbsp;
+							<img src="/{{ $auth->user()->avatar }}" class="avatar">&nbsp;
 						@endif
 						{{ $auth->user()->username }} <b class="caret"></b></a>
 					<ul class="dropdown-menu">
@@ -86,6 +105,7 @@
 							<li><a href="javascript:;">Request Payout</a></li>
 						@endif
 						<li class="divider"></li>
+						<li><a href="mailto:gg@payperwin.gg" class="support-link">Help &amp; Feedback</a></li>
 						<li><a href="/auth/logout">Logout</a></li>
 					</ul>
 				</li>
@@ -107,7 +127,7 @@
 			<ul>
 				<li><a href="/">Home</a></li>
 				<li><a href="/streamers">Streamers</a></li>
-				<li><a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on">Contact Us</a></li>
+				<li><a href="mailto:gg@payperwin.gg" class="support-link">Contact Us</a></li>
 				<li><a href="/privacy">Privacy Policy</a></li>
 				<li><a href="/terms">Terms &amp; Conditions</a></li>
 			</ul>
@@ -116,21 +136,5 @@
 			<small>PayPerWin isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</small>
 		</p>
 	</footer>
-
-	<div id="helpful">
-		<a href="mailto:payperwin@helpful.io" data-helpful="payperwin" data-helpful-modal="on" data-helpful-title="What's up?" class="btn btn-info">Help &amp; Suggestions</a>
-	</div>
-
-	@if ($auth->user())
-		<script>
-			window.intercomSettings = {
-				name: "{{ $auth->user()->username }}",
-				email: "{{ $auth->user()->email }}",
-				created_at: "{{ $auth->user()->created_at->timestamp }}",
-				app_id: "{{ (env('APP_ENV') == 'production') ? "w0ju1yb6" : "egqks52q" }}"
-			};
-		</script>
-		<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/w0ju1yb6';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
-	@endif
 </body>
 </html>

@@ -58,7 +58,7 @@ class Users extends Controller
 
 			$streamerSwitch = $('#streamer-on')
 
-			if $streamerSwitch
+			if $streamerSwitch.length
 				$streamerSwitch.bootstrapSwitch({
 					onSwitchChange: (event,state) ->
 						if state == true
@@ -200,6 +200,23 @@ class Users extends Controller
 				)
 
 				return false
+			)
+
+			$profileNewsletter = $('#profile-newsletter')
+			$profileNewsletter.change((event) ->
+
+				formData = $profileNewsletter.closest('form').serializeArray()
+
+				if !$profileNewsletter.prop('checked')
+					prop = {name:$profileNewsletter.attr('name'), value: 0}
+					formData.push prop
+
+				$.ajax {
+					type: 'put',
+					url: $profileNewsletter.closest('form').attr('action')
+					data: formData,
+					dataType: 'json'
+				}
 			)
 	}
 

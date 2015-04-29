@@ -66,29 +66,20 @@ class Support
 			}).addSliderSegments()
 		)
 
+		$('.support-link').click((event) ->
+			if typeof window.GrooveWidget != 'undefined'
+				event.preventDefault()
+
+				window.GrooveWidget.toggle()
+
+				return false
+		)
+
 class App
 	controllers: {}
 	routes: []
-	config: {
-		foo : {
-			bar : 'baz'
-		}
-	}
 
 	support: new Support()
-	
-	# Allow dot-syntax nesting of keys.
-	get: (key) ->
-		keys = key.split('.')
-
-		c = @config
-
-		loop
-			k = keys.shift()
-			c = c[k]
-			break unless (keys.length)
-
-		return c
 
 	controller: (name, controller) ->
 		@controllers[name] = controller

@@ -258,7 +258,11 @@ abstract class AbstractRepository implements RepositoryContract {
 
 			foreach ($dirty as $column)
 			{
-				$changed[$column] = $model->getOriginal()[$column];
+				// Make sure the model actually has the attribute originally
+				if (isset($model->getOriginal()[$column]))
+				{
+					$changed[$column] = $model->getOriginal()[$column];
+				}
 			}
 			
 			$changed['updated_at'] = (string)$model->updated_at;
@@ -353,7 +357,7 @@ abstract class AbstractRepository implements RepositoryContract {
 				return $this->models[$this->model->getTable()][$id];
 			}
 
-			$this->query()->whereId($id);
+			$this->query()->where($this->model->getTable().'.id', $id);
 		}
 		else
 		{
@@ -551,7 +555,7 @@ abstract class AbstractRepository implements RepositoryContract {
 	{
 		$relations = array_keys($this->query()->getEagerLoads());
 
-		$tags = [$this->model->getTable()];
+		$tags = ['models', $this->model->getTable()];
 
 		foreach ($relations as $relation)
 		{

@@ -7,6 +7,7 @@ use App\Events\Repositories\UserWasCreated;
 use App\Events\Repositories\UserWasUpdated;
 use App\Events\Repositories\UsersWereCreated;
 use App\Events\Repositories\UsersWereUpdated;
+use Illuminate\Database\Query\Expression;
 
 class Users extends AbstractRepository implements UsersRepository {
 	
@@ -56,19 +57,6 @@ class Users extends AbstractRepository implements UsersRepository {
 	protected function eventForModelsUpdated()
 	{
 		return new UsersWereUpdated();
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function create(array $data)
-	{
-		if (isset($data['password']))
-		{
-			$data['password'] = $this->container->make('hash')->make($data['password']);
-		}
-
-		return parent::create($data);
 	}
 
 	public function createWithFacebook(array $data)
@@ -123,6 +111,20 @@ class Users extends AbstractRepository implements UsersRepository {
 		return $this;
 	}
 
+	public function havingCredentials(array $credentials)
+	{
+		$this->query()->where('email', $credentials['email']);
+
+		return $this;
+	}
+
+	public function havingRememberToken($token)
+	{
+		$this->query()->where('remember_token', $token);
+
+		return $this;
+	}
+
 	public function isStreamer()
 	{
 		$this->query()->whereStreamer(1);
@@ -166,6 +168,38 @@ class Users extends AbstractRepository implements UsersRepository {
 		}]);
 
 		return $this;
+	}
+
+	public function find($id = null)
+	{
+		$this->query()->leftJoin('permission_user', 'permission_user.user_id', '=', 'users.id')
+			->leftJoin('role_user', 'role_user.user_id', '=', 'users.id')
+			->select(
+				$this->model->getTable().'.*', 
+				new Expression('GROUP_CONCAT(permission_user.permission_id) as permissions'), 
+				new Expression('GROUP_CONCAT(role_user.role_id) as roles')
+			)
+			->groupBy('users.id');
+
+		$model = parent::find($id);
+
+		if ($model)
+		{
+			if ($model->permissions)
+			{
+				$model->setPermissions(explode(',', $model->permissions));
+			}
+
+			if ($model->roles)
+			{
+				$model->setRoles(explode(',', $model->roles));
+			}
+
+			unset($model->permissions);
+			unset($model->roles);
+		}
+
+		return $model;
 	}
 
 }
