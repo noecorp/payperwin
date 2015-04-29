@@ -334,21 +334,11 @@ class PledgesTest extends \AppTests\TestCase {
 	 */
 	public function testMostSpent()
 	{
-		// for later
-		$_db = $this->app->make('db');
-
 		$model = $this->getModelMock();
 		
 		$query = $this->getQueryMock();
-
-		$db = $this->getDbMock();
-
-		$raw = 'sum(`amount` * `times_donated`) as spent';
-		$db->shouldReceive('raw')->with($raw)->andReturn($raw);
-
-		$this->app->instance('db',$db);
 		
-		$query->shouldReceive('select')->with('*',$raw)->andReturn($query);
+		$query->shouldReceive('select')->with('*',m::type('Illuminate\Database\Query\Expression'))->andReturn($query);
 		$query->shouldReceive('groupBy')->with('user_id');
 
 		$model->shouldReceive('newQuery')->andReturn($query);
@@ -360,9 +350,6 @@ class PledgesTest extends \AppTests\TestCase {
 		$return = $repo->mostSpent();
 
 		$this->assertSame($repo,$return);
-
-		// reset needed
-		$this->app->instance('db',$_db);
 	}
 
 }
