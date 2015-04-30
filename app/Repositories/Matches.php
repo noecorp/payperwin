@@ -68,6 +68,16 @@ class Matches extends AbstractRepository implements MatchesRepository {
 		return $this;
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function havingServerMatchIds(array $matchIds)
+	{
+		$this->query()->whereIn('server_match_id', $matchIds);
+
+		return $this;
+	}
+
 	public function orderingByMatchDate($latest = true)
 	{
 		if ($latest)
