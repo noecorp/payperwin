@@ -30,6 +30,7 @@
 			<p>Integrating PayPerWin into your stream has numerous benefits:</p>
 			<ul>
 				<li>Additional revenue that’s tied directly to your performance - get rewarded for your victories!</li>
+				<li>Low payout commissions.</li>
 				<li>Accurate, automatic earnings distribution system based on official game APIs.</li>
 				<li>Increased audience engagement and involvement.</li>
 				<li>Helps viewers develop a greater sense of investment in your content.</li>
