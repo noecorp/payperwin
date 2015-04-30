@@ -144,7 +144,7 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 
 			foreach ($history as $item)
 			{
-				$matches->create([
+				$this->matches->create([
 					'user_id' => $streamer->id,
 					'server_match_id' => $item->id(),
 					'win' => $item->win(),
