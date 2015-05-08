@@ -6,7 +6,7 @@
 	<div class="row welcome text-center">
 		<div class="col-xs-12 col-sm-6 col-sm-offset-3">
 			<h1>Challenge and support your favorite streamer!</h1>
-			<p class="lead">Fans are empowered to create &amp; fund challenges that reward streamers' in-game performance. Streamers get additional motivation to thrill their viewers with epic wins!</p>
+			<p class="lead">Fans are empowered to reward streamers' in-game performance. Streamers get additional motivation to thrill their viewers with epic wins!</p>
 			<p><a href="/auth/register" class="btn btn-lg">Get started!</a></p>
 		</div>
 	</div>
@@ -35,6 +35,17 @@
 				<li>Increased audience engagement and involvement.</li>
 				<li>Helps viewers develop a greater sense of investment in your content.</li>
 				<li>Acts as a fun way to attract more viewers to your stream.</li>
+			</ul>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-4 col-sm-offset-4">
+			<div class="text-center">
+				<h2><span class="fui-plus-circle"></span> In Development</h2>
+			</div>
+			<ul>
+				<li><strong>Stream notifications</strong> - get visual alerts for pledges, integrated with your favourite streaming software.</li>
+				<li><strong>Champion-based pledges</strong> - limit pledge donations to wins on specific champions. Dong squad: unite!</li>
 			</ul>
 		</div>
 	</div>
