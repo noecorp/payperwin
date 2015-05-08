@@ -89,7 +89,7 @@ abstract class Command {
 					return;	
 				}
 
-				$this->cache->put($this->identifier, true, 2);
+				$this->cache->put($this->identifier, true, 1);
 			}
 
 			$this->work();

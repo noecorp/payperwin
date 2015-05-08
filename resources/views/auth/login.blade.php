@@ -9,10 +9,6 @@
 	        <legend>Login</legend>
 	        <input type="hidden" name="_token" value="{{ csrf_token() }}">
 	        <div class="form-group">
-		        <p class="help-block">You can use your Twitch account to login instantly.</p>
-	        	<a href="/auth/with/twitch" id="login-twitch"><img src="/img/connect-twitch.png"/></a>
-	        </div>
-	        <div class="form-group">
 		    	@if (!$errors->isEmpty())
 					<div class="alert alert-danger">
 						<strong>Whoops!</strong>
@@ -23,6 +19,13 @@
 						</ul>
 					</div>
 				@endif
+	        </div>
+	        <div class="form-group">
+		        <p class="help-block">You can use your Twitch account to login instantly.</p>
+	        	<a href="/auth/with/twitch" id="login-twitch"><img src="/img/connect-twitch.png"/></a>
+	        </div>
+	        <div class="form-group">
+		        <p>&nbsp;</p>
 	        </div>
 	        <div class="form-group">
 		        <p class="help-block">Or just use your email and password...</p>

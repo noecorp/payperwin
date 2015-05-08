@@ -111,9 +111,11 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 
 	protected function work()
 	{
+		$originalRate = $rate = 0;
+
 		try
 		{
-			$rate = $this->cache->rememberForever('api.league.rate', function()
+			$originalRate = $rate = $this->cache->rememberForever('api.league.rate', function()
 			{
 				return 0;
 			});
@@ -124,7 +126,7 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 			}
 
 			$streamer = $this->users->isStreamer()->find($this->streamerId);
-			
+
 			if (!$streamer)
 			{
 				$this->delete();
@@ -135,16 +137,39 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 			$latest = ($this->matchId) ? $this->matches->find($this->matchId) : null;
 
 			$this->cache->increment('api.league.rate');
+			$rate++;
 
-			$history = $this->client->matchHistoryForSummonerIdInRegion($streamer->summoner_id,$streamer->region)->filter(function($item) use ($latest) {
-				return (!$latest || ($item->id() != $latest->match_server_id && $item->timestamp() > $latest->match_date->timestamp));
-			});
+			$history = $this->client->matchHistoryForSummonerIdInRegion($streamer->summoner_id,$streamer->region);
 
 			$this->cache->decrement('api.league.rate');
+			$rate--;
+
+			$ids = $history->map(function($item)
+			{
+				return $item->id();
+			})->toArray();
+
+			// Check for duplicates.
+
+			$existing = $this->matches->forStreamer($this->streamerId)->havingServerMatchIds($ids)->all();
+
+			$history = $history->filter(function($item) use ($existing)
+			{
+				$found = false;
+				foreach ($existing as $match)
+				{
+					if ($match->server_match_id == $item->id())
+					{
+						$found = true;
+						break;
+					}
+				}
+				return (!$found);
+			});
 
 			foreach ($history as $item)
 			{
-				$matches->create([
+				$this->matches->create([
 					'user_id' => $streamer->id,
 					'server_match_id' => $item->id(),
 					'win' => $item->win(),
@@ -154,15 +179,23 @@ class FetchMatches extends Command implements SelfHandling, ShouldBeQueued {
 					'deaths' => $item->deaths(),
 					'match_date' => Carbon::createFromTimestamp($item->timestamp()),
 				]);
+				
 			}
 
-			$this->distribute->pledgesFor($this->streamerId);
+			// Now distribute pledges for the found matches.
+			if (!$history->isEmpty())
+			{
+				$this->distribute->pledgesFor($this->streamerId);
+			}
 		}
 		catch (\Exception $e)
 		{
 			$this->delete();
 
-			$this->cache->decrement('api.league.rate');
+			if ($rate > $originalRate)
+			{
+				$this->cache->decrement('api.league.rate');
+			}
 			
 			throw $e;
 		}

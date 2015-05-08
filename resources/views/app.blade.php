@@ -102,7 +102,7 @@
 						<li><a href="/users/{{ $auth->user()->id }}/edit">Settings</a></li>
 						@if ($auth->user()->streamer)
 							<li class="divider"></li>
-							<li><a href="javascript:;">Request Payout</a></li>
+							<li><a href="/payout">Request Payout</a></li>
 						@endif
 						<li class="divider"></li>
 						<li><a href="mailto:gg@payperwin.gg" class="support-link">Help &amp; Feedback</a></li>
@@ -129,9 +129,12 @@
 				<li><a href="/streamers">Streamers</a></li>
 				<li><a href="mailto:gg@payperwin.gg" class="support-link">Contact Us</a></li>
 				<li><a href="/privacy">Privacy Policy</a></li>
-				<li><a href="/terms">Terms &amp; Conditions</a></li>
+				<li><a href="/terms">Terms of Service'</a></li>
 			</ul>
 		</nav>
+		<p>
+			Copyright © 2015 Assembly Made, Inc. All rights reserved.
+		</p>
 		<p>
 			<small>PayPerWin isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</small>
 		</p>

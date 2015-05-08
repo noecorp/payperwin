@@ -206,6 +206,20 @@ article
 			margin-bottom: 60px;
 		}
 	}
+
+	#payout-fees
+	{
+		ul, ol
+		{
+			padding-left: 20px;
+		}
+
+		blockquote
+		{
+			font-size: 14px;
+			font-style: italic;
+		}
+	}
 }
 
 footer
@@ -223,6 +237,10 @@ footer
 			display: inline-block;
 			margin-right: 20px;
 		}
+	}
+	p
+	{
+		color: #7F8C8D;
 	}
 }
 
