@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ead2ac17ef1239855e491ae230f6d7d1",
+    "hash": "6a0c875bbb1fc03270eb9fca23277b4f",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -1121,16 +1121,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.0.14",
+            "version": "5.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f61e0098151c73db9068a6be6d86bfc60b01de25"
+                "reference": "a5bd2e86f8ed54d13e8f73eee8b8e57ef0423410"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f61e0098151c73db9068a6be6d86bfc60b01de25",
-                "reference": "f61e0098151c73db9068a6be6d86bfc60b01de25",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/a5bd2e86f8ed54d13e8f73eee8b8e57ef0423410",
+                "reference": "a5bd2e86f8ed54d13e8f73eee8b8e57ef0423410",
                 "shasum": ""
             },
             "require": {
@@ -1200,7 +1200,7 @@
                 "predis/predis": "~1.0"
             },
             "suggest": {
-                "aws/aws-sdk-php": "Required to use the SQS queue driver (~2.4).",
+                "aws/aws-sdk-php": "Required to use the SQS queue driver and SES mail driver (~2.4).",
                 "doctrine/dbal": "Required to rename columns and drop SQLite columns (~2.4).",
                 "guzzlehttp/guzzle": "Required to use the Mailgun and Mandrill mail drivers (~5.0).",
                 "iron-io/iron_mq": "Required to use the iron queue driver (~1.5).",
@@ -1238,11 +1238,12 @@
                 }
             ],
             "description": "The Laravel Framework.",
+            "homepage": "http://laravel.com",
             "keywords": [
                 "framework",
                 "laravel"
             ],
-            "time": "2015-03-07 03:18:10"
+            "time": "2015-05-07 23:48:20"
         },
         {
             "name": "laravel/socialite",
@@ -4156,10 +4157,13 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "laravel/framework": 20,
         "barryvdh/laravel-debugbar": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.5.0"
+    },
     "platform-dev": []
 }
