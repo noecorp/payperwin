@@ -102,7 +102,7 @@
 						<li><a href="/users/{{ $auth->user()->id }}/edit">Settings</a></li>
 						@if ($auth->user()->streamer)
 							<li class="divider"></li>
-							<li><a href="javascript:;">Request Payout</a></li>
+							<li><a href="/payout">Request Payout</a></li>
 						@endif
 						<li class="divider"></li>
 						<li><a href="mailto:gg@payperwin.gg" class="support-link">Help &amp; Feedback</a></li>
