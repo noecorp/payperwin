@@ -30,7 +30,7 @@ class PaypalVerifyIPN
     public function handle(Request $request, Closure $next)
     {
         try {
-
+            $this->client->setDefaultOption('verify', !app()->environment('local'));
             $response = $this->client->get(config('services.paypal.verify_url'), ['query' => $request->except(['userId'])]);
 
             //check if ipn message is actual a valid ipn message send by paypal
