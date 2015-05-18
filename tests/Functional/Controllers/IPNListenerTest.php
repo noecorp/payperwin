@@ -388,7 +388,7 @@ class IPNListenerTest extends TestCase
     {
         return array_merge($this->generateCompleteMessageData($gross),
             [
-                'mc_gross' => -$gross+$this::calculateFee($gross),
+                'mc_gross' => -$gross,
                 'mc_fee' => -$this::calculateFee($gross),
                 'parent_txn_id' => $parentId,
                 'payment_status'=>'Reversed',
@@ -400,7 +400,7 @@ class IPNListenerTest extends TestCase
     {
         return array_merge($this->generateCompleteMessageData($gross),
             [
-                'mc_gross' => $gross-$this::calculateFee($gross),
+                'mc_gross' => $gross,
                 'mc_fee' => $this::calculateFee($gross),
                 'parent_txn_id' => $parentId,
                 'payment_status'=>'Canceled_Reversal',
