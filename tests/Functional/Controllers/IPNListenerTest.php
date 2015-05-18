@@ -80,7 +80,9 @@ class IPNListenerTest extends TestCase
 
         //get updated users
         $user = DB::table('users')->first();
-        $this->assertEquals($gross-$this::calculateFee($gross), $user->funds);
+        //$user=$users->find($user->id);
+        $this->assertEquals($gross, $user->funds);
+        $this->assertEquals($this::calculateFee($gross), $user->fees);
     }
 
     /**
@@ -184,7 +186,8 @@ class IPNListenerTest extends TestCase
 
         //get updated users
         $user = DB::table('users')->find($user->id);
-        $this->assertEquals($gross-$this->calculateFee($gross), $user->funds);
+        $this->assertEquals($gross, $user->funds);
+        $this->assertEquals($this->calculateFee($gross), $user->fees);
     }
 
     /**
@@ -342,7 +345,8 @@ class IPNListenerTest extends TestCase
 
         //get updated users
         $user = DB::table('users')->find($user->id);
-        $this->assertEquals($gross-$this::calculateFee($gross), $user->funds);
+        $this->assertEquals($gross, $user->funds);
+        $this->assertEquals($this->calculateFee($gross), $user->fees);
     }
 
     public function getGuzzleClientMock($mock)

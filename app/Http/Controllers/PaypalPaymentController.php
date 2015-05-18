@@ -107,13 +107,15 @@ class PaypalPaymentController extends Controller
                     }
 
                     $gross = 0;
+                    $fee=0;
                     switch ($data['status']) {
                         case $this::REFUNDED:
                             if ($parentTransaction->isReversed()) {
                                 //add reversed gross back to funds
                                 $gross += -$parentTransaction->gross;
                             }
-                            $gross += $data['gross'] - $data['fee'];
+                            $gross += $data['gross'];
+                            $fee += $data['fee'];
                             break;
                         case $this::REVERSED:
                             if ($parentTransaction->isCompleted()) {
@@ -129,7 +131,8 @@ class PaypalPaymentController extends Controller
                             break;
                         case $this::COMPLETED:
                             //just add funds to the user account
-                            $gross += $data['gross'] - $data['fee'];
+                            $gross += $data['gross'];
+                            $fee += $data['fee'];
                     }
 
                     //mark processed
@@ -138,6 +141,7 @@ class PaypalPaymentController extends Controller
 
                     //update funds
                     $users->incrementAll([$user->id], 'funds', $gross);
+                    $users->incrementAll([$user->id], 'fees', $fee);
                 });
             } catch (\Exception $ex) {
                 event(new ErrorProcessing($request, $ex));
