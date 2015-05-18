@@ -52,6 +52,7 @@ return [
 		'custom_value' => env('PAYPAL_CUSTOM_VALUE'),
 		'currency' => env('PAYPAL_CURRENCY'),
 		'verify_url' => env('PAYPAL_VERIFY_URL'),
+		'submit_url' => env('PAYPAL_SUBMIT_URL'),
 	],
 
 	'riot' => [

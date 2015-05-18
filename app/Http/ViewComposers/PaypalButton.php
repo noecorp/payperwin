@@ -35,10 +35,11 @@ class PaypalButton
         $view->with('paypalSubmitUrl', config('services.paypal.submit_url'));
         $view->with('paypalReceiver', config('services.paypal.receiver'));
         $view->with('paypalIpnUrl', $this->auth->check()?route('paypalIpn',['userId'=> $this->auth->user()->id]):'');
-        $view->with('paypalUrl', $this->auth->check()?config('services.paypal.verify_url'):'');
+        $view->with('paypalUrl', $this->auth->check()?config('services.paypal.submit_url'):'');
         $view->with('paypalInvoice', $this->auth->check()?'user:'.$this->auth->user()->id:'');
         $view->with('paypalCustom', config('services.paypal.custom_value'));
         $view->with('paypalCurrency', config('services.paypal.currency'));
+        $view->with('paypalReturnUrl',$this->auth->check()?route('paypalReturn',['userId'=> $this->auth->user()->id]):route('home'));
     }
 
 }
